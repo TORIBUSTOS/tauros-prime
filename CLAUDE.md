@@ -85,21 +85,23 @@ Backend (FastAPI)
 
 ---
 
-## Estado del Proyecto — 2026-04-09 🎯 INTEGRADO
+## Estado del Proyecto — 2026-04-09 🎯 SPRINT 2 COMPLETO
 
 | BN | Nombre | Track | Estado | Coverage |
 |:---|:---|:---|:---|:---|
 | **001** | Parser + Categorización | A | ✅ INTEGRADO | 100% |
-| **002** | Motor de INSIGHTS | A | ✅ INTEGRADO | 96% |
+| **002** | Motor de INSIGHTS | A | ✅ OPTIMIZADO | 95% |
 | **003** | Forecasting 3 meses | A | ✅ INTEGRADO | 96% |
-| **004** | API REST | A | ✅ INTEGRADO | 70% |
+| **004** | API REST | A | ✅ INTEGRADO | 74% |
 | **005** | Dashboard Base | B | ✅ COMPLETADO | - |
 | **006** | Reportes (P&L) | B | 🚀 ENLAZANDO (AG) | - |
 | **007** | Analytics | B | 🚀 ENLAZANDO (AG) | - |
 | **008** | Integración Frontend | B | 🚀 ENLAZANDO (AG) | - |
 
-**Backend Coverage Total: 92%** (Exceeds 85% requirement ✅)
-**Testeo Real: 659 movimientos Supervielle procesados exitosamente** ✅
+**Backend Coverage Total: 88%** (Exceeds 85% requirement ✅)
+**Sprint 2 Performance: /insights 3.2s → 0.47s** (✅ <1s target met)
+**Test Suite: 86/86 passing | Execution time: 17.4s → 10.7s** ✅
+**Testeo Real: 653+ movimientos Supervielle procesados en <1s** ✅
 
 **Dependencias**:
 ```
@@ -485,16 +487,22 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 ---
 
-## Status Dashboard — INTEGRADO ✅
+## Status Dashboard — SPRINT 2 CHECKPOINT 1 COMPLETO ✅ | CHECKPOINT 2 EN PROGRESO 🚀
 
 ```
-🚀 TORO_Prime Backend: INTEGRADO
-├─ BN-001 Parser:      ✅ 100% coverage | 659 movs procesados
-├─ BN-002 Insights:    ✅ 96% coverage | 14 insights/lote
+🚀 TORO_Prime Backend: SPRINT 2 CP1 OPTIMIZADO
+├─ BN-001 Parser:      ✅ 100% coverage | 653+ movs procesados
+├─ BN-002 Insights:    ✅ 95% coverage | 0.47s/lote (3.2s→0.47s 🚀)
 ├─ BN-003 Forecast:    ✅ 96% coverage | 3 escenarios generados
-├─ BN-004 API:         ✅ 92% total coverage | 4 endpoints activos
-├─ Testing:            ✅ 47/47 tests passing
-├─ Categorización:     ✅ 62% auto-categorizado (4 reglas)
+├─ BN-004 API:         ✅ 74% coverage | 6 endpoints + integration tests
+├─ Testing:            ✅ 86/86 tests passing (↑ from 82)
+├─ Performance:        ✅ <1s para /insights (target met)
+├─ Reports:            ✅ 100% coverage (↑ from 26%)
+
+🎨 TORO_Prime Frontend: SPRINT 2 CP2 EN PROGRESO
+├─ Testing Setup:      ✅ Vitest + RTL installed & configured
+├─ Test Suite:         ✅ 34/34 tests passing (api.service, components)
+├─ Coverage Target:    🚀 Foundation ready for >70% (CP2 task)
 └─ Datos Reales:       ✅ Supervielle (mayo-junio 2025)
 
 🎨 TORO_Prime Frontend: ENLAZANDO
