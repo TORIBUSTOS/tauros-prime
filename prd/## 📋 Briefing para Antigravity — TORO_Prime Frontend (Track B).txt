@@ -1,0 +1,82 @@
+---
+
+## 📋 Briefing para Antigravity — TORO_Prime Frontend (Track B)
+
+**De:** Claude (Backend/CTO)  
+**Para:** Antigravity (Frontend Lead)  
+**Status:** 🟢 COMIENZA AHORA EN PARALELO
+
+---
+
+### Lee primero (5 min):
+1. **prd/CLAUDE.md** — Contexto general, stack, el diferenciador (motor insights que filtra ruido)
+2. **prd/WORKFLOW_PARALELO.md** — Protocolo paralelo Claude+Antigravity, daily sync format
+
+### Tu responsabilidad: BN-005 → BN-008
+| BN | Tarea | Estado | Dependencia |
+|:---|:---|:---|:---|
+| **005** | Dashboard Base | 🔄 Puedes empezar YA | Ninguna (usa mock data) |
+| **006** | Reportes (P&L) | ⏳ Espera a BN-005 | Ninguna (mock data) |
+| **007** | Analytics | ⏳ Espera a BN-005 | Ninguna (mock data) |
+| **008** | Integración + Polish | 🔴 BLOQUEADO | Espera BN-004 (API Claude) |
+
+### Qué puedes hacer AHORA:
+
+**BN-005: Dashboard Base**
+- Layout Bento Grid responsive
+- Componentes base (Cards, KPI widgets)
+- Upload drag-and-drop widget (funcional local, no need API yet)
+- Mock data structure: 100 movimientos dummy
+
+**BN-006: Reportes**
+- Tabla jerárquica expandible (movimientos por categoría)
+- Mock P&L data
+- Sorting/filtering sin API
+
+**BN-007: Analytics**
+- Charts con Recharts o D3 (tu elección, documenta en ADR si cambias)
+- KPI cards con dummy data
+- Insights cards (hardcoded 3-5 ejemplos)
+
+### Stack (FIJO — no cambiar sin ADR):
+- **Runtime:** Node.js 18+
+- **Framework:** Next.js 14+ (App Router)
+- **UI:** React 18 + Hooks + Context API
+- **Styling:** CSS Vanilla + CSS Variables (control total)
+- **HTTP:** Axios (cuando BN-004 esté listo)
+- **Testing:** Vitest + React Testing Library, >70% coverage
+
+### Criterios "Listo":
+- ✅ Frontend corre en `localhost:3000`
+- ✅ Páginas (Dashboard, Reportes, Analytics) renderizan
+- ✅ Responsive (Desktop + Tablet)
+- ✅ Kit de marca TORO aplicado (colores, tipografía)
+- ✅ Tests >70% coverage
+- ✅ Mock data structure lista para swap → real cuando BN-004 esté
+
+### Comunicación:
+- **Daily async updates:** Formato en WORKFLOW_PARALELO.md
+- **Blocker en BN-006/007?** Usa mock data más, no esperes a API
+- **BN-004 listo?** Claude te avisa + docstring OpenAPI endpoints
+- **Friday standup:** Tori + Claude + AG (15 min)
+
+### Cuando Claude termina BN-004:
+Recibirás:
+```
+POST /api/import — Upload archivo
+GET /api/movements?period=YYYY-MM — Listar movimientos
+GET /api/insights?period=YYYY-MM — Obtener insights
+GET /api/forecast?meses=3 — Obtener forecast
+GET /api/reports/pl?period=YYYY-MM — Reporte P&L
+GET /api/analytics/categorias — Stats de categorías
+
+Documentado en: http://localhost:8000/docs
+```
+
+**¡Adelante!** Comienza con BN-005.
+
+---
+
+Listo. Puedes enviar esto a AG cuando quieras.
+
+**Ahora arranco con Task 1.1 del Backend.**
