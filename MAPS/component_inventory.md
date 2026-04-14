@@ -1,74 +1,49 @@
-# Component Inventory: TAUROS
+# Component Inventory: TAUROS (Imperial Core)
 
 ## 1. Tecnologías Base
-- **Frontend**: React 18/19, Vite, Vanilla CSS.
-- **Iconografía**: Phosphor Icons / Lucide Icons.
-- **Visualización**: Chart.js / Recharts.
-- **Comunicación**: Fetch API / Axios.
+- **Backend**: FastAPI, SQLAlchemy (SQLite), Pandas.
+- **Frontend**: Next.js 14, Tailwind CSS v4, Lucide Icons.
+- **Visualización**: Recharts (composición personalizada de gradientes).
 
-## 2. Componentes UI (Design System Externo)
+## 2. Componentes UI (Imperial System)
 
-### Átomos / Moléculas
-- `Button`: Variantes (Primary, Secondary, Ghost, Danger).
-- `Card`: Contenedor base con estilo Glass/Rim.
-- `Badge`: Etiquetas de categoría con colores dinámicos.
-- `Input`: Campos de texto, fecha y moneda con validación.
-- `StatusLights`: Semáforos (Verde/Amarillo/Rojo) para indicadores de confianza.
+### Átomos y Utilidades
+- `FinancialValue`: Formateo dinámico de moneda con colorización semántica.
+- `GlassyPanel`: Contenedor base con `backdrop-blur` y `rim-lighting` (CSS variables).
+- `StatusPulse`: Indicador animado para procesos de IA activos.
 
-### Organismos (Componentes de Negocio)
-- `Navbar`: Barra lateral de navegación con estados activo/inactivo.
-- `PeriodSelector`: Componente global para filtrar todo el sistema por Mes/Año.
-- `BentoGrid`: Layout adaptativo para el Dashboard.
-- `FinancialTable`: Tabla optimizada para movimientos bancarios con scroll infinito.
-- `DesgloseJerarquico`: Componente estrella que muestra el árbol de categorías con expansión recursiva.
+### Organismos (Intelligence Core)
+- **`CortexHub`**: Contenedor principal del feed de inteligencia. Gestiona el estado de carga ("Scanning").
+- **`InsightCard`**: Representación visual de un hallazgo (Recurrencia, Anomalía, Metadata).
+- **`LiquidityAlert`**: Notificación crítica de estado de caja.
+- **`ForecastChart`**: Visualización predictiva con sombras de confianza.
 
 ---
 
-## 3. Lógica de Negocio (Hooks & Services)
+## 3. Lógica de Inteligencia (Services)
 
-### State Management
-- `usePeriod`: Hook para suscribirse al período global (Enero, Febrero...).
-- `useFinancialData`: Gestión de fetch y cache de movimientos.
-- `useRules`: CRUD de reglas de categorización.
-
-### Services (Backend-less Logic)
-- `periodStore.js`: Store liviano para eventos compartidos entre componentes.
-- `formatter.js`: Utilidades para convertir números en moneda local ($ ARG) y fechas.
+- `InsightsService`: Motor de detección de anomalías y generación de lenguaje natural para hallazgos.
+- `ForecastService`: Motor matemático de proyecciones con inyección de lógica de periocidad.
+- `RecurrenceEngine`: Helper para identificar ciclos de transacciones mediante frecuencia mensual.
 
 ---
 
-## 4. Dependencias del Proyecto (package.json)
-
-```json
-{
-  "dependencies": {
-    "react": "^18.2.0",
-    "chart.js": "^4.0.0",
-    "phosphor-react": "^1.4.1",
-    "framer-motion": "^10.0.0"
-  },
-  "devDependencies": {
-    "vite": "^5.0.0",
-    "@testing-library/react": "^14.0.0"
-  }
-}
-```
-
----
-
-## 5. Mapa de Dependencias Interno
+## 4. Mapa de Dependencias Interno
 
 ```mermaid
 graph TD
-    App --> Navbar
-    App --> Router
-    Router --> Dashboard
-    Router --> Reportes
-    Dashboard --> BentoGrid
-    Dashboard --> UploadWidget
-    Reportes --> DesgloseJerarquico
-    Reportes --> PeriodSelector
-    DesgloseJerarquico --> FinancialTable
-    FinancialTable --> Badge
-    FinancialTable --> StatusLights
+    Dashboard --> CortexHub
+    CortexHub --> InsightCard
+    CortexHub --> LiquidityAlert
+    Dashboard --> ForecastChart
+    Dashboard --> MetricGrid
+    Reportes --> HierarchicalTable
 ```
+
+---
+
+## 5. Auditoría de Módulos (Status)
+- [x] **Cortex Engine**: Operativo v1.0.
+- [x] **Forecast**: Operativo v2.0 (con periocidad).
+- [ ] **Vault Mode**: Pendiente (Sprint 4).
+- [ ] **PDF/Excel Export**: Pendiente (Sprint 4).

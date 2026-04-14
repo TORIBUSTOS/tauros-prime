@@ -99,9 +99,32 @@ class InsightsService:
         return insights
 
     @staticmethod
+    def _detect_recurrences(by_categoria: dict, db: Session) -> list[dict]:
+        """Detect recurring payments that the user should be aware of"""
+        insights = []
+        for cat, movs in by_categoria.items():
+            if len(movs) < 2: continue
+            
+            days = [m.fecha.day for m in movs]
+            most_common_day, freq = Counter(days).most_common(1)[0]
+            recurrence_score = freq / len(movs)
+            
+            if recurrence_score > 0.5:
+                avg_monto = statistics.mean([m.monto for m in movs])
+                insights.append({
+                    'type': 'recurrence',
+                    'categoria': cat,
+                    'insight': f"Patrón detectado: {cat} suele ocurrir alrededor del día {most_common_day}. Estimado: ${abs(avg_monto):,.2f}",
+                    'confidence': min(0.95, 0.6 + recurrence_score),
+                    'data': {'day': most_common_day, 'avg_monto': avg_monto, 'score': recurrence_score}
+                })
+        return insights
+
+    @staticmethod
     def _detect_context_anomalies(by_categoria: dict, db: Session, year_int: int, month_int: int) -> list[dict]:
         """Detect context anomalies by comparing with previous month"""
         insights = []
+        insights.extend(InsightsService._detect_recurrences(by_categoria, db))
 
         # Calculate previous month
         prev_month = month_int - 1

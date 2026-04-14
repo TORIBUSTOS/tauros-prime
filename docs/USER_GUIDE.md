@@ -1,4 +1,4 @@
-# User Guide — TORO_Prime
+# User Guide — TAUROS v2
 
 **Bóveda Digital para Análisis Financiero Inteligente**
 
@@ -177,10 +177,10 @@ Haz click en **"Análisis"** en el sidebar.
 - Egresos: ¿A dónde va el dinero?
 - Clickeable: Expandir para subcategorías
 
-**3. Análisis de "Hormigas" (Micro-gastos)**
-- Gastos pequeños recurrentes
-- Ej: 10 gastos de $50 = $500 perdido
-- **Impacto**: Identifica fugas de capital
+**3. Análisis de "Hormigas" (Micro-gastos Pro)**
+- Identifica fugas de capital a través de gastos pequeños y recurrentes.
+- **Drill-down**: Haz click en cualquier categoría detectada (ej: "Suscripciones" o "Cafetería") para abrir una vista detallada.
+- **Detalle**: Verás la lista exacta de transacciones que componen ese gasto "hormiga" para tomar acción inmediata.
 
 ---
 
@@ -199,8 +199,8 @@ En el **Dashboard**, sección "Próximos 3 Meses":
 ### Cómo Usar
 
 - **Planning**: "¿Tengo cash para pagar proveedores en sept?"
+- **Interacción**: Haz click en las leyendas del gráfico (Optimista, Realista, Pesimista) para resaltar o aislar cada escenario.
 - **Risk**: "¿Y si los ingresos caen 30%?"
-- **Targets**: "Necesito +$5k. ¿Qué escenario me lo permite?"
 
 ---
 
@@ -216,6 +216,18 @@ En el **Dashboard**, sección "Próximos 3 Meses":
 | ⚠️ **Advertencia** | Naranja | Advertencia (en desarrollo) |
 
 Aparecen **arriba derecha**, desaparecen en 5 segundos.
+
+---
+
+---
+
+## 📱 Navegación Móvil
+
+TAUROS v2 está optimizado para dispositivos móviles:
+
+1. **Barra de Navegación Inferior**: Acceso directo a Inicio, Movimientos, Análisis e Insights.
+2. **Tablas Adaptativas**: Las tablas se desplazan horizontalmente para mantener la legibilidad de los montos.
+3. **Charts Flexibles**: Los gráficos se redimensionan automáticamente para visualización vertical.
 
 ---
 

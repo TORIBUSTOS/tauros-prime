@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "skillsmp": {
+      "command": "node",
+      "args": ["C:\\Users\\mauri\\.claude\\mcp-servers\\skillsmp-mcp.js"],
+      "env": {
+        "SKILLSMP_API_KEY": "sk_live_skillsmp_avcfSFXYnaEUwLKTySdwFikOD1WBoQzha2mr5JdZB2w"
+      }
+    }
+  }
+}

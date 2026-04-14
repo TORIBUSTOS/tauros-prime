@@ -70,3 +70,4 @@ class SummaryResponse(BaseModel):
     egresos_total: float
     balance: float
     transaction_count: int
+

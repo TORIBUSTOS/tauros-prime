@@ -3,8 +3,8 @@
 > Este documento registra el progreso de **Antigravity** en el desarrollo del Frontend de TAUROS v2.
 > Gemini se encarga de la estética "Imperial Tech" y la integración con el motor de Claude.
 
-## Estado del Proyecto: ESTABILIZACIÓN Y BETA READY 🚀
-La plataforma ha sido blindada para entornos locales, con automatización de arranque y errores críticos resueltos.
+## Estado del Proyecto: SPRINT 4 IN PROGRESS — CORTEX INTELLIGENCE & PURE ANALYTICS 🧠
+La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando capacidades operativas para maximizar el análisis proactivo y la predictibilidad.
 
 ---
 
@@ -16,6 +16,26 @@ La plataforma ha sido blindada para entornos locales, con automatización de arr
 ---
 
 ## Log de Trabajo (Changelog de Antigravity)
+
+### [2026-04-10] - Bloque de Estabilización y Silencio en Consola
+**Objetivo**: Resolver errores de runtime y eliminar warnings de consola para estado de producción.
+
+- **Backend (ERROR 500)**: Se corrigió `forecast.py` añadiendo la importación `Counter`. Los endpoints `/api/forecast` y `/api/reports/periods` ahora responden correctamente.
+- **Frontend (Failed to fetch)**: Al normalizar el backend, desaparecieron los errores de red en el dashboard.
+- **Next.js Images**: Se añadieron los props `sizes` a los logos en `layout.tsx` y `page.tsx`. Se restauró el archivo `toro_romano.png`.
+- **Recharts (Dimension Warnings)**: 
+  - Se establecieron alturas fijas de `300px` y `340px` en los contenedores.
+  - Se implementó `minHeight={0}` y un sistema de `isMounted` (Lazy Render) para prevenir advertencias de dimensiones negativas durante la hidratación.
+- **Accesibilidad**: Selector de periodos actualizado con IDs y labels vinculados.
+
+**Estado Final**: Consola limpia de errores críticos. Backend e Integración al 100%.
+
+### [2026-04-10] - Bloque BN-007/008: Analytics Pro, UX & Documentation
+- **Analítica Predictiva**: Integración de `ForecastChart` con visualización de 3 escenarios (Optimista/Realista/Pesimista) e interactividad en leyendas.
+- **Drill-down Cognitivo**: Implementación de navegación granular en `HormigaAnalysis`, permitiendo inspeccionar transacciones desde el hallazgo.
+- **UX Reinforcement**: Lanzamiento del `ToastProvider` con animaciones `framer-motion` y barra de navegación inferior para dispositivos móviles.
+- **Documentación Integral**: Actualización de `ARCHITECTURE.md`, `USER_GUIDE.md` y `API.md` con la nueva identidad de **TAUROS v2**.
+- **Refactor de Marca**: Transición total de menciones de "TORO_Prime" a "TAUROS v2" en el sistema de documentación.
 
 ### [2026-04-09] - Bloque BN-009: Estabilización y Blindaje
 - **Automatización de Inicio**: Refactorización de `START_TAUROS.bat` con detección de Python, autoinstalación de dependencias y soporte para rutas UNC/OneDrive.
@@ -49,6 +69,6 @@ La plataforma ha sido blindada para entornos locales, con automatización de arr
 
 ---
 
-*Versión: 3.0*  
-*Última actualización: 2026-04-09 (Estabilización Final)*  
+*Versión: 4.0*  
+*Última actualización: 2026-04-10 (Analytics Pro & UX)*  
 *Responsable: Antigravity*

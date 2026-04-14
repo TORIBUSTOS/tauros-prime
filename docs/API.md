@@ -1,4 +1,4 @@
-# API Documentation — TORO_Prime
+# API Documentation — TAUROS v2
 
 **Base URL**: `http://localhost:9000/api`  
 **Format**: JSON  

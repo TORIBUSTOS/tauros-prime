@@ -1,4 +1,4 @@
-# Architecture — TORO_Prime
+# Architecture — TAUROS v2
 
 ## System Overview
 
@@ -139,8 +139,8 @@ User uploads Excel
 ┌──────────────────────────────────────────────┐
 │         RootLayout                           │
 │ ├─ PeriodProvider (Global State)             │
-│ ├─ ToastProvider (Notifications)             │
-│ └─ Sidebar (Navigation)                      │
+│ ├─ ToastProvider (Global Notifications)      │
+│ └─ Sidebar & MobileNav (Navigation)         │
 └────────────┬─────────────────────────────────┘
              │
     ┌────────┴─────────────┐
@@ -149,13 +149,14 @@ User uploads Excel
 Dashboard             Analytics
 ├─ MetricCard          ├─ FlowChart
 ├─ RecentTransactions  ├─ CategoryPieChart
-├─ InsightCard         └─ HormigaAnalysis
+├─ ForecastChart [NEW] ├─ ForecastChart [NEW]
+├─ InsightCard         └─ HormigaAnalysis (Pro)
 └─ FileUploadZone
 
 Reportes              Movimientos              Insights
 ├─ HierarchicalTable  ├─ Filter Bar            └─ InsightFeed
 ├─ PLBreakdown        ├─ DataTable
-└─ SummaryCards       └─ Drill-down
+└─ SummaryCards       └─ Drill-down (Modal)
 ```
 
 ---
@@ -280,5 +281,21 @@ Frontend:
 
 ---
 
-*Arquitectura Actualizada: 2026-04-09*  
+---
+
+## UI/UX Patterns
+
+### Global Notification System (Toasts)
+- **Engine**: Framer Motion (AnimatePresence)
+- **Context**: `ToastContext` centraliza el envío de mensajes desde cualquier componente.
+- **Aesthetics**: "Imperial Tech" (Glassmorphism + Gold/Bronze accents).
+
+### Mobile Strategy
+- **Adaptive Layout**: El Sidebar se oculta en `< 1024px`.
+- **Bottom Navigation**: Barra persistente para acceso rápido a las secciones principales.
+- **Responsive Charts**: Contenedores dinámicos (`min-h-[300px]`) que se adaptan a la orientación del dispositivo.
+
+---
+
+*Arquitectura Actualizada: 2026-04-10*  
 *Status: Production-Ready Beta*

@@ -1,51 +1,43 @@
-# UI/UX Map: TAUROS
+# UI/UX Map: TAUROS (Imperial Tech)
 
 ## 1. Identidad Visual
-- **Estilo**: Moderno, Dark Mode Nativo, Premium.
-- **Concepto**: *Financial Glassmorphism* & *Bento Grid*.
+- **Estilo**: *Financial Glassmorphism* & *Imperial Tech*.
+- **Concepto**: Una consola de mando táctica que enfatiza la inteligencia sobre la operación.
 - **Paleta de Colores**:
-  - `Background`: #000000 (Onyx Black).
-  - `Surface`: #0a0a0a con bordes 1px variables.
-  - `Accent (Primary)`: Azul/Cian vibrante.
-  - `Semantic`: Verde (Ingresos), Rojo (Egresos), Amarillo (Pendientes/Otros).
-- **Tipografía**: Inter / Sans-Serif moderna con pesos robustos para números.
+  - `Background`: #000000 (Pure Black).
+  - `Surface`: #0a0a0a con desenfoque de fondo y bordes de 1px (Rim Lighting).
+  - `Accent`: Cian Imperial / Dorado Prime (gradientes).
 
 ## 2. Inventario de Pantallas
 
-| Pantalla | Propósito | Características Clave |
+| Pantalla | Propósito | Widget Estrella |
 | :--- | :--- | :--- |
-| **Dashboard** | Visión de 30.000 pies | Bento Grid, Gráfico de flujo diario, Upload de archivos. |
-| **Reportes** | Análisis P&L detallado | Jerarquía expandible (Ingresos/Egresos), Selector de período. |
-| **Analytics** | Tendencias y Salud financiera | Gráficos de torta por categoría, KPIs predictivos. |
-| **Metadata** | Auditoría y Clasificación | Tabla densa, semáforos de calidad de datos, edición masiva. |
-| **Configuración** | Gestión del sistema | Edición de categorías y reglas del motor Cascada. |
+| **Dashboard** | El centro de mando | **Cortex Hub** (Feed de IA) |
+| **Reportes** | Auditoría P&L | Desglose Jerárquico Recursivo |
+| **Analytics** | Proyección Futura | **Predictive Forecast Chart** |
+| **Movimientos** | Revisión de datos | Tabla Densa con Semáforos de Calidad |
 
-## 3. Flujos de Usuario (User Flows)
+## 3. Patrones de Diseño (Imperial Tech)
 
-### A. El "Happy Path" del Analista
-1. Login → Dashboard.
-2. Drag & Drop de extracto bancario (.xlsx).
-3. Confirmación de importación (Toast notification).
-4. El sistema procesa en background (Loader sutil).
-5. Ir a **Reportes** para ver el impacto inmediato en el P&L.
+### A. Cortex Insights Flow
+1. Al cargar, el sistema ejecuta una animación de "Escaneo" en el Cortex Hub.
+2. Los hallazgos se clasifican en:
+   - **Críticos (Rojo)**: Alertas de liquidez inminente.
+   - **Patrones (Azul)**: Gastos recurrentes o anomalías de tendencia.
+   - **Neutrales (Gris)**: Metadata e información de auditoría.
 
-### B. Ciclo de Mejora de Datos (Feedback Loop)
-1. Detectar categoría "Otros" en **Reportes**.
-2. Click en la celda para ir a **Metadata** (filtro automático).
-3. Editar clasificación de un movimiento.
-4. Crear una "Regla Sugerida" desde el modal de edición.
-5. Ver cómo el resto de los movimientos similares se actualizan (Real-time).
+### B. Glass & Rim Design
+- Paneles con `backdrop-filter: blur(12px)`.
+- Bordes con gradiente lineal (`--border-imperial`) para simular profundidad.
+- Sombras suaves externas que separan los elementos del fondo absoluto.
 
-## 4. Patrones de Diseño (UI Patterns)
-- **Glassmorphism**: Paneles con `backdrop-filter: blur()`, semitransparentes.
-- **Rim Lighting**: Bordes de 1px con gradientes para separar elementos en fondo negro.
-- **Micro-interacciones**:
-  - Hover de escala en widgets del Dashboard.
-  - Transiciones suaves entre navegación lateral.
-  - Indicadores de pulso para procesos activos.
-- **Data Denseness**: Uso optimizado del espacio para mostrar grandes cantidades de transacciones sin abrumar.
+## 4. User Journeys (UX)
 
-## 5. Accesibilidad y Responsividad
-- **Contraste**: Relación de contraste 4.5:1 mínima para textos legibles sobre fondo oscuro.
-- **Responsive**: Diseño adaptativo para Desktop y Tablets (prioridad en análisis de escritorio).
-- **Navegación**: Menú lateral (Sidebar) consistente con iconos descriptivos (Lucide/Phosphor).
+### Auditoría Predictiva
+1. El usuario revisa el **Cortex Hub**.
+2. Detecta una alerta de "Gasto recurrente anómalo".
+3. Hace click en el "Hallazgo" para ir al detalle filtrado en **Reportes**.
+4. Valida si la proyección de la categoría coincide con la realidad.
+
+## 5. Responsividad
+Adaptado para monitores UltraWide y Tablets Pro. No se prioriza la visualización móvil debido a la densidad de datos requerida para el análisis financiero experto.

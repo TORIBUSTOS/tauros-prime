@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from src.models.movement import Movimiento
 import statistics
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 class ForecastService:
     @staticmethod
@@ -39,32 +39,50 @@ class ForecastService:
 
         month_forecast = []
         for categoria, movs in by_categoria.items():
+            # 1. Detección de Periodicidad (Día del Mes)
+            days = [m.fecha.day for m in movs]
+            most_common_day, day_freq = Counter(days).most_common(1)[0] if days else (None, 0)
+            
+            # 2. Filtrar por este mes específico en años anteriores
             same_month_movs = [m for m in movs if m.fecha.month == month]
-
+            
             if same_month_movs:
                 amounts = [m.monto for m in same_month_movs]
                 count = len(same_month_movs)
                 total = sum(amounts)
                 avg = total / count
                 std = statistics.stdev(amounts) if len(amounts) > 1 else 0
+                
+                # Aumentar confianza si hay un día muy común (ej. sueldos el 30)
+                is_periodic = (day_freq / len(movs)) > 0.4 if movs else False
+                base_confidence = 0.75 + (min(len(movs), 5) * 0.04)
+                final_confidence = min(0.98, base_confidence + (0.1 if is_periodic else 0))
+
                 month_forecast.append({
                     'categoria': categoria,
                     'expected_count': count,
                     'expected_total': total,
                     'expected_avg': avg,
                     'std_dev': std,
-                    'confidence': min(0.95, 0.70 + (len(movs) * 0.05))
+                    'confidence': final_confidence,
+                    'metadata': {
+                        'is_periodic': is_periodic,
+                        'suggested_day': most_common_day
+                    }
                 })
             else:
+                # 3. Fallback: Promedio global si no hay datos de este mes específico
                 amounts = [m.monto for m in movs]
                 if amounts:
+                    avg = statistics.mean(amounts)
                     month_forecast.append({
                         'categoria': categoria,
                         'expected_count': 1,
-                        'expected_total': statistics.mean(amounts),
-                        'expected_avg': statistics.mean(amounts),
+                        'expected_total': avg,
+                        'expected_avg': avg,
                         'std_dev': statistics.stdev(amounts) if len(amounts) > 1 else 0,
-                        'confidence': 0.50
+                        'confidence': 0.45,
+                        'metadata': {'fallback': True}
                     })
         return month_forecast
 
