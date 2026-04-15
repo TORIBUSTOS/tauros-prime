@@ -24,6 +24,34 @@ Este proyecto **SIGUE ESTRICTAMENTE** el Protocolo TORO LAB v2:
 
 ---
 
+## Quick Start
+
+### Backend (puerto 9000)
+```bash
+cd backend
+python -m venv venv && venv\Scripts\activate   # Windows
+pip install -r requirements.txt
+uvicorn src.main:app --reload --port 9000
+```
+
+### Frontend (puerto 7000)
+```bash
+cd frontend
+npm install
+npm run dev      # → http://localhost:7000
+```
+
+### Tests
+```bash
+# Backend
+cd backend && pytest -v --cov=src tests/
+
+# Frontend
+cd frontend && npm run test:run
+```
+
+---
+
 ## Stack Técnico (FIJO - No cambiar sin ADR)
 
 ### Backend (Track A)
@@ -85,7 +113,7 @@ Backend (FastAPI)
 
 ---
 
-## Estado del Proyecto — 2026-04-09 🎯 SPRINT 2 COMPLETO
+## Estado del Proyecto — 2026-04-15
 
 | BN | Nombre | Track | Estado | Coverage |
 |:---|:---|:---|:---|:---|
@@ -94,14 +122,13 @@ Backend (FastAPI)
 | **003** | Forecasting 3 meses | A | ✅ INTEGRADO | 96% |
 | **004** | API REST | A | ✅ INTEGRADO | 74% |
 | **005** | Dashboard Base | B | ✅ COMPLETADO | - |
-| **006** | Reportes (P&L) | B | 🚀 ENLAZANDO (AG) | - |
-| **007** | Analytics | B | 🚀 ENLAZANDO (AG) | - |
-| **008** | Integración Frontend | B | 🚀 ENLAZANDO (AG) | - |
+| **006** | Reportes (P&L) | B | ✅ COMPLETADO | - |
+| **007** | Analytics | B | ✅ COMPLETADO | - |
+| **008** | Integración Frontend | B | 🔄 EN PROGRESO | - |
 
-**Backend Coverage Total: 88%** (Exceeds 85% requirement ✅)
-**Sprint 2 Performance: /insights 3.2s → 0.47s** (✅ <1s target met)
-**Test Suite: 86/86 passing | Execution time: 17.4s → 10.7s** ✅
-**Testeo Real: 653+ movimientos Supervielle procesados en <1s** ✅
+**Backend Coverage Total: 88%** ✅ | **Test Suite: 86/86 passing** ✅
+**Performance: /insights 0.47s** ✅ | **Datos: 1,776 movs / 100% categorizados** ✅
+**Categorías: /categorias page** ✅ (CRUD motor cascada sin tocar código)
 
 **Dependencias**:
 ```
@@ -150,6 +177,44 @@ Proyecciones de 3 meses con 3 escenarios.
 Health check básico.
 - **Output**: `{status: "ok"}`
 
+### GET `/api/categories`
+Estadísticas de todas las categorías (todos los períodos).
+- **Output**: `List[CategoryStatsResponse]` — `{categoria, n_movimientos, gasto, ingreso, pct_movimientos, pct_gasto, n_reglas, subcategorias[]}`
+
+### GET `/api/rules`
+Lista todas las reglas cascada activas, ordenadas por peso desc.
+- **Output**: `List[CascadaRuleResponse]` — `{id, patron, categoria, subcategoria, peso, veces_usada, activo}`
+
+### POST `/api/rules`
+Crea nueva regla. Devuelve 409 si el patrón ya existe.
+- **Input**: `{patron, categoria, subcategoria?, peso?}`
+
+### PATCH `/api/rules/{id}`
+Edita patrón, categoría, subcategoría, peso o activo de una regla.
+
+### DELETE `/api/rules/{id}`
+Soft-delete: pone `activo=0`, no borra el registro.
+
+### POST `/api/recategorize`
+Re-corre el motor cascada sobre **todos** los movimientos de la DB.
+- Llamar siempre después de crear/editar reglas.
+- **Output**: `{total, recategorizados}`
+
+### PATCH `/api/movements/{id}/categoria`
+Reasigna categoría manualmente a un movimiento individual.
+- **Input**: `{categoria, subcategoria?}` — fija `confianza=1.0`
+
+### GET `/api/summary`
+Resumen financiero de un período sin descargar movimientos.
+- **Parámetro**: `period` (YYYY-MM)
+- **Output**: `{period, ingresos_total, egresos_total, balance, transaction_count}`
+
+### GET `/api/categories/{categoria}/subcategorias`
+Stats por subcategoría para una categoría dada. Lazy — se llama on-demand al expandir en UI.
+- **Parámetro**: `{categoria}` en path (URL-encoded, ej: `Impuestos%20y%20Comisiones`)
+- **Output**: `List[SubcategoriaStatsResponse]` — `{subcategoria, n_movimientos, gasto, ingreso, pct_gasto, pct_movimientos}`
+- Porcentajes relativos al total de la categoría padre. Ordenado por gasto desc.
+
 ---
 
 ## Notas Operacionales para Importación de Datos
@@ -166,11 +231,28 @@ Health check básico.
 - Eliminar con `ROW_NUMBER() OVER PARTITION BY fecha, descripcion, monto ORDER BY id`
 
 ### Workflow de Categorización
-- **CascadaRules DEBEN crearse ANTES de categorizar movimientos**
-- Sin reglas → todo queda "Sin categorizar" (confianza 0.0)
-- Crear 12+ patrones clave (IMPUESTO, PAGO, TRANSFER, DEBIN, etc.)
-- Luego ejecutar `CategorizerService.categorize()` para cada Movimiento
-- Confianza promedio 80%+ = saludable
+- Motor cascada en `backend/src/services/categorizer.py`
+- **59 reglas activas** en tabla `cascada_rules` (desde 2026-04-15)
+- Sin categorizar: **0%** (1776/1776 movimientos categorizados)
+- UI de gestión en `/categorias` — crear/editar/desactivar reglas sin tocar código
+- Después de editar reglas: llamar `POST /api/recategorize` para aplicar a toda la DB
+
+#### Bug crítico resuelto — I.V.A. vs IVA
+El motor normaliza descripciones antes de comparar (elimina puntos):
+```python
+# "I.V.A. Percep. Resp. Inscripto" → "iva percep resp inscripto"
+desc_norm = re.sub(r'[^a-z0-9 ]', '', desc.lower())
+```
+Sin esto, `IVA` no matcheaba `I.V.A.` ni `Percepción I.V.A.`
+
+#### Categorías activas (resumen)
+- `Impuestos y Comisiones` — 67% movimientos / 5.9% del gasto (impuesto al cheque: 1 fila por movimiento)
+- `Pagos y Transferencias` — 11% movimientos / 81% del gasto
+- `Ingresos` — 8.7% movimientos
+- `Comidas y Delivery` — 8.5%
+- `Suscripciones Digitales`, `Servicios`, `Inversiones`, `Transporte`, `Entretenimiento`
+
+⚠️ El 67% en Impuestos NO significa que el 67% del dinero sea impuestos — son registros del impuesto al cheque (1 por cada operación bancaria). En monto son el 5.9%.
 
 ### Schema Base de Datos
 - Tablas en plural: `movimientos`, `import_batches`, `cascada_rules`
@@ -500,79 +582,19 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 ---
 
-## Status Dashboard — SPRINT 2 CHECKPOINT 2 COMPLETO ✅✅✅
+## 🎯 Próximos Pasos (al 2026-04-15)
 
-```
-🚀 TORO_Prime Backend: SPRINT 2 CP1 OPTIMIZADO ✅
-├─ BN-001 Parser:      ✅ 100% coverage | 653+ movs procesados
-├─ BN-002 Insights:    ✅ 95% coverage | 0.47s/lote (3.2s→0.47s 🚀)
-├─ BN-003 Forecast:    ✅ 96% coverage | 3 escenarios generados
-├─ BN-004 API:         ✅ 74% coverage | 6 endpoints + integration tests
-├─ Testing:            ✅ 86/86 tests passing (↑ from 82)
-├─ Performance:        ✅ <1s para /insights (target met)
-└─ Reports:            ✅ 100% coverage (↑ from 26%)
-
-🎨 TORO_Prime Frontend: SPRINT 2 CP2 COMPLETO ✅
-├─ Tema Sistema:       ✅ Dual-theme (Finance-First/Premium Glass)
-├─ CSS Variables:      ✅ 25+ variables definidas
-├─ ThemeToggle:        ✅ Integrado en sidebar (TEMA VISUAL)
-├─ Componentes:        ✅ 6/6 actualizados con useTheme()
-├─ Persistencia:       ✅ localStorage con validación
-├─ Transiciones:       ✅ Smooth 0.3-0.4s CSS transitions
-├─ Analytics Page:     ✅ CRITICAL FIXED - FlowChart validado + fallback UI
-├─ Insights Page:      ✅ CRITICAL FIXED - Cards responsive + line-clamp
-├─ Testing Setup:      ✅ Vitest + RTL ready para >70% coverage
-├─ Documentación:      ✅ 4 guías completas (Setup, Testing, Summary, Next Steps)
-└─ Skill System:       ✅ AG puede invocar /update-toro-docs
-
-🎨 TORO_Prime Frontend: ENLAZANDO ✅
-└─ AG conectado a http://localhost:9000/api (CORS ✅)
-```
+| Prioridad | Tarea | Contexto |
+|---|---|---|
+| 1 | **BN-008 Finalización** | Implementar estados de carga globales (`LoadingImperial`) en transiciones de página y refinar manejo de errores en `apiService`. |
+| 2 | **Auditoría de Tipos** | Sincronizar interfaces TypeScript con modelos Pydantic actualizados (especialmente en nuevos campos de Analytics). |
+| 3 | **Paginación Backend** | Evaluar migración de paginación client-side a server-side si el volumen supera los 2000 registros. |
+| 4 | **Refactorización** | Extraer componente `Pagination` de `/movimientos` para uso global. |
 
 ---
 
-*Versión: 3.1*  
-*Última actualización: 2026-04-09 (Sprint 2 CP2 Completo)*  
+*Versión: 3.3*  
+*Última actualización: 2026-04-15*  
 *Responsables: Claude (Backend) + Antigravity (Frontend)*  
-*Status: BN-001-004 ✅ COMPLETO | CP2 TEMA SISTEMA ✅ COMPLETO | BN-005-008 🚀 ENLAZANDO*  
-*Datos Reales: 1,776 movimientos Supervielle (junio-agosto 2025) | Categorización: 94% | Confianza: 83.7%*  
-*Sprint 2 CP2 Deliverables: Sistema de Temas (100%) + Documentación AG (100%) + Críticos Analytics/Insights Arreglados (100%)*
-
----
-
-## 🔧 CRITICAL FIXES — Sprint 2 CP2 (2026-04-09)
-
-### Analytics Page (src/app/analytics/page.tsx)
-**CRITICAL Issue Fixed**: FlowChart renderizaba área vacía sin validación de datos
-
-**Solución Implementada**:
-- ✅ Validación de `movements.length > 0` antes de renderizar FlowChart
-- ✅ Fallback UI (estado vacío) con icono + mensaje si no hay datos
-- ✅ Validación de `reportData` para CategoryPieChart
-- ✅ HormigaAnalysis solo renderiza si hay movimientos
-- ✅ Arreglo de error de sintaxis (cierre duplicado de condicional)
-
-**Resultado**: 
-- FlowChart ahora muestra gráfico de balance acumulado
-- Periodo mostrado correctamente (2025-08)
-- Todas las métricas (Burn Rate, Tasa de Ahorro) visibles
-- Sin errores de compilación
-
-### Insights Page (src/app/insights/page.tsx)
-**CRITICAL Issue Fixed**: Cards truncadas en vista responsive, contenido cortado
-
-**Solución Implementada**:
-- ✅ `line-clamp-3` a descripción general (Estado del Analizador)
-- ✅ `line-clamp-2` a títulos de insight cards
-- ✅ `line-clamp-4` a descripción completa de insights
-- ✅ Responsive design mejorado (md:text-xl, text-lg, etc.)
-- ✅ Padding y gaps responsive (md:gap-8, gap-6)
-- ✅ Confianza siempre visible con `whitespace-nowrap`
-- ✅ Cards clickeables (cursor-pointer)
-
-**Resultado**:
-- 24 insights cargados correctamente
-- Cards muestran contenido completo sin truncamiento
-- Confianza visible (98%, 90%, etc.)
-- Grid responsive 3 columnas en desktop
-- Sin contenido oculto en mobile/tablet
+*Status: BN-001-007 ✅ COMPLETO | BN-008 🔄 EN PROGRESO*  
+*Datos Reales: 1,776 movimientos Supervielle (jun-ago 2025) | Categorización: 100% (59 reglas) | Confianza: 83.7%*

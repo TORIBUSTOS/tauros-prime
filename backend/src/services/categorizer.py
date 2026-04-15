@@ -1,22 +1,33 @@
+import re
 import math
 from sqlalchemy.orm import Session
 from src.models.movement import Movimiento, CascadaRule
+
+
+def _normalize(text: str) -> str:
+    """Elimina puntos y normaliza para comparación. 'I.V.A.' → 'iva'"""
+    return re.sub(r'[^a-z0-9 ]', '', text.lower())
+
 
 class CategorizerService:
     @staticmethod
     def categorize(movimiento: Movimiento, db: Session) -> str:
         desc = movimiento.descripcion.lower()
-        # Determinar tipo basado en monto
+        desc_norm = _normalize(desc)  # versión sin puntos para IVA, I.V.A., etc.
+
         movimiento.tipo = "ingreso" if movimiento.monto > 0 else "egreso"
-        
+
         rules = db.query(CascadaRule).filter(CascadaRule.activo == 1).order_by(CascadaRule.peso.desc()).all()
         for rule in rules:
-            if rule.patron.lower() in desc:
+            patron = rule.patron.lower()
+            patron_norm = _normalize(patron)
+            # Match literal O match normalizado (resuelve I.V.A. vs IVA)
+            if patron in desc or (patron_norm and patron_norm in desc_norm):
                 movimiento.categoria = rule.categoria
                 movimiento.subcategoria = rule.subcategoria
                 movimiento.confianza = rule.peso
                 return rule.categoria
-        
+
         movimiento.categoria = "Sin categorizar"
         movimiento.subcategoria = "Otros"
         movimiento.confianza = 0.0

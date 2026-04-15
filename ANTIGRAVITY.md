@@ -17,6 +17,18 @@ La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando c
 
 ## Log de Trabajo (Changelog de Antigravity)
 
+### [2026-04-15] - Bloque BN-008: Paginación & Health Score Dinámico
+**Objetivo**: Optimizar el rendimiento de la bóveda de movimientos y dynamizar la auditoría de salud financiera.
+
+- **Paginación Bóveda**: Implementación de paginación client-side (25 registros/página) en `/movimientos` con controles *Imperial Tech*. Resuelve lentitud en cargas de +500 registros.
+- **Analytics (BN-007)**: 
+  - **Health Score Dinámico**: Reemplazo de mocks por lógica basada en `savingsRate`, confianza promedio de IA, disponibilidad de forecast y balance neto.
+  - **MiniKPIs**: Grid de indicadores de estado (OK/Alerta) para una auditoría visual inmediata.
+- **Estabilización de Tipos (Track B)**:
+  - **ThemeContext**: Integración de `isFtStyle` para una propagación limpia de estilos mono/sans-serif.
+  - **Bug Fix Recharts**: Resolución de error TypeScript en `CategoryPieChart` por prop `activeIndex` discontinuada.
+- **Build & Quality**: Verificación de build final exitosa (Next.js Turbopack).
+
 ### [2026-04-10] - Bloque de Estabilización y Silencio en Consola
 **Objetivo**: Resolver errores de runtime y eliminar warnings de consola para estado de producción.
 
@@ -69,6 +81,6 @@ La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando c
 
 ---
 
-*Versión: 4.0*  
-*Última actualización: 2026-04-10 (Analytics Pro & UX)*  
+*Versión: 4.1*  
+*Última actualización: 2026-04-15 (Paginación & Dynamic Score)*  
 *Responsable: Antigravity*

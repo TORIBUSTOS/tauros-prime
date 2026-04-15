@@ -71,3 +71,51 @@ class SummaryResponse(BaseModel):
     balance: float
     transaction_count: int
 
+# ── Categorías y Reglas ────────────────────────────────────────────────────
+
+class CascadaRuleResponse(BaseModel):
+    id: int
+    categoria: str
+    subcategoria: str | None = None
+    patron: str
+    peso: float
+    veces_usada: int
+    activo: int
+    class Config:
+        from_attributes = True
+
+class CascadaRuleCreate(BaseModel):
+    patron: str
+    categoria: str
+    subcategoria: str | None = None
+    peso: float = 0.85
+
+class CascadaRuleUpdate(BaseModel):
+    patron: str | None = None
+    categoria: str | None = None
+    subcategoria: str | None = None
+    peso: float | None = None
+    activo: int | None = None
+
+class CategoryStatsResponse(BaseModel):
+    categoria: str
+    n_movimientos: int
+    gasto: float
+    ingreso: float
+    pct_movimientos: float
+    pct_gasto: float
+    n_reglas: int
+    subcategorias: List[str]
+
+class RecategorizeResponse(BaseModel):
+    total: int
+    recategorizados: int
+
+class SubcategoriaStatsResponse(BaseModel):
+    subcategoria: str
+    n_movimientos: int
+    gasto: float
+    ingreso: float
+    pct_gasto: float    # % del gasto total de la categoría padre
+    pct_movimientos: float  # % de movimientos de la categoría padre
+

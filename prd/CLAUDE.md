@@ -45,8 +45,8 @@ Este proyecto **SIGUE ESTRICTAMENTE** el Protocolo TORO LAB v2:
 
 ### Communication
 - **Protocol**: REST/JSON
-- **Base URL**: `http://localhost:8000/api`
-- **CORS**: FastAPI configura para `localhost:3000`
+- **Base URL**: `http://localhost:9000/api`
+- **CORS**: FastAPI configura para `localhost:7000` (frontend)
 
 ---
 
@@ -93,9 +93,9 @@ Backend (FastAPI)
 | **003** | Forecasting 3 meses | A | Proyecciones automáticas + manual |
 | **004** | API REST | A | Endpoints OpenAPI documentados |
 | **005** | Dashboard Base | B | Layout Bento Grid, componentes base |
-| **006** | Reportes (P&L) | B | Tabla jerárquica expandible |
-| **007** | Analytics | B | Charts, KPIs, visualización de insights |
-| **008** | Integración Frontend | B | Hooks, API client, state management |
+| **006** | Reportes (P&L) | B | Tabla jerárquica expandible — endpoint `/api/reports/pl` ✅, UI en `/reportes` necesita pulido |
+| **007** | Analytics | B | FlowChart + CategoryPieChart existentes — validación + KPIs adicionales pendientes |
+| **008** | Integración Frontend | B | PeriodContext ✅, apiService ✅ — falta: paginación, loading states globales |
 
 **Dependencias**:
 ```
