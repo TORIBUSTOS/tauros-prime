@@ -1,0 +1,213 @@
+/* ========================================
+   TEMA: FINANCE-FIRST (💰)
+   Optimizado para lectura de números grandes
+   ======================================== */
+
+:root[data-theme='finance-first'],
+:root {
+  /* Tamaños de Fuente */
+  --metric-value-size: 2rem;
+  --metric-value-line-height: 1.1;
+  --metric-label-size: 0.875rem;
+  --metric-label-weight: 600;
+
+  /* Colores de Métricas */
+  --metric-value-color: #F4DBD8;
+  --metric-label-color: #C09891;
+  --metric-change-positive: #A3E635;
+  --metric-change-negative: #EF4444;
+
+  /* Imperial Tech Palette */
+  --imperial-gold: #D4AF37;
+  --imperial-bronze: #C09891;
+  --imperial-silver: #A8A9AD;
+  --imperial-accent: var(--imperial-bronze);
+
+  /* Font Family */
+  --metric-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Card Styling */
+  --card-bg: rgba(30, 31, 32, 0.4);
+  --card-border: 1px solid rgba(255, 255, 255, 0.08);
+  --card-padding: 2rem;
+  --card-gap: 1rem;
+
+  /* Spacing */
+  --section-gap: 2rem;
+  --component-gap: 1rem;
+
+  /* Shadows */
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --card-shadow-hover: 0 8px 24px rgba(192, 152, 145, 0.1);
+
+  /* Transitions */
+  --transition-duration: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   TEMA: PREMIUM-GLASS (✨)
+   Diseño estético con glassmorphism
+   ======================================== */
+
+:root[data-theme='premium-glass'] {
+  /* Tamaños de Fuente */
+  --metric-value-size: 1.75rem;
+  --metric-value-line-height: 1.2;
+  --metric-label-size: 0.75rem;
+  --metric-label-weight: 500;
+
+  /* Colores de Métricas */
+  --metric-value-color: #F4DBD8;
+  --metric-label-color: rgba(190, 168, 167, 0.8);
+  --metric-change-positive: #A3E635;
+  --metric-change-negative: #EF4444;
+
+  /* Imperial Tech Palette */
+  --imperial-gold: #E5C366;
+  --imperial-bronze: #C09891;
+  --imperial-silver: #A8A9AD;
+  --imperial-accent: var(--imperial-gold);
+
+  /* Font Family */
+  --metric-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Card Styling */
+  --card-bg: rgba(30, 31, 32, 0.5);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  --card-padding: 1.75rem;
+  --card-gap: 1.25rem;
+
+  /* Spacing */
+  --section-gap: 2.5rem;
+  --component-gap: 1.25rem;
+
+  /* Shadows */
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 12px 48px rgba(192, 152, 145, 0.15);
+
+  /* Transitions */
+  --transition-duration: 0.4s;
+  --transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========================================
+   COMPONENTES TEMÁTICOS
+   ======================================== */
+
+/* MetricCard Base */
+.metric-card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: 0.75rem;
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  transition: all var(--transition-duration) var(--transition-timing);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.metric-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(192, 152, 145, 0.3);
+}
+
+.metric-value {
+  font-size: var(--metric-value-size);
+  line-height: var(--metric-value-line-height);
+  font-weight: 700;
+  font-family: var(--metric-font-family);
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metric-label {
+  font-size: var(--metric-label-size);
+  font-weight: var(--metric-label-weight);
+  color: var(--metric-label-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.metric-change {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.metric-change.positive {
+  color: var(--metric-change-positive);
+}
+
+.metric-change.negative {
+  color: var(--metric-change-negative);
+}
+
+/* Theme-aware containers */
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.component-grid {
+  display: grid;
+  gap: var(--component-gap);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color var(--transition-duration) var(--transition-timing),
+              color var(--transition-duration) var(--transition-timing),
+              border-color var(--transition-duration) var(--transition-timing),
+              box-shadow var(--transition-duration) var(--transition-timing);
+}
+
+/* Prevent transitions on theme toggle button itself */
+[role='button'][title*='Cambiar'] {
+  transition: none !important;
+}
+
+/* ========================================
+   DARK MODE ENHANCEMENTS
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='finance-first'],
+  :root {
+    --card-bg: rgba(20, 21, 22, 0.6);
+  }
+
+  :root[data-theme='premium-glass'] {
+    --card-bg: rgba(20, 21, 22, 0.7);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  :root[data-theme='finance-first'],
+  :root {
+    --metric-value-color: #000000;
+    --metric-label-color: #333333;
+    --card-bg: #ffffff;
+    --card-border: 1px solid #e0e0e0;
+  }
+
+  :root[data-theme='premium-glass'] {
+    --metric-value-color: #1a1a1a;
+    --metric-label-color: #555555;
+    --card-bg: #ffffff;
+    --card-border: 1px solid #e0e0e0;
+  }
+}
