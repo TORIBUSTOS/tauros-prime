@@ -67,8 +67,8 @@ const FlowChart: React.FC<FlowChartProps> = ({ movements, period }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-[#131314]/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl min-w-[180px]">
-          <p className="text-[10px] font-black text-imperial-text-mute/40 uppercase tracking-[0.2em] mb-3 border-b border-white/5 pb-2">
+        <div className="bg-surface/90 backdrop-blur-xl border border-white/10 p-4 rounded-[var(--radius-card)] shadow-2xl min-w-[180px]">
+          <p className="text-[10px] font-black text-muted/40 uppercase tracking-[0.2em] mb-3 border-b border-white/5 pb-2">
             Día {data.dia} • {data.date}
           </p>
           <div className="flex flex-col gap-2.5">
@@ -85,8 +85,8 @@ const FlowChart: React.FC<FlowChartProps> = ({ movements, period }) => {
               </span>
             </div>
             <div className="mt-1 pt-2 border-t border-white/5 flex items-center justify-between">
-              <span className="text-[9px] font-black text-imperial-bronze uppercase tracking-[0.2em]">Balance Acum.</span>
-              <span className="text-sm font-black text-imperial-text-prime tabular-nums">
+              <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Balance Acum.</span>
+              <span className="text-sm font-black text-prime tabular-nums">
                 ${data.balance.toLocaleString()}
               </span>
             </div>
@@ -100,22 +100,22 @@ const FlowChart: React.FC<FlowChartProps> = ({ movements, period }) => {
   return (
     <BaseCard className="w-full h-full flex flex-col group overflow-hidden">
       <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none">
-        <Activity size={120} className="text-imperial-bronze" />
+        <Activity size={120} className="text-primary" />
       </div>
 
       <div className="flex justify-between items-start relative z-10 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Activity size={16} className="text-imperial-bronze" />
-            <h3 className="text-imperial-text-prime font-black text-xs uppercase tracking-[0.2em]">Evolución Balance</h3>
+            <Activity size={16} className="text-primary" />
+            <h3 className="text-prime font-black text-xs uppercase tracking-[0.2em]">Evolución Balance</h3>
           </div>
-          <p className="text-imperial-text-mute/40 text-[9px] font-bold uppercase tracking-[0.3em]">Flujo de capital acumulado en el periodo</p>
+          <p className="text-muted/40 text-[9px] font-bold uppercase tracking-[0.3em]">Flujo de capital acumulado en el periodo</p>
         </div>
         
         <div className="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-xl border border-white/5">
            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-imperial-accent shadow-[0_0_8px_rgba(192,152,145,0.4)]"></div>
-              <span className="text-[9px] font-black text-imperial-text-prime uppercase tracking-widest">Neto General</span>
+              <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--p-primary-rgb),0.4)]"></div>
+              <span className="text-[9px] font-black text-prime uppercase tracking-widest">Neto General</span>
            </div>
         </div>
       </div>
@@ -126,8 +126,8 @@ const FlowChart: React.FC<FlowChartProps> = ({ movements, period }) => {
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--imperial-accent)" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="var(--imperial-accent)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
@@ -145,12 +145,12 @@ const FlowChart: React.FC<FlowChartProps> = ({ movements, period }) => {
                 tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, fontWeight: 700 }}
                 tickFormatter={(value) => `$${(value/1000).toFixed(0)}k`}
               />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(192,152,145,0.2)', strokeWidth: 1 }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(var(--p-primary-rgb),0.2)', strokeWidth: 1 }} />
               <ReferenceLine y={0} stroke="rgba(255,255,255,0.05)" strokeWidth={1} />
               <Area 
                 type="monotone" 
                 dataKey="balance" 
-                stroke="var(--imperial-accent)" 
+                stroke="var(--primary)" 
                 strokeWidth={3}
                 fillOpacity={1} 
                 fill="url(#colorBalance)" 

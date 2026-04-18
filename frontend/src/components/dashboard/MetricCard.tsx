@@ -34,17 +34,13 @@ const MetricCard: React.FC<MetricCardProps> = ({
     ? (value >= 0 ? 'text-success' : 'text-error')
     : '';
 
-  const finalValueColorClass = valueClassName || semanticColorClass || 'text-imperial-text-prime';
-
-  // Theme-aware font sizing
-  const isFtStyle = currentTheme === 'finance-first';
-  const valueSizeClass = isFtStyle ? 'text-[3.5rem]' : 'text-3xl';
+  const finalValueColorClass = valueClassName || semanticColorClass || 'text-foreground';
 
   return (
     <BaseCard
       accent={accent}
       onClick={onClick}
-      className={`metric-card h-full flex flex-col justify-center transition-all duration-300 ${className}`}
+      className={`metric-card h-full flex flex-col justify-center ${className}`}
       hoverable={!!onClick}
     >
       <div className="flex flex-col h-full">
@@ -53,7 +49,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </span>
 
         <div className="flex items-baseline gap-3">
-          <h2 className={`metric-value ${isFtStyle ? 'font-mono' : 'font-sans'} ${finalValueColorClass}`}>
+          <h2 className={`metric-value ${finalValueColorClass}`}>
             {value}
           </h2>
           {trend !== undefined && (
@@ -68,8 +64,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </div>
 
         {subtitle && (
-          <p className="metric-subtitle text-xs text-imperial-text-muted/60 mt-3 font-medium flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-imperial-bronze/40" />
+          <p className="metric-subtitle text-xs text-text-muted/60 mt-3 font-medium flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full bg-primary/40" />
             {subtitle}
           </p>
         )}
@@ -77,9 +73,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
       {/* Decorative Accent Glow */}
       {accent !== 'none' && (
-        <div className={`absolute top-0 left-0 w-1 h-full opacity-60 transition-colors duration-300 ${
-          accent === 'bronze' ? 'bg-imperial-bronze shadow-[0_0_10px_rgba(192,152,145,0.4)]' :
-          accent === 'gold' ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)]' :
+        <div className={`absolute top-0 left-0 w-1 h-full transition-colors duration-300 ${
+          accent === 'bronze' ? 'bg-primary' :
+          accent === 'gold' ? 'bg-gold' :
           ''
         }`} />
       )}

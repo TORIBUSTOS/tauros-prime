@@ -32,20 +32,20 @@ function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; ha
 
   if (!hasSubcats) return (
     <div className="border-t border-white/5 px-5 py-3 bg-black/20">
-      <p className="text-[9px] text-imperial-text-muted/30 italic">Sin subcategorías definidas</p>
+      <p className="text-[9px] text-text-muted/30 italic">Sin subcategorías definidas</p>
     </div>
   );
 
   if (loading) return (
     <div className="border-t border-white/5 px-5 py-3 bg-black/20 flex items-center gap-2">
-      <Loader2 size={12} className="animate-spin text-imperial-bronze/40" />
-      <span className="text-[9px] text-imperial-text-muted/30">Cargando subcategorías...</span>
+      <Loader2 size={12} className="animate-spin text-primary/40" />
+      <span className="text-[9px] text-text-muted/30">Cargando subcategorías...</span>
     </div>
   );
 
   if (!subs || subs.length === 0) return (
     <div className="border-t border-white/5 px-5 py-3 bg-black/20">
-      <p className="text-[9px] text-imperial-text-muted/30 italic">Sin datos de subcategorías</p>
+      <p className="text-[9px] text-text-muted/30 italic">Sin datos de subcategorías</p>
     </div>
   );
 
@@ -55,38 +55,38 @@ function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; ha
     <div className="border-t border-white/5 bg-black/20">
       {/* Header */}
       <div className="flex items-center gap-4 px-5 py-2 border-b border-white/[0.03]">
-        <span className="text-[9px] font-black text-imperial-bronze/50 uppercase tracking-[0.3em]">Subcategoría</span>
+        <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em]">Subcategoría</span>
         <div className="flex-1" />
-        <span className="text-[9px] font-black text-imperial-bronze/50 uppercase tracking-[0.3em] hidden sm:block w-24 text-right">Movs</span>
-        <span className="text-[9px] font-black text-imperial-bronze/50 uppercase tracking-[0.3em] hidden sm:block w-12 text-right">%Movs</span>
-        <span className="text-[9px] font-black text-imperial-bronze/50 uppercase tracking-[0.3em] w-28 text-right">Gasto</span>
-        <span className="text-[9px] font-black text-imperial-bronze/50 uppercase tracking-[0.3em] w-12 text-right">%$Cat</span>
+        <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em] hidden sm:block w-24 text-right">Movs</span>
+        <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em] hidden sm:block w-12 text-right">%Movs</span>
+        <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em] w-28 text-right">Gasto</span>
+        <span className="text-[9px] font-black text-primary/50 uppercase tracking-[0.3em] w-12 text-right">%$Cat</span>
       </div>
 
       {/* Rows */}
       {subs.map((sub, i) => (
         <div key={sub.subcategoria} className={`flex items-center gap-4 px-5 py-2.5 ${i < subs.length - 1 ? 'border-b border-white/[0.02]' : ''} hover:bg-white/[0.02] transition-colors`}>
           {/* Rank dot */}
-          <div className="w-1 h-1 rounded-full bg-imperial-bronze/30 shrink-0" />
+          <div className="w-1 h-1 rounded-full bg-primary/30 shrink-0" />
 
           {/* Name + bar */}
           <div className="flex-1 min-w-0 flex items-center gap-3">
-            <span className="text-[11px] font-black text-imperial-text-prime/80 uppercase tracking-tight truncate">
+            <span className="text-[11px] font-black text-text-prime/80 uppercase tracking-tight truncate">
               {sub.subcategoria}
             </span>
             <div className="hidden md:block flex-1 max-w-[8rem] bg-white/5 h-1 rounded-full overflow-hidden">
               <div
-                className="h-full bg-imperial-bronze/50 rounded-full transition-all duration-700"
+                className="h-full bg-primary/50 rounded-full transition-all duration-700"
                 style={{ width: `${(sub.gasto / maxGasto) * 100}%` }}
               />
             </div>
           </div>
 
           {/* Stats */}
-          <span className="text-[11px] font-black text-imperial-text-muted/50 tabular-nums hidden sm:block w-24 text-right">{sub.n_movimientos.toLocaleString('es-AR')}</span>
-          <span className="text-[11px] text-imperial-text-muted/30 tabular-nums hidden sm:block w-12 text-right">{sub.pct_movimientos}%</span>
+          <span className="text-[11px] font-black text-text-muted/50 tabular-nums hidden sm:block w-24 text-right">{sub.n_movimientos.toLocaleString('es-AR')}</span>
+          <span className="text-[11px] text-text-muted/30 tabular-nums hidden sm:block w-12 text-right">{sub.pct_movimientos}%</span>
           <span className="text-[11px] font-black text-error tabular-nums w-28 text-right">{fmt(sub.gasto)}</span>
-          <span className="text-[11px] font-black text-imperial-bronze tabular-nums w-12 text-right">{sub.pct_gasto}%</span>
+          <span className="text-[11px] font-black text-primary tabular-nums w-12 text-right">{sub.pct_gasto}%</span>
         </div>
       ))}
     </div>
@@ -106,22 +106,22 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
   return (
     <div className="space-y-2">
       {categories.map(cat => (
-        <div key={cat.categoria} className="rounded-xl border border-white/5 bg-imperial-surface/30 overflow-hidden">
+        <div key={cat.categoria} className="rounded-xl border border-white/5 bg-surface/30 overflow-hidden">
           <button
             onClick={() => toggle(cat.categoria)}
             className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors text-left"
           >
-            <ChevronRight size={14} className={`text-imperial-bronze/40 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
+            <ChevronRight size={14} className={`text-primary/40 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
 
             {/* Nombre */}
-            <span className="flex-1 text-[12px] font-black text-imperial-text-prime uppercase tracking-tight">
+            <span className="flex-1 text-[12px] font-black text-text-prime uppercase tracking-tight">
               {cat.categoria}
             </span>
 
             {/* Barra */}
             <div className="hidden md:block w-32 bg-white/5 h-1.5 rounded-full overflow-hidden">
               <div
-                className="h-full bg-imperial-bronze rounded-full"
+                className="h-full bg-primary rounded-full"
                 style={{ width: `${(cat.gasto / maxGasto) * 100}%` }}
               />
             </div>
@@ -129,29 +129,29 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
             {/* Stats */}
             <div className="flex items-center gap-6 shrink-0">
               <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-imperial-text-muted/40 uppercase tracking-widest">Movs</p>
-                <p className="text-[11px] font-black text-imperial-text-prime tabular-nums">{cat.n_movimientos}</p>
+                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Movs</p>
+                <p className="text-[11px] font-black text-text-prime tabular-nums">{cat.n_movimientos}</p>
               </div>
               <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-imperial-text-muted/40 uppercase tracking-widest">%Movs</p>
-                <p className="text-[11px] font-black text-imperial-text-muted/60 tabular-nums">{cat.pct_movimientos}%</p>
+                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">%Movs</p>
+                <p className="text-[11px] font-black text-text-muted/60 tabular-nums">{cat.pct_movimientos}%</p>
               </div>
               <div className="text-right">
-                <p className="text-[9px] text-imperial-text-muted/40 uppercase tracking-widest">Gasto</p>
+                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Gasto</p>
                 <p className="text-[11px] font-black text-error tabular-nums">{fmt(cat.gasto)}</p>
               </div>
               <div className="text-right w-14">
-                <p className="text-[9px] text-imperial-text-muted/40 uppercase tracking-widest">%$</p>
-                <p className="text-[11px] font-black text-imperial-bronze tabular-nums">{cat.pct_gasto}%</p>
+                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">%$</p>
+                <p className="text-[11px] font-black text-primary tabular-nums">{cat.pct_gasto}%</p>
               </div>
               <div className="text-right hidden md:block w-12">
-                <p className="text-[9px] text-imperial-text-muted/40 uppercase tracking-widest">Reglas</p>
-                <p className="text-[11px] font-black text-imperial-text-muted/50 tabular-nums">{cat.n_reglas}</p>
+                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Reglas</p>
+                <p className="text-[11px] font-black text-text-muted/50 tabular-nums">{cat.n_reglas}</p>
               </div>
               {/* Subcats badge */}
               {cat.subcategorias.length > 0 && (
                 <div className="hidden md:flex items-center gap-1 shrink-0">
-                  <span className="text-[9px] font-black text-imperial-bronze/40 bg-imperial-bronze/5 border border-imperial-bronze/10 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[9px] font-black text-primary/40 bg-primary/5 border border-primary/10 px-1.5 py-0.5 rounded-full">
                     {cat.subcategorias.length} sub
                   </span>
                 </div>
@@ -159,7 +159,6 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
             </div>
           </button>
 
-          {/* Drill-down: lazy-loaded per-subcategory stats */}
           {expanded === cat.categoria && (
             <SubcategoryDrilldown
               categoria={cat.categoria}
@@ -255,18 +254,18 @@ function TabMotor({
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Buscar patrón o categoría..."
-          className="flex-1 bg-imperial-surface/40 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-imperial-text-prime placeholder:text-imperial-text-muted/20 outline-none focus:border-imperial-bronze/40 transition-colors"
+          className="flex-1 bg-surface/40 border border-white/5 rounded-xl px-4 py-2.5 text-sm text-text-prime placeholder:text-text-muted/20 outline-none focus:border-primary/40 transition-colors"
         />
         <button
           onClick={() => setShowNew(!showNew)}
-          className="flex items-center gap-2 bg-imperial-bronze text-black text-[10px] font-black px-4 py-2.5 rounded-xl uppercase tracking-widest hover:bg-imperial-bronze/80 transition-colors"
+          className="flex items-center gap-2 bg-primary text-black text-[10px] font-black px-4 py-2.5 rounded-xl uppercase tracking-widest hover:bg-primary/80 transition-colors"
         >
           <Plus size={14} /> Nueva Regla
         </button>
         <button
           onClick={handleRecategorize}
           disabled={recatLoading}
-          className="flex items-center gap-2 bg-white/5 text-imperial-text-muted/60 text-[10px] font-black px-4 py-2.5 rounded-xl uppercase tracking-widest border border-white/10 hover:border-imperial-bronze/30 hover:text-imperial-text-prime transition-all disabled:opacity-40"
+          className="flex items-center gap-2 bg-white/5 text-text-muted/60 text-[10px] font-black px-4 py-2.5 rounded-xl uppercase tracking-widest border border-white/10 hover:border-primary/30 hover:text-text-prime transition-all disabled:opacity-40"
         >
           <RefreshCw size={14} className={recatLoading ? 'animate-spin' : ''} />
           Re-categorizar Todo
@@ -275,24 +274,24 @@ function TabMotor({
 
       {/* Formulario nueva regla */}
       {showNew && (
-        <div className="p-4 rounded-xl border border-imperial-bronze/20 bg-imperial-bronze/5 space-y-3">
-          <p className="text-[10px] font-black text-imperial-bronze uppercase tracking-widest">Nueva Regla</p>
+        <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+          <p className="text-[10px] font-black text-primary uppercase tracking-widest">Nueva Regla</p>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <input value={newRule.patron} onChange={e => setNewRule(p => ({ ...p, patron: e.target.value }))}
-              placeholder="Patrón (ej: AFIP)" className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-imperial-text-prime outline-none focus:border-imperial-bronze/50" />
+              placeholder="Patrón (ej: AFIP)" className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-prime outline-none focus:border-primary/50" />
             <select value={newRule.categoria} onChange={e => setNewRule(p => ({ ...p, categoria: e.target.value }))}
-              className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-imperial-text-prime outline-none focus:border-imperial-bronze/50">
+              className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-prime outline-none focus:border-primary/50">
               <option value="">Categoría...</option>
               {catNames.map(c => <option key={c} value={c}>{c}</option>)}
               <option value="__nueva__">+ Nueva categoría</option>
             </select>
             <input value={newRule.subcategoria ?? ''} onChange={e => setNewRule(p => ({ ...p, subcategoria: e.target.value }))}
-              placeholder="Subcategoría (opcional)" className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-imperial-text-prime outline-none focus:border-imperial-bronze/50" />
+              placeholder="Subcategoría (opcional)" className="col-span-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-prime outline-none focus:border-primary/50" />
             <div className="flex gap-2">
               <input type="number" min={0.5} max={0.99} step={0.01} value={newRule.peso}
                 onChange={e => setNewRule(p => ({ ...p, peso: parseFloat(e.target.value) }))}
-                className="w-20 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-imperial-text-prime outline-none focus:border-imperial-bronze/50" />
-              <button onClick={handleCreate} className="flex-1 bg-imperial-bronze text-black text-[10px] font-black rounded-lg px-3 py-2 uppercase tracking-widest hover:bg-imperial-bronze/80 transition-colors">
+                className="w-20 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-prime outline-none focus:border-primary/50" />
+              <button onClick={handleCreate} className="flex-1 bg-primary text-black text-[10px] font-black rounded-lg px-3 py-2 uppercase tracking-widest hover:bg-primary/80 transition-colors">
                 Guardar
               </button>
             </div>
@@ -300,18 +299,18 @@ function TabMotor({
           {newRule.categoria === '__nueva__' && (
             <input autoFocus onChange={e => setNewRule(p => ({ ...p, categoria: e.target.value }))}
               placeholder="Nombre de la nueva categoría"
-              className="w-full bg-black/30 border border-imperial-bronze/30 rounded-lg px-3 py-2 text-sm text-imperial-text-prime outline-none" />
+              className="w-full bg-black/30 border border-primary/30 rounded-lg px-3 py-2 text-sm text-text-prime outline-none" />
           )}
         </div>
       )}
 
       {/* Tabla de reglas */}
-      <div className="rounded-xl border border-white/5 bg-imperial-surface/20 overflow-hidden">
+      <div className="rounded-xl border border-white/5 bg-surface/20 overflow-hidden">
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-white/5 bg-white/[0.02]">
               {['Patrón', 'Categoría', 'Subcategoría', 'Peso', 'Usos', ''].map(h => (
-                <th key={h} className="px-4 py-3 text-[9px] font-black text-imperial-bronze uppercase tracking-[0.3em]">{h}</th>
+                <th key={h} className="px-4 py-3 text-[9px] font-black text-primary uppercase tracking-[0.3em]">{h}</th>
               ))}
             </tr>
           </thead>
@@ -322,48 +321,48 @@ function TabMotor({
                   <>
                     <td className="px-4 py-2">
                       <input value={editData.patron ?? rule.patron} onChange={e => setEditData(p => ({ ...p, patron: e.target.value }))}
-                        className="w-full bg-black/30 border border-imperial-bronze/30 rounded px-2 py-1 text-xs text-imperial-text-prime outline-none" />
+                        className="w-full bg-black/30 border border-primary/30 rounded px-2 py-1 text-xs text-text-prime outline-none" />
                     </td>
                     <td className="px-4 py-2">
                       <select value={editData.categoria ?? rule.categoria} onChange={e => setEditData(p => ({ ...p, categoria: e.target.value }))}
-                        className="w-full bg-black/30 border border-imperial-bronze/30 rounded px-2 py-1 text-xs text-imperial-text-prime outline-none">
+                        className="w-full bg-black/30 border border-primary/30 rounded px-2 py-1 text-xs text-text-prime outline-none">
                         {catNames.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </td>
                     <td className="px-4 py-2">
                       <input value={editData.subcategoria ?? rule.subcategoria ?? ''} onChange={e => setEditData(p => ({ ...p, subcategoria: e.target.value }))}
-                        className="w-full bg-black/30 border border-imperial-bronze/30 rounded px-2 py-1 text-xs text-imperial-text-prime outline-none" />
+                        className="w-full bg-black/30 border border-primary/30 rounded px-2 py-1 text-xs text-text-prime outline-none" />
                     </td>
                     <td className="px-4 py-2">
                       <input type="number" min={0.5} max={0.99} step={0.01} value={editData.peso ?? rule.peso}
                         onChange={e => setEditData(p => ({ ...p, peso: parseFloat(e.target.value) }))}
-                        className="w-16 bg-black/30 border border-imperial-bronze/30 rounded px-2 py-1 text-xs text-imperial-text-prime outline-none" />
+                        className="w-16 bg-black/30 border border-primary/30 rounded px-2 py-1 text-xs text-text-prime outline-none" />
                     </td>
-                    <td className="px-4 py-2 text-xs text-imperial-text-muted/40">{rule.veces_usada}</td>
+                    <td className="px-4 py-2 text-xs text-text-muted/40">{rule.veces_usada}</td>
                     <td className="px-4 py-2">
                       <div className="flex gap-1">
                         <button onClick={() => handleSaveEdit(rule.id)} className="p-1.5 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors"><Check size={12} /></button>
-                        <button onClick={() => setEditId(null)} className="p-1.5 rounded-lg bg-white/5 text-imperial-text-muted/40 hover:bg-white/10 transition-colors"><X size={12} /></button>
+                        <button onClick={() => setEditId(null)} className="p-1.5 rounded-lg bg-white/5 text-text-muted/40 hover:bg-white/10 transition-colors"><X size={12} /></button>
                       </div>
                     </td>
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-3 text-xs font-black text-imperial-text-prime font-mono">{rule.patron}</td>
+                    <td className="px-4 py-3 text-xs font-black text-text-prime font-mono">{rule.patron}</td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] font-black bg-imperial-bronze/10 text-imperial-bronze px-2 py-0.5 rounded-full border border-imperial-bronze/20 uppercase tracking-wider">
+                      <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
                         {rule.categoria}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[10px] text-imperial-text-muted/40">{rule.subcategoria ?? '—'}</td>
-                    <td className="px-4 py-3 text-[11px] font-black text-imperial-text-muted/60 tabular-nums">{rule.peso.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-[11px] text-imperial-text-muted/40 tabular-nums">{rule.veces_usada}</td>
+                    <td className="px-4 py-3 text-[10px] text-text-muted/40">{rule.subcategoria ?? '—'}</td>
+                    <td className="px-4 py-3 text-[11px] font-black text-text-muted/60 tabular-nums">{rule.peso.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-[11px] text-text-muted/40 tabular-nums">{rule.veces_usada}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onClick={() => { setEditId(rule.id); setEditData({}); }}
-                          className="p-1.5 rounded-lg bg-white/5 text-imperial-text-muted/40 hover:bg-imperial-bronze/10 hover:text-imperial-bronze transition-colors"><Pencil size={12} /></button>
+                          className="p-1.5 rounded-lg bg-white/5 text-text-muted/40 hover:bg-primary/10 hover:text-primary transition-colors"><Pencil size={12} /></button>
                         <button onClick={() => handleDelete(rule.id)}
-                          className="p-1.5 rounded-lg bg-white/5 text-imperial-text-muted/40 hover:bg-error/10 hover:text-error transition-colors"><Trash2 size={12} /></button>
+                          className="p-1.5 rounded-lg bg-white/5 text-text-muted/40 hover:bg-error/10 hover:text-error transition-colors"><Trash2 size={12} /></button>
                       </div>
                     </td>
                   </>
@@ -373,10 +372,10 @@ function TabMotor({
           </tbody>
         </table>
         {filtered.length === 0 && (
-          <p className="text-center py-10 text-xs text-imperial-text-muted/30 italic">Sin reglas que coincidan</p>
+          <p className="text-center py-10 text-xs text-text-muted/30 italic">Sin reglas que coincidan</p>
         )}
       </div>
-      <p className="text-[9px] text-imperial-text-muted/30 text-right">{filtered.filter(r => r.activo === 1).length} reglas activas</p>
+      <p className="text-[9px] text-text-muted/30 text-right">{filtered.filter(r => r.activo === 1).length} reglas activas</p>
     </div>
   );
 }
@@ -418,22 +417,22 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
       <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
         <Check size={24} className="text-success" />
       </div>
-      <p className="text-sm font-black text-imperial-text-prime uppercase tracking-widest">Todo categorizado</p>
-      <p className="text-xs text-imperial-text-muted/40">No hay movimientos sin categoría</p>
+      <p className="text-sm font-black text-text-prime uppercase tracking-widest">Todo categorizado</p>
+      <p className="text-xs text-text-muted/40">No hay movimientos sin categoría</p>
     </div>
   );
 
   return (
     <div className="space-y-2">
-      <p className="text-[10px] text-imperial-text-muted/40 font-bold uppercase tracking-widest mb-4">
+      <p className="text-[10px] text-text-muted/40 font-bold uppercase tracking-widest mb-4">
         {movs.length} movimiento{movs.length !== 1 ? 's' : ''} sin categorizar
       </p>
       {movs.map(m => (
-        <div key={m.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-xl border border-white/5 bg-imperial-surface/30 hover:border-white/10 transition-colors">
+        <div key={m.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-xl border border-white/5 bg-surface/30 hover:border-white/10 transition-colors">
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-imperial-text-prime truncate">{m.descripcion}</p>
+            <p className="text-sm font-bold text-text-prime truncate">{m.descripcion}</p>
             <div className="flex gap-3 mt-1">
-              <span className="text-[10px] text-imperial-text-muted/40">{m.fecha}</span>
+              <span className="text-[10px] text-text-muted/40">{m.fecha}</span>
               <span className={`text-[11px] font-black tabular-nums ${m.monto < 0 ? 'text-error' : 'text-success'}`}>
                 {m.monto < 0 ? '-' : '+'}{Math.abs(m.monto).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
               </span>
@@ -443,7 +442,7 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
             <select
               value={assignments[m.id]?.categoria ?? ''}
               onChange={e => setAssignments(prev => ({ ...prev, [m.id]: { ...prev[m.id], categoria: e.target.value, subcategoria: '' } }))}
-              className="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-imperial-text-prime outline-none focus:border-imperial-bronze/50 transition-colors"
+              className="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-text-prime outline-none focus:border-primary/50 transition-colors"
             >
               <option value="">Categoría...</option>
               {catNames.map(c => <option key={c} value={c}>{c}</option>)}
@@ -452,12 +451,12 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
               value={assignments[m.id]?.subcategoria ?? ''}
               onChange={e => setAssignments(prev => ({ ...prev, [m.id]: { ...prev[m.id], subcategoria: e.target.value } }))}
               placeholder="Subcategoría"
-              className="w-32 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-imperial-text-prime outline-none focus:border-imperial-bronze/50 transition-colors"
+              className="w-32 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-text-prime outline-none focus:border-primary/50 transition-colors"
             />
             <button
               onClick={() => handleSave(m.id)}
               disabled={saving === m.id || !assignments[m.id]?.categoria}
-              className="p-2 rounded-lg bg-imperial-bronze/10 text-imperial-bronze hover:bg-imperial-bronze/20 transition-colors disabled:opacity-30"
+              className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30"
             >
               {saving === m.id ? <RefreshCw size={14} className="animate-spin" /> : <Check size={14} />}
             </button>
@@ -500,27 +499,27 @@ export default function CategoriasPage() {
   return (
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-2 duration-700">
       <header className="flex flex-col gap-1 pb-2 border-b border-white/5">
-        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.4em] text-imperial-bronze">
+        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.4em] text-primary">
           <Tag size={12} /> Sistema de Categorías
         </div>
-        <h1 className="text-2xl font-black tracking-tighter text-imperial-text-prime uppercase italic">
-          Gestión de <span className="text-imperial-bronze not-italic">Categorías</span>
+        <h1 className="text-2xl font-black tracking-tighter text-text-prime uppercase italic">
+          Gestión de <span className="text-primary not-italic">Categorías</span>
         </h1>
-        <p className="text-xs text-imperial-text-muted/40 font-medium">
+        <p className="text-xs text-text-muted/40 font-medium">
           Configurá el motor cascada, creá categorías y subcategorías sin tocar código.
         </p>
       </header>
 
       {/* Tabs */}
-      <div className="flex p-1 bg-imperial-surface/40 rounded-2xl border border-white/5 w-fit">
+      <div className="flex p-1 bg-surface/40 rounded-2xl border border-white/5 w-fit">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
               tab === t.id
-                ? 'bg-imperial-bronze text-black shadow-[0_0_20px_rgba(192,152,145,0.3)]'
-                : 'text-imperial-text-muted/40 hover:text-imperial-text-prime hover:bg-white/5'
+                ? 'bg-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]'
+                : 'text-text-muted/40 hover:text-text-prime hover:bg-white/5'
             }`}
           >
             {t.icon}
@@ -535,7 +534,7 @@ export default function CategoriasPage() {
       </div>
 
       {/* Content */}
-      <BaseCard className="bg-imperial-surface/20 border-white/5">
+      <div className="bg-surface/20 border border-white/5 p-6 rounded-3xl">
         {tab === 'resumen' && <TabResumen categories={categories} />}
         {tab === 'motor' && (
           <TabMotor
@@ -548,7 +547,7 @@ export default function CategoriasPage() {
           />
         )}
         {tab === 'sincategorizar' && <TabSinCategorizar categories={categories} />}
-      </BaseCard>
+      </div>
     </div>
   );
 }

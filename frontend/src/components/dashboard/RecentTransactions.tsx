@@ -16,17 +16,17 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
   const displayedMovements = limit ? movements.slice(0, limit) : movements;
 
   return (
-    <BaseCard className="transactions-container flex flex-col h-full bg-imperial-surface/40 transition-all duration-300">
+    <BaseCard className="transactions-container flex flex-col h-full bg-surface/40 transition-all duration-300">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <ReceiptText className="w-5 h-5 text-imperial-bronze" />
-          <h3 className="text-sm font-black text-imperial-text-prime uppercase tracking-widest">
+          <ReceiptText className="w-5 h-5 text-primary" />
+          <h3 className="text-sm font-black text-text-prime uppercase tracking-widest">
             Bóveda Reciente
           </h3>
         </div>
         <a 
           href="/movimientos"
-          className="text-[10px] font-black text-imperial-bronze hover:text-imperial-text-prime transition-all uppercase tracking-widest border border-imperial-bronze/20 px-3 py-1 rounded-full bg-imperial-bronze/5 hover:bg-imperial-bronze/10"
+          className="text-[10px] font-black text-primary hover:text-text-prime transition-all uppercase tracking-widest border border-primary/20 px-3 py-1 rounded-full bg-primary/5 hover:bg-primary/10"
         >
           Expediente Completo
         </a>
@@ -35,10 +35,10 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
       <div className={`transactions-list flex-1 ${!limit ? 'overflow-y-auto pr-2 custom-scrollbar' : ''}`}>
         {movements.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-3 py-10">
-            <div className="p-3 rounded-full bg-white/5 text-imperial-text-muted/20">
+            <div className="p-3 rounded-full bg-white/5 text-text-muted/20">
               <ReceiptText size={24} />
             </div>
-            <p className="text-xs text-imperial-text-muted/30 italic font-medium uppercase tracking-widest">
+            <p className="text-xs text-text-muted/30 italic font-medium uppercase tracking-widest">
               Sin movimientos registrados
             </p>
           </div>
@@ -51,7 +51,7 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
               >
                 <div className={`
                   icon-container w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110
-                  ${m.tipo === 'ingreso' ? 'ingreso bg-success/10 text-success' : 'egreso bg-white/5 text-imperial-text-muted/60'}
+                  ${m.tipo === 'ingreso' ? 'ingreso bg-success/10 text-success' : 'egreso bg-white/5 text-text-muted/60'}
                 `}>
                   {m.tipo === 'ingreso' ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
                 </div>
@@ -59,7 +59,7 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
                 <div className="transaction-info flex-1 min-w-0">
                   <div className="flex justify-between items-start gap-2">
                     <p 
-                      className="text-sm font-bold text-imperial-text-prime truncate group-hover:text-imperial-bronze transition-colors"
+                      className="text-sm font-bold text-text-prime truncate group-hover:text-primary transition-colors"
                       title={m.descripcion}
                     >
                       {m.descripcion}
@@ -71,7 +71,7 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
                   
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center gap-2">
-                      <span className="transaction-category text-[10px] font-black text-imperial-text-muted/40 uppercase tracking-widest">
+                      <span className="transaction-category text-[10px] font-black text-text-muted/40 uppercase tracking-widest">
                         {m.categoria}
                       </span>
                       {m.confianza < 0.8 && (
@@ -83,7 +83,7 @@ const RecentTransactions: React.FC<RecentTransactionsProps> = ({ movements, limi
                         </div>
                       )}
                     </div>
-                    <span className="date text-[10px] font-medium text-imperial-text-muted/30 uppercase">
+                    <span className="date text-[10px] font-medium text-text-muted/30 uppercase">
                       {new Date(m.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
                     </span>
                   </div>

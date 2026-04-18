@@ -56,21 +56,21 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
   const iconMap = {
     success: <CheckCircle2 className="text-emerald-400" size={20} />,
     error: <AlertCircle className="text-rose-400" size={20} />,
-    info: <Info className="text-imperial-accent" size={20} />,
+    info: <Info className="text-primary" size={20} />,
     warning: <AlertTriangle className="text-amber-400" size={20} />,
   };
 
   const borderMap = {
     success: 'border-emerald-500/30',
     error: 'border-rose-500/30',
-    info: 'border-imperial-accent/30',
+    info: 'border-primary/30',
     warning: 'border-amber-500/30',
   };
 
   const bgMap = {
     success: 'bg-emerald-500/5',
     error: 'bg-rose-500/5',
-    info: 'bg-imperial-accent/5',
+    info: 'bg-primary/5',
     warning: 'bg-amber-500/5',
   };
 
@@ -81,7 +81,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
       animate={{ opacity: 1, x: 0, scale: 1 }}
       exit={{ opacity: 0, x: 20, scale: 0.95 }}
       transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-      className={`pointer-events-auto relative overflow-hidden flex items-start gap-4 p-5 rounded-2xl bg-[#131314]/90 backdrop-blur-2xl border ${borderMap[type]} shadow-[0_20px_40px_rgba(0,0,0,0.4)] group`}
+      className={`pointer-events-auto relative overflow-hidden flex items-start gap-4 p-5 rounded-card bg-surface/90 backdrop-blur-2xl border ${borderMap[type]} shadow-[0_20px_40px_rgba(0,0,0,0.4)] group`}
     >
       {/* Background Glow */}
       <div className={`absolute inset-0 ${bgMap[type]} opacity-50`} />
@@ -95,11 +95,11 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
 
       <div className="relative z-10 flex-1 flex flex-col gap-1">
         {title && (
-          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-imperial-text-prime">
+          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-text-prime">
             {title}
           </h4>
         )}
-        <p className="text-[11px] font-bold text-imperial-text-mute leading-relaxed">
+        <p className="text-[11px] font-bold text-text-muted leading-relaxed">
           {message}
         </p>
       </div>
@@ -116,7 +116,7 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: () => void }) 
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0 }}
         transition={{ duration: 5, ease: "linear" }}
-        className={`absolute bottom-0 left-0 right-0 h-[2px] origin-left ${type === 'info' ? 'bg-imperial-accent' : `bg-${type === 'success' ? 'emerald' : type === 'error' ? 'rose' : 'amber'}-500/50`}`}
+        className={`absolute bottom-0 left-0 right-0 h-[2px] origin-left ${type === 'info' ? 'bg-primary' : `bg-${type === 'success' ? 'emerald' : type === 'error' ? 'rose' : 'amber'}-500/50`}`}
       />
     </motion.div>
   );

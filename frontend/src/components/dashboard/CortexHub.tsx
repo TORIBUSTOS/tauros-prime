@@ -56,17 +56,17 @@ const CortexHub: React.FC<CortexHubProps> = ({
   const hasCriticalAlert = projectedBalance < 0;
 
   return (
-    <BaseCard className="flex flex-col h-full overflow-hidden p-0 border-imperial-bronze/20 bg-black/40 backdrop-blur-3xl cortex-hub" hoverable={false}>
+    <BaseCard className="flex flex-col h-full overflow-hidden p-0 cortex-hub" hoverable={false}>
       {/* Search/Header Area */}
-      <div className="p-4 border-b border-white/5 bg-gradient-to-r from-imperial-bronze/5 to-transparent flex items-center justify-between">
+      <div className="p-4 border-b border-white/5 bg-gradient-to-r from-primary/5 to-transparent flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Cpu className="w-5 h-5 text-imperial-bronze animate-pulse" />
-            <div className="absolute inset-0 bg-imperial-bronze/20 blur-md rounded-full animate-ping" />
+            <Cpu className="w-5 h-5 text-primary animate-pulse" />
+            <div className="absolute inset-0 bg-primary/20 blur-md rounded-full animate-ping" />
           </div>
           <div>
-            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-imperial-text-prime">Cortex Intelligence Hub</h3>
-            <p className="text-[9px] font-bold text-imperial-text-muted/40 uppercase tracking-widest flex items-center gap-1.5">
+            <h3 className="text-xs font-black uppercase tracking-[0.2em] text-prime">Cortex Intelligence Hub</h3>
+            <p className="text-[9px] font-bold text-muted/40 uppercase tracking-widest flex items-center gap-1.5">
               <Radio size={8} className="text-success animate-pulse" /> {groupedInsights.length} hallazgos únicos ({insights.length} señales)
             </p>
           </div>
@@ -75,13 +75,13 @@ const CortexHub: React.FC<CortexHubProps> = ({
         <div className="flex bg-white/5 p-1 rounded-lg border border-white/10 tab-controls">
           <button 
             onClick={() => setActiveTab('hallazgos')}
-            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter transition-all ${activeTab === 'hallazgos' ? 'bg-imperial-bronze text-black shadow-lg shadow-imperial-bronze/20' : 'text-imperial-text-muted/60 hover:text-imperial-text-prime'}`}
+            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter transition-all ${activeTab === 'hallazgos' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-muted/60 hover:text-prime'}`}
           >
             Feed
           </button>
           <button 
             onClick={() => setActiveTab('alertas')}
-            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 ${activeTab === 'alertas' ? 'bg-error text-white shadow-lg shadow-error/20' : 'text-imperial-text-muted/60 hover:text-imperial-text-prime'}`}
+            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter transition-all flex items-center gap-1.5 ${activeTab === 'alertas' ? 'bg-error text-white shadow-lg shadow-error/20' : 'text-muted/60 hover:text-prime'}`}
           >
             Alertas {hasCriticalAlert && <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
           </button>
@@ -99,7 +99,7 @@ const CortexHub: React.FC<CortexHubProps> = ({
             ))}
             {groupedInsights.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center py-12 text-center opacity-30">
-                <Sparkles className="w-10 h-10 mb-3 text-imperial-bronze/50" />
+                <Sparkles className="w-10 h-10 mb-3 text-primary/50" />
                 <p className="text-xs font-black uppercase tracking-widest italic">Cortex no detectó anomalías relevantes en este ciclo</p>
               </div>
             )}
@@ -119,7 +119,7 @@ const CortexHub: React.FC<CortexHubProps> = ({
                   <span className="text-[10px] font-black uppercase tracking-widest">Análisis de Tendencia</span>
                 </div>
                 <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full w-2/3 bg-imperial-bronze" />
+                  <div className="h-full w-2/3 bg-primary" />
                 </div>
              </div>
           </div>
@@ -128,18 +128,18 @@ const CortexHub: React.FC<CortexHubProps> = ({
 
       {/* Footer / Console Stats */}
       <div className="p-3 border-t border-white/5 bg-black/20 flex items-center justify-between hub-footer">
-        <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-tighter text-imperial-text-muted/40">
+        <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-tighter text-muted/40">
           <div className="flex items-center gap-1.5">
-            <Zap size={10} className="text-imperial-bronze" />
-            Confidence: <span className="text-imperial-text-prime">{(confidence * 100).toFixed(1)}%</span>
+            <Zap size={10} className="text-primary" />
+            Confidence: <span className="text-prime">{(confidence * 100).toFixed(1)}%</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar size={10} />
-            Scan: <span className="text-imperial-text-prime">Every 24h</span>
+            Scan: <span className="text-prime">Every 24h</span>
           </div>
         </div>
         
-        <button className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-imperial-bronze hover:underline transition-all">
+        <button className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary hover:underline transition-all">
           Optimizar <ChevronRight size={10} />
         </button>
       </div>
@@ -152,11 +152,11 @@ const CortexHub: React.FC<CortexHubProps> = ({
           background: rgba(255, 255, 255, 0.02);
         }
         .intelligence-stream::-webkit-scrollbar-thumb {
-          background: rgba(212, 175, 55, 0.1);
+          background: rgba(var(--p-primary-rgb), 0.1);
           border-radius: 10px;
         }
         .intelligence-stream::-webkit-scrollbar-thumb:hover {
-          background: rgba(212, 175, 55, 0.3);
+          background: rgba(var(--p-primary-rgb), 0.3);
         }
       `}</style>
     </BaseCard>

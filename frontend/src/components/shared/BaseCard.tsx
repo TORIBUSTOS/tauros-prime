@@ -19,20 +19,22 @@ const BaseCard: React.FC<BaseCardProps> = ({
 }) => {
   const accentStyles = {
     none: 'border-white/5',
-    bronze: 'border-imperial-bronze/20 ring-1 ring-imperial-bronze/10',
-    gold: 'border-amber-500/20 ring-1 ring-amber-500/10',
-    success: 'border-success/20 ring-1 ring-success/10',
+    bronze: 'border-primary/40 ring-1 ring-primary/20',
+    gold: 'border-gold/40 ring-1 ring-gold/20',
+    success: 'border-success/40 ring-1 ring-success/20',
   };
 
   const hoverStyles = hoverable || onClick
-    ? 'hover:bg-white/10 hover:border-white/10 hover:translate-y-[-2px] cursor-pointer transition-all duration-300'
+    ? 'hover:bg-white/[0.08] hover:translate-y-[-4px] cursor-pointer'
     : '';
 
   return (
     <div 
       onClick={onClick}
       className={`
-        glass-panel rim-light rounded-2xl p-5 relative overflow-hidden
+        glass-panel rim-light rounded-card p-6 relative overflow-hidden
+        transition-all duration-[var(--t-transition-duration)] ease-[var(--t-transition-timing)]
+        shadow-[var(--t-shadow-card)] hover:shadow-[var(--t-shadow-card-hover)]
         ${accentStyles[accent]}
         ${hoverStyles}
         ${className}
@@ -42,8 +44,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
       {accent !== 'none' && (
         <div className={`
           absolute -top-12 -left-12 w-24 h-24 blur-[40px] opacity-20 pointer-events-none rounded-full
-          ${accent === 'bronze' ? 'bg-imperial-bronze' : ''}
-          ${accent === 'gold' ? 'bg-amber-400' : ''}
+          ${accent === 'bronze' ? 'bg-primary' : ''}
+          ${accent === 'gold' ? 'bg-gold' : ''}
           ${accent === 'success' ? 'bg-success' : ''}
         `} />
       )}

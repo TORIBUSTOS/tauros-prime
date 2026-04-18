@@ -13,7 +13,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-imperial-text-prime transition-all duration-300"
+      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium text-text-prime transition-all duration-300"
       title={`Cambiar a ${currentTheme === 'finance-first' ? 'Premium Glass' : 'Finance-First'}`}
     >
       <span>{currentTheme === 'finance-first' ? '💰' : '✨'}</span>

@@ -14,12 +14,12 @@ interface TopCategoriasProps {
 type ViewMode = 'monto' | 'count';
 
 const ACCENT_COLORS = [
-  'bg-imperial-bronze',
-  'bg-imperial-gold',
-  'bg-amber-600',
-  'bg-stone-500',
-  'bg-zinc-500',
-  'bg-neutral-600',
+  'bg-primary',
+  'bg-gold',
+  'bg-slate-400',
+  'bg-primary/50',
+  'bg-gold/50',
+  'bg-slate-600',
 ];
 
 const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
@@ -62,11 +62,11 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
     : (categorias[0]?.count ?? 1);
 
   return (
-    <BaseCard className="flex flex-col h-full bg-imperial-surface/40">
+    <BaseCard className="flex flex-col h-full bg-surface/40">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-2">
-          <BarChart2 className="w-5 h-5 text-imperial-bronze" />
-          <h3 className="text-sm font-black text-imperial-text-prime uppercase tracking-widest">
+          <BarChart2 className="w-5 h-5 text-primary" />
+          <h3 className="text-sm font-black text-text-prime uppercase tracking-widest">
             Top Categorías
           </h3>
         </div>
@@ -78,8 +78,8 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
               title="Ordenar por monto"
               className={`flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider transition-all duration-200 ${
                 viewMode === 'monto'
-                  ? 'bg-imperial-bronze/20 text-imperial-bronze shadow-sm'
-                  : 'text-imperial-text-muted/30 hover:text-imperial-text-muted/60'
+                  ? 'bg-primary/20 text-primary shadow-sm'
+                  : 'text-text-muted/30 hover:text-text-muted/60'
               }`}
             >
               <DollarSign size={10} />
@@ -90,8 +90,8 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
               title="Ordenar por cantidad"
               className={`flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-wider transition-all duration-200 ${
                 viewMode === 'count'
-                  ? 'bg-imperial-bronze/20 text-imperial-bronze shadow-sm'
-                  : 'text-imperial-text-muted/30 hover:text-imperial-text-muted/60'
+                  ? 'bg-primary/20 text-primary shadow-sm'
+                  : 'text-text-muted/30 hover:text-text-muted/60'
               }`}
             >
               <Hash size={10} />
@@ -100,7 +100,7 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
           </div>
           <button
             onClick={() => router.push('/movimientos')}
-            className="text-[10px] font-black text-imperial-bronze hover:text-imperial-text-prime transition-all uppercase tracking-widest border border-imperial-bronze/20 px-3 py-1 rounded-full bg-imperial-bronze/5 hover:bg-imperial-bronze/10"
+            className="text-[10px] font-black text-primary hover:text-text-prime transition-all uppercase tracking-widest border border-primary/20 px-3 py-1 rounded-full bg-primary/5 hover:bg-primary/10"
           >
             Ver Todo
           </button>
@@ -109,10 +109,10 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
 
       {categorias.length === 0 ? (
         <div className="flex flex-col items-center justify-center flex-1 gap-3 py-10">
-          <div className="p-3 rounded-full bg-white/5 text-imperial-text-muted/20">
+          <div className="p-3 rounded-full bg-white/5 text-text-muted/20">
             <BarChart2 size={24} />
           </div>
-          <p className="text-xs text-imperial-text-muted/30 italic font-medium uppercase tracking-widest">
+          <p className="text-xs text-text-muted/30 italic font-medium uppercase tracking-widest">
             Sin egresos en este período
           </p>
         </div>
@@ -129,17 +129,17 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
                 className="group flex items-center gap-3 text-left hover:bg-white/[0.02] rounded-xl p-2 -mx-2 transition-all duration-200"
               >
                 {/* Rank */}
-                <span className="text-[10px] font-black text-imperial-text-muted/30 w-4 shrink-0 text-center">
+                <span className="text-[10px] font-black text-text-muted/30 w-4 shrink-0 text-center">
                   {i + 1}
                 </span>
 
                 {/* Name + bar */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-[11px] font-black text-imperial-text-prime uppercase tracking-tight truncate group-hover:text-imperial-bronze transition-colors">
+                    <span className="text-[11px] font-black text-text-prime uppercase tracking-tight truncate group-hover:text-primary transition-colors">
                       {cat.nombre}
                     </span>
-                    <span className="text-[10px] font-black text-error shrink-0 ml-2 tabular-nums">
+                    <span className="text-[10px] font-black text-error shrink-0 ml-2 font-currency tabular-nums">
                       {viewMode === 'monto' 
                         ? `-${cat.monto.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}`
                         : `${cat.count} movs`
@@ -156,10 +156,10 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
 
                 {/* % */}
                 <div className="flex items-center gap-1 shrink-0">
-                  <span className="text-[10px] font-black text-imperial-text-muted/40 tabular-nums">
+                  <span className="text-[10px] font-black text-text-muted/40 tabular-nums">
                     {currentPct.toFixed(1)}%
                   </span>
-                  <ArrowUpRight size={10} className="text-imperial-bronze/30 group-hover:text-imperial-bronze transition-colors" />
+                  <ArrowUpRight size={10} className="text-primary/30 group-hover:text-primary transition-colors" />
                 </div>
               </button>
             );
@@ -167,10 +167,10 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
 
           {/* Total footer */}
           <div className="mt-2 pt-3 border-t border-white/5 flex justify-between items-center">
-            <span className="text-[9px] font-black text-imperial-text-muted/30 uppercase tracking-widest">
+            <span className="text-[9px] font-black text-text-muted/30 uppercase tracking-widest">
               {viewMode === 'monto' ? `Total Egresos ${period}` : `Total Movimientos ${period}`}
             </span>
-            <span className="text-[11px] font-black text-error tabular-nums">
+            <span className="text-[11px] font-black text-error font-currency tabular-nums">
               {viewMode === 'monto'
                 ? `-${totalEgresos.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}`
                 : `${totalCount} movs`
