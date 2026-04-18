@@ -1,9 +1,10 @@
 /* ==========================================================================
    THEME COMPONENT STYLES
-   Consumes design tokens from tokens.css
+   Consumes design tokens from tokens.css — no hardcoded colors here.
    ========================================================================== */
 
-/* MetricCard Base Component */
+/* ── MetricCard ──────────────────────────────────────────────────────────── */
+
 .metric-card {
   background: var(--t-card-bg);
   border: var(--t-card-border);
@@ -13,14 +14,14 @@
   flex-direction: column;
   gap: var(--t-card-gap);
   transition: all var(--t-transition-duration) var(--t-transition-timing);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--t-glass-blur));
+  -webkit-backdrop-filter: blur(var(--t-glass-blur));
   box-shadow: var(--t-shadow-card);
 }
 
 .metric-card:hover {
   box-shadow: var(--t-shadow-card-hover);
-  border-color: rgba(192, 152, 145, 0.3);
+  border-color: var(--t-border-hover);
   transform: translateY(-2px);
 }
 
@@ -36,30 +37,12 @@
   white-space: nowrap;
 }
 
-/* Premium Enhancements */
-[data-theme='premium-glass'] .metric-card {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 215, 0, 0.1);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
-}
-
-[data-theme='premium-glass'] .metric-card:hover {
-  box-shadow: 0 12px 40px rgba(255, 215, 0, 0.08), inset 0 0 0 1px rgba(255, 215, 0, 0.2);
-  border-color: rgba(255, 215, 0, 0.3);
-}
-
-[data-theme='premium-glass'] .metric-value {
-  background: linear-gradient(to bottom, #fff, #D4AF37);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
 .metric-label {
   font-size: var(--t-metric-label-size);
   font-weight: var(--t-metric-label-weight);
   color: var(--t-metric-label-color);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin: 0;
 }
 
@@ -71,21 +54,70 @@
   font-weight: 500;
 }
 
-.metric-change.positive {
-  color: var(--t-metric-change-positive);
+.metric-change.positive { color: var(--t-metric-change-positive); }
+.metric-change.negative { color: var(--t-metric-change-negative); }
+
+.font-currency { font-family: var(--t-metric-font); }
+
+/* ── Premium Glass overrides ─────────────────────────────────────────────── */
+
+[data-theme='premium-glass'] .metric-card {
+  box-shadow: var(--t-shadow-card);
+  background: linear-gradient(135deg, var(--t-card-bg), oklch(12% 0.012 280 / 0.3));
 }
 
-.metric-change.negative {
-  color: var(--t-metric-change-negative);
+[data-theme='premium-glass'] .metric-card:hover {
+  box-shadow: var(--t-shadow-card-hover);
+  border-color: oklch(79% 0.12 82 / 0.3);
 }
 
-.font-currency {
-  font-family: var(--t-metric-font);
+[data-theme='premium-glass'] .metric-value {
+  background: linear-gradient(to bottom, var(--p-text-primary), var(--p-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px oklch(0% 0 0 / 0.3));
 }
 
-.font-currency {
-  font-family: var(--t-metric-font);
+/* ── Glass utilities (from OKLCH mockup) ─────────────────────────────────── */
+
+/* Standard glass card */
+.glass-card {
+  background: var(--t-card-bg);
+  backdrop-filter: blur(var(--t-glass-blur));
+  -webkit-backdrop-filter: blur(var(--t-glass-blur));
+  border: var(--t-card-border);
+  border-radius: var(--t-card-radius);
 }
+
+/* Glass card with purple rim-light gradient (top-left corner shine) */
+.glass-rim {
+  position: relative;
+  background: var(--t-card-bg);
+  backdrop-filter: blur(var(--t-glass-blur));
+  -webkit-backdrop-filter: blur(var(--t-glass-blur));
+  border: var(--t-card-border);
+  border-radius: var(--t-card-radius);
+  overflow: hidden;
+}
+
+.glass-rim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--t-card-radius);
+  background: linear-gradient(135deg, var(--t-rim-purple) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-rim > * { position: relative; z-index: 1; }
+
+/* Subtle inset rim (top edge only) */
+.rim-light {
+  box-shadow: inset 0 1px 0 0 var(--t-border-purple);
+}
+
+/* ── Cortex Hub ──────────────────────────────────────────────────────────── */
 
 .cortex-hub {
   background: var(--t-card-bg);
@@ -94,11 +126,14 @@
   -webkit-backdrop-filter: blur(var(--t-glass-blur));
 }
 
+/* ── Liquidity Alert ─────────────────────────────────────────────────────── */
+
 .liquidity-alert {
   border-left-width: 4px;
 }
 
-/* Theme-aware layout containers */
+/* ── Layout containers ───────────────────────────────────────────────────── */
+
 .dashboard-section {
   display: flex;
   flex-direction: column;
@@ -111,29 +146,60 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* Global transitions for theme consistency */
-* {
-  transition: background-color var(--t-transition-duration) var(--t-transition-timing),
-              color var(--t-transition-duration) var(--t-transition-timing),
-              border-color var(--t-transition-duration) var(--t-transition-timing),
-              box-shadow var(--t-transition-duration) var(--t-transition-timing);
+/* ── Category bar fills ──────────────────────────────────────────────────── */
+
+.bar-fill-income {
+  background: linear-gradient(90deg, var(--p-purple-accent), var(--p-purple-hover));
 }
 
-/* Prevent transitions on interactive elements where unwanted */
+.bar-fill-expense {
+  background: linear-gradient(90deg, var(--p-negative), oklch(60% 0.15 30));
+}
+
+/* ── Amount coloring (used inline via className) ─────────────────────────── */
+
+.amount-positive { color: var(--p-positive); }
+.amount-negative { color: var(--p-negative); }
+.amount-neutral  { color: var(--p-text-secondary); }
+
+/* ── Tag / badge ─────────────────────────────────────────────────────────── */
+
+.cat-tag {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 100px;
+  color: var(--p-text-purple);
+  background: var(--p-purple-bg);
+  border: 1px solid oklch(70% 0.14 290 / 0.18);
+}
+
+/* ── Global theme transitions ────────────────────────────────────────────── */
+
+* {
+  transition:
+    background-color var(--t-transition-duration) var(--t-transition-timing),
+    color            var(--t-transition-duration) var(--t-transition-timing),
+    border-color     var(--t-transition-duration) var(--t-transition-timing),
+    box-shadow       var(--t-transition-duration) var(--t-transition-timing);
+}
+
 [role='button'][title*='Cambiar'],
 .no-transition {
   transition: none !important;
 }
 
-/* Print Overrides */
+/* ── Print ───────────────────────────────────────────────────────────────── */
+
 @media print {
   .metric-card {
-    background: #ffffff !important;
-    border: 1px solid #e0e0e0 !important;
+    background: white !important;
+    border: 1px solid oklch(85% 0 0) !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
   }
-  
-  .metric-value { color: #000000 !important; }
-  .metric-label { color: #333333 !important; }
+  .metric-value { color: oklch(10% 0 0) !important; }
+  .metric-label { color: oklch(35% 0 0) !important; }
 }

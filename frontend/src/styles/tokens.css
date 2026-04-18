@@ -1,172 +1,213 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;500;800&family=Roboto+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;500;800&family=Roboto+Mono:wght@400;500;700&display=swap');
 
 /* ==========================================================================
-   DESIGN TOKENS - TAUROS PRIME v2
-   Single Source of Truth for Design Variables
+   DESIGN TOKENS — TAUROS PRIME v3 (OKLCH)
+   Single source of truth. All values in oklch(L% C H).
+   No hardcoded hex/rgba anywhere except this block.
    ========================================================================== */
 
 :root {
-  /* --- 1. PRIMITIVE TOKENS (Base Palette) --- */
-  
-  /* Imperial Palette (Metales y Tierra) */
-  --p-imperial-gold: #D4AF37;
-  --p-imperial-gold-rgb: 212, 175, 55;
-  --p-imperial-gold-bright: #FFD700; /* Oro más puro */
-  --p-imperial-gold-muted: #8B7330;
-  
-  --p-imperial-bronze: #C09891;
-  --p-imperial-bronze-rgb: 192, 152, 145;
-  --p-imperial-bronze-muted: #775144;
-  
-  --p-imperial-silver: #A8A9AD;
-  --p-imperial-silver-bright: #D1D5DB;
-  
-  /* Grayscale & Backgrounds */
-  --p-black-vault: #0a0a0b; /* Más profundo */
-  --p-gray-900: #131314;
-  --p-gray-800: #1E1F20;
-  --p-gray-950: #0e0e0f;
-  
-  /* Text */
-  --p-text-bone: #ffffff; /* Ex-Bone, now Pure White */
-  --p-text-muted: #94a3b8; /* Neutral Slate */
-  
-  /* Semantic Bases */
-  --p-success: #A3E635;
-  --p-error: #EF4444;
-  --p-warning: #F59E0B;
+  /* ── 1. PRIMITIVE OKLCH PALETTE ──────────────────────────────────────── */
 
-  /* --- 2. SEMANTIC TOKENS (Default: FINANCE FIRST 💰) --- */
-  
-  /* Colors */
-  --t-background: #09090a; /* Deep Tech Black */
-  --t-foreground: #ffffff;
-  
-  --t-accent: var(--p-imperial-bronze);
-  --t-accent-rgb: var(--p-imperial-bronze-rgb);
-  --t-accent-gold: var(--p-imperial-gold);
-  --t-accent-gold-rgb: var(--p-imperial-gold-rgb);
-  
-  --t-surface: #111112;
-  --t-surface-deep: #050505;
-  
-  --t-text-primary: var(--p-text-bone);
-  --t-text-muted: var(--p-text-muted);
-  
-  --t-success: var(--p-success);
-  --t-error: var(--p-error);
-  --t-warning: var(--p-warning);
+  /* Backgrounds */
+  --p-bg-base:       oklch(5%  0      0);
+  --p-bg-surface:    oklch(9%  0.006  280);
+  --p-bg-elevated:   oklch(13% 0.008  280);
+  --p-bg-card:       oklch(11% 0.007  280 / 0.88);
+  --p-bg-glass:      oklch(16% 0.010  280 / 0.55);
+
+  /* Purple border system (the OKLCH signature) */
+  --p-purple-subtle:  oklch(22% 0.04  285);
+  --p-purple-border:  oklch(38% 0.07  285);
+  --p-purple-hover:   oklch(52% 0.10  285);
+  --p-purple-accent:  oklch(70% 0.14  290);
+  --p-purple-rim:     oklch(60% 0.11  285 / 0.25);
+  --p-purple-bg:      oklch(70% 0.14  290 / 0.10);
+
+  /* Financial semantic */
+  --p-positive:       oklch(76% 0.155 145);
+  --p-positive-bg:    oklch(76% 0.155 145 / 0.09);
+  --p-positive-ring:  oklch(76% 0.155 145 / 0.25);
+  --p-negative:       oklch(67% 0.175 25);
+  --p-negative-bg:    oklch(67% 0.175 25 / 0.09);
+  --p-negative-ring:  oklch(67% 0.175 25 / 0.25);
+  --p-warning:        oklch(78% 0.15  75);
+
+  /* Gold (imperial logo accent, kept) */
+  --p-gold:           oklch(79% 0.12  82);
+  --p-gold-dim:       oklch(60% 0.09  82);
+  --p-gold-bg:        oklch(79% 0.12  82 / 0.08);
+
+  /* Text */
+  --p-text-primary:   oklch(96% 0     0);
+  --p-text-secondary: oklch(65% 0.015 280);
+  --p-text-muted:     oklch(42% 0.012 280);
+  --p-text-purple:    oklch(72% 0.12  290);
+
+  /* ── 2. SEMANTIC TOKENS (consume primitives) ─────────────────────────── */
+
+  --t-background:     var(--p-bg-base);
+  --t-foreground:     var(--p-text-primary);
+
+  --t-surface:        var(--p-bg-surface);
+  --t-surface-deep:   oklch(3.5% 0 0);
+
+  /* Primary accent → purple (replaces bronze as primary) */
+  --t-accent:         var(--p-purple-accent);
+  --t-accent-rgb:     147, 112, 219; /* approx for legacy rgba() usage */
+  --t-accent-gold:    var(--p-gold);
+  --t-accent-gold-rgb: 212, 175, 55;
+
+  /* Backward-compat names kept for legacy component usage */
+  --p-imperial-gold:        var(--p-gold);
+  --p-imperial-gold-rgb:    212, 175, 55;
+  --p-imperial-gold-bright: var(--p-gold);
+  --p-imperial-gold-muted:  var(--p-gold-dim);
+  --p-imperial-bronze:      var(--p-purple-accent);
+  --p-imperial-bronze-rgb:  var(--t-accent-rgb);
+  --p-imperial-silver:      var(--p-text-secondary);
+
+  --t-text-primary:   var(--p-text-primary);
+  --t-text-muted:     var(--p-text-muted);
+
+  --t-success:        var(--p-positive);
+  --t-error:          var(--p-negative);
+  --t-warning:        var(--p-warning);
+
+  /* Border system */
+  --t-border-subtle:   var(--p-purple-subtle);
+  --t-border-purple:   var(--p-purple-border);
+  --t-border-hover:    var(--p-purple-hover);
+  --t-rim-purple:      var(--p-purple-rim);
+  --t-accent-purple-bg: var(--p-purple-bg);
+
+  /* Card */
+  --t-card-bg:         var(--p-bg-card);
+  --t-card-border:     1px solid var(--t-border-purple);
+  --t-card-radius:     14px;
+  --t-card-padding:    1.5rem;
+  --t-card-gap:        0.75rem;
+
+  /* Glass */
+  --t-glass-blur:    12px;
+  --t-glass-opacity: 0.88;
 
   /* Typography */
-  --t-font-sans: 'Inter', sans-serif;
-  --t-font-mono: 'Roboto Mono', monospace;
-  
-  --t-metric-font: var(--t-font-mono); /* Números técnicos */
-  --t-metric-value-size: 2.25rem;
+  --t-font-sans:     'Inter', sans-serif;
+  --t-font-mono:     'Roboto Mono', monospace;
+
+  --t-metric-font:              var(--t-font-mono);
+  --t-metric-value-size:        2.25rem;
   --t-metric-value-line-height: 1;
-  --t-metric-value-weight: 700;
-  --t-metric-value-color: #ffffff;
-  
-  --t-metric-label-size: 0.8rem;
-  --t-metric-label-weight: 800;
-  --t-metric-label-color: var(--p-imperial-bronze);
-  
-  --t-metric-change-positive: var(--p-success);
-  --t-metric-change-negative: var(--p-error);
+  --t-metric-value-weight:      300;
+  --t-metric-value-color:       var(--p-text-primary);
 
-  /* Forms & Layers */
-  --t-card-bg: #111112;
-  --t-card-border: 1px solid rgba(255, 255, 255, 0.03);
-  --t-card-radius: 2px; /* Brutalist/Sharp */
-  --t-card-padding: 1.25rem;
-  --t-card-gap: 0.5rem;
-  
-  /* Glass tokens */
-  --t-glass-blur: 0px; 
-  --t-glass-opacity: 1;
-  
+  --t-metric-label-size:   0.6875rem;
+  --t-metric-label-weight: 700;
+  --t-metric-label-color:  var(--p-text-muted);
+
+  --t-metric-change-positive: var(--p-positive);
+  --t-metric-change-negative: var(--p-negative);
+
   /* Spacing */
-  --t-section-gap: 1.25rem;
-  --t-component-gap: 0.75rem;
+  --t-section-gap:   1.5rem;
+  --t-component-gap: 1rem;
 
-  /* Shadows */
-  --t-shadow-card: 0 4px 0px rgba(0, 0, 0, 0.8); /* Shadow rígida */
-  --t-shadow-card-hover: 0 6px 0px rgba(0, 0, 0, 0.9);
+  /* Shadows — oklch-native */
+  --t-shadow-card:       0 4px 24px oklch(0% 0 0 / 0.55), 0 1px 4px oklch(0% 0 0 / 0.35);
+  --t-shadow-card-hover: 0 8px 32px oklch(0% 0 0 / 0.65), 0 0 0 1px var(--t-border-hover);
 
   /* Transitions */
-  --t-transition-duration: 0.15s;
-  --t-transition-timing: linear;
-}
+  --t-transition-duration: 0.2s;
+  --t-transition-timing:   cubic-bezier(0.4, 0, 0.2, 1);
 
-/* --- 3. THEME OVERRIDES: PREMIUM GLASS (✨) --- */
+  /* ── 3. PREMIUM GLASS OVERRIDE ───────────────────────────────────────── */
+}
 
 :root[data-theme='premium-glass'] {
-  --t-background: #08080c; /* Deep Midnight Blue Tint */
-  --t-accent: #facc15; /* More vibrant Yellow-Gold */
-  --t-accent-rgb: 250, 204, 21; 
-  --t-accent-gold: #fde047; /* Bright Sun Gold */
-  --t-accent-gold-rgb: 253, 224, 71;
-  
-  /* Text Colors */
-  --t-foreground: #ffffff;
-  --t-text-primary: #ffffff;
-  --t-metric-value-color: #ffffff;
-  --t-text-muted: rgba(255, 255, 255, 0.5);
-  
-  /* Fonts */
-  --t-font-sans: 'Outfit', sans-serif;
-  --t-metric-font: var(--t-font-sans);
-  
-  --t-metric-value-size: 2.75rem;
-  --t-metric-value-line-height: 1.1;
-  --t-metric-label-size: 0.75rem;
-  --t-metric-label-weight: 600;
-  --t-metric-label-color: var(--t-accent-gold);
-  
-  /* Forms */
-  --t-card-radius: 40px; /* Even more rounded and organic */
-  --t-card-bg: rgba(255, 255, 255, 0.03);
-  --t-card-border: 1px solid rgba(250, 204, 21, 0.15);
-  --t-card-padding: 2rem;
-  --t-card-gap: 1.25rem;
+  --t-background:    oklch(6%  0.010  280);
+  --t-surface:       oklch(10% 0.012  280);
 
-  /* Glass tokens */
-  --t-glass-blur: 32px; /* Heavy blur for premium feel */
+  --t-accent:        var(--p-gold);
+  --t-accent-rgb:    var(--p-imperial-gold-rgb);
+  --t-accent-gold:   oklch(88% 0.16  88);
+  --t-accent-gold-rgb: 253, 224, 71;
+
+  --t-foreground:    var(--p-text-primary);
+  --t-text-primary:  var(--p-text-primary);
+  --t-metric-value-color: var(--p-text-primary);
+  --t-text-muted:    oklch(55% 0.015 280);
+
+  --t-font-sans:     'Outfit', sans-serif;
+  --t-metric-font:   var(--t-font-sans);
+
+  --t-metric-value-size:   2.75rem;
+  --t-metric-value-line-height: 1.1;
+  --t-metric-label-size:   0.75rem;
+  --t-metric-label-weight: 600;
+  --t-metric-label-color:  var(--t-accent-gold);
+
+  --t-card-radius:   40px;
+  --t-card-bg:       oklch(16% 0.01 280 / 0.55);
+  --t-card-border:   1px solid oklch(79% 0.12 82 / 0.15);
+  --t-card-padding:  2rem;
+  --t-card-gap:      1.25rem;
+
+  --t-glass-blur:    32px;
   --t-glass-opacity: 0.5;
-  
-  --t-section-gap: 2.5rem;
+
+  --t-section-gap:   2.5rem;
   --t-component-gap: 1.5rem;
-  
-  --t-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-  --t-shadow-card-hover: 0 35px 80px -15px rgba(250, 204, 21, 0.15);
-  
+
+  --t-shadow-card:       0 25px 50px oklch(0% 0 0 / 0.65);
+  --t-shadow-card-hover: 0 35px 80px oklch(79% 0.12 82 / 0.12), 0 0 0 1px oklch(79% 0.12 82 / 0.2);
+
   --t-transition-duration: 0.4s;
-  --t-transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy feel */
+  --t-transition-timing:   cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* --- 4. TAILWIND 4 INTEGRATION --- */
+/* ── 4. TAILWIND v4 @theme inline ────────────────────────────────────────── */
 
 @theme inline {
-  --color-background: var(--t-background);
-  --color-foreground: var(--t-foreground);
-  
-  --color-primary: var(--t-accent);
-  --color-gold: var(--t-accent-gold);
-  --color-surface: var(--t-surface);
-  --color-surface-deep: var(--t-surface-deep);
-  
-  --color-text-prime: var(--t-text-primary);
-  --color-text-muted: var(--t-text-muted);
-  
-  --color-success: var(--t-success);
-  --color-error: var(--t-error);
-  --color-warning: var(--t-warning);
-  
-  --font-sans: var(--t-font-sans);
-  --font-mono: var(--t-font-mono);
-  
-  --spacing-section: var(--t-section-gap);
-  --spacing-component: var(--t-component-gap);
-  
-  --radius-card: var(--t-card-radius);
+  /* Backgrounds */
+  --color-background:    var(--t-background);
+  --color-foreground:    var(--t-foreground);
+  --color-surface:       var(--t-surface);
+  --color-surface-deep:  var(--t-surface-deep);
+
+  /* Accents */
+  --color-primary:       var(--t-accent);
+  --color-gold:          var(--t-accent-gold);
+
+  /* Purple border system */
+  --color-border-subtle: var(--t-border-subtle);
+  --color-border-purple: var(--t-border-purple);
+  --color-border-hover:  var(--t-border-hover);
+  --color-accent-purple: var(--p-purple-accent);
+  --color-purple-bg:     var(--p-purple-bg);
+
+  /* Financial semantic */
+  --color-success:       var(--t-success);
+  --color-error:         var(--t-error);
+  --color-warning:       var(--t-warning);
+  --color-positive:      var(--p-positive);
+  --color-positive-bg:   var(--p-positive-bg);
+  --color-negative:      var(--p-negative);
+  --color-negative-bg:   var(--p-negative-bg);
+
+  /* Text */
+  --color-text-prime:    var(--t-text-primary);
+  --color-text-muted:    var(--t-text-muted);
+  --color-text-purple:   var(--p-text-purple);
+
+  /* Typography */
+  --font-sans:           var(--t-font-sans);
+  --font-mono:           var(--t-font-mono);
+
+  /* Spacing */
+  --spacing-section:     var(--t-section-gap);
+  --spacing-component:   var(--t-component-gap);
+
+  /* Radius */
+  --radius-card:         var(--t-card-radius);
 }
