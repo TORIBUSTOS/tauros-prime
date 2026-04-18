@@ -79,12 +79,12 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col flex-1 items-center justify-center gap-6 min-h-[60vh]">
         <div className="relative">
-          <div className="w-16 h-16 rounded-full border-b-2 border-imperial-bronze animate-spin" />
-          <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-imperial-bronze animate-pulse" />
+          <div className="w-16 h-16 rounded-full border-b-2 border-primary animate-spin" />
+          <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-primary animate-pulse" />
         </div>
         <div className="text-center space-y-2">
-          <h2 className="text-sm font-black text-imperial-text-prime uppercase tracking-[0.3em]">Accediendo a la Bóveda</h2>
-          <p className="text-[10px] text-imperial-text-muted/40 font-bold uppercase tracking-widest italic animate-pulse">
+          <h2 className="text-sm font-black text-text-prime uppercase tracking-[0.3em]">Accediendo a la Bóveda</h2>
+          <p className="text-[10px] text-text-muted/40 font-bold uppercase tracking-widest italic animate-pulse">
             TAUROS Prime Intelligence está sincronizando datos...
           </p>
         </div>
@@ -109,69 +109,77 @@ export default function DashboardPage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-1 border-b border-white/5 relative z-10">
         <div className="space-y-0.5">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-black text-imperial-text-prime tracking-tighter uppercase italic">
-              Digital <span className="text-imperial-bronze not-italic">Vault</span>
+            <h1 className="text-xl font-black text-foreground tracking-tighter uppercase italic font-sans">
+              Digital <span className="text-primary not-italic">Vault</span>
             </h1>
-            <div className="bg-imperial-bronze/10 px-2 py-0.5 rounded-full border border-imperial-bronze/20 flex items-center gap-1.5">
-              <Shield className="w-2.5 h-2.5 text-imperial-bronze" />
-              <span className="text-[9px] font-black text-imperial-bronze uppercase tracking-widest">Secure</span>
+            <div className="bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 flex items-center gap-1.5">
+              <Shield className="w-2.5 h-2.5 text-primary" />
+              <span className="text-[9px] font-black text-primary uppercase tracking-widest">Secure</span>
             </div>
           </div>
-          <p className="text-[10px] text-imperial-text-muted/40 font-medium">
+          <p className="text-[10px] text-text-muted/40 font-medium">
             Panel de control financiero — TAUROS v2.5
           </p>
         </div>
       </header>
 
-      {/* Bento Grid Layout - Reduced Scale */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 auto-rows-auto relative z-10">
+      {/* Main Content + Sidebar Layout for better UX */}
+      <div className="flex flex-col xl:flex-row gap-6 relative z-10 w-full">
         
-        {/* Row 1: Key Metrics */}
-        <div className="lg:col-span-2">
-          <MetricCard 
-            label="Balance Imperial" 
-            value={currentBalance.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
-            trend={2.4}
-            accent="gold"
-            valueClassName={currentBalance >= 0 ? 'text-success' : 'text-error'}
-          />
-        </div>
-        <div className="lg:col-span-1">
-          <MetricCard 
-            label="Ingresos Mensuales" 
-            value={summary?.ingresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
-            subtitle={`Flujo de entrada ${selectedPeriod.split(' ')[0]}`}
-            valueClassName="text-success"
-            onClick={() => router.push('/movimientos?tipo=ingreso')}
-          />
-        </div>
-        <div className="lg:col-span-1">
-          <MetricCard 
-            label="Egresos Mensuales" 
-            value={summary?.egresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
-            accent="bronze"
-            subtitle={`Flujo de salida ${selectedPeriod.split(' ')[0]}`}
-            valueClassName="text-error"
-            className="cursor-pointer"
-            onClick={() => router.push('/movimientos?tipo=egreso')}
-          />
+        {/* Lado Izquierdo: Main Dashboard Content */}
+        <div className="flex-1 flex flex-col gap-6">
+          
+          {/* Row 1: Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="md:col-span-2">
+              <MetricCard 
+                label="Balance Imperial" 
+                value={currentBalance.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                trend={2.4}
+                accent="gold"
+                valueClassName={currentBalance >= 0 ? 'text-success' : 'text-error'}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <MetricCard 
+                label="Ingresos Mensuales" 
+                value={summary?.ingresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                subtitle={`Flujo de entrada ${selectedPeriod.split(' ')[0]}`}
+                valueClassName="text-success"
+                onClick={() => router.push('/movimientos?tipo=ingreso')}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <MetricCard 
+                label="Egresos Mensuales" 
+                value={summary?.egresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                accent="bronze"
+                subtitle={`Flujo de salida ${selectedPeriod.split(' ')[0]}`}
+                valueClassName="text-error"
+                className="cursor-pointer"
+                onClick={() => router.push('/movimientos?tipo=egreso')}
+              />
+            </div>
+          </div>
+
+          {/* Row 2: Graph & Top Categorías */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="min-h-[350px] md:min-h-[400px]">
+              <FlowChart movements={movements} period={selectedPeriod} />
+            </div>
+            <div className="min-h-[350px] md:min-h-[400px]">
+              <TopCategorias movements={movements} period={selectedPeriod} />
+            </div>
+          </div>
+          
+          {/* Row 3: Action (File Upload) */}
+          <div className="w-full h-40">
+            <FileUploadZone onUpload={handleFileUpload} isUploading={importing} />
+          </div>
         </div>
 
-        {/* Row 2: Graph & Top Categorías */}
-        <div className="lg:col-span-2 min-h-[300px] md:min-h-[400px]">
-          <FlowChart movements={movements} period={selectedPeriod} />
-        </div>
-
-        <div className="lg:col-span-2">
-          <TopCategorias movements={movements} period={selectedPeriod} />
-        </div>
-        
-        {/* Row 3: Action & Intelligence Hub */}
-        <div className="lg:col-span-2">
-          <FileUploadZone onUpload={handleFileUpload} isUploading={importing} />
-        </div>
-
-        <div className="lg:col-span-2 min-h-[400px]">
+        {/* Lado Derecho: Cortex Intelligence Hub (Sticky Sidebar) */}
+        <div className="w-full xl:w-96 shrink-0 flex flex-col h-[600px] xl:h-[calc(100vh-8rem)] xl:sticky xl:top-24">
           <CortexHub 
             insights={insights?.insights || []}
             currentBalance={currentBalance}

@@ -54,7 +54,7 @@ class ReportService:
                         nombre=sub_nome, 
                         total=sub_total, 
                         tipo="subcategoria", 
-                        movimientos=[MovimientoResponse.from_orm(m) for m in movs]
+                        movimientos=[MovimientoResponse.model_validate(m) for m in movs]
                     )
                     cat_node.hijos.append(sub_node)
                 

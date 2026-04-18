@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAUROS — OKLCH Theme Mockup</title>
+<style>
+/* ═══════════════════════════════════════════════
+   OKLCH DESIGN TOKENS — Single source of truth
+   No hardcoded colors anywhere below this block
+   ═══════════════════════════════════════════════ */
+:root {
+  /* --- Backgrounds --- */
+  --bg-base:       oklch(5%  0      0);
+  --bg-surface:    oklch(9%  0.006  280);
+  --bg-elevated:   oklch(13% 0.008  280);
+  --bg-card:       oklch(11% 0.007  280 / 0.85);
+  --bg-glass:      oklch(16% 0.01   280 / 0.55);
+
+  /* --- Purple lines & borders (the "olshk" signature) --- */
+  --border-purple:    oklch(38% 0.07  285);
+  --border-subtle:    oklch(22% 0.04  285);
+  --border-hover:     oklch(52% 0.10  285);
+  --accent-purple:    oklch(70% 0.14  290);
+  --accent-purple-bg: oklch(70% 0.14  290 / 0.10);
+  --rim-purple:       oklch(60% 0.11  285 / 0.25);
+
+  /* --- Financial semantic --- */
+  --positive:        oklch(76% 0.155 145);
+  --positive-bg:     oklch(76% 0.155 145 / 0.09);
+  --positive-border: oklch(76% 0.155 145 / 0.25);
+  --negative:        oklch(67% 0.175 25);
+  --negative-bg:     oklch(67% 0.175 25 / 0.09);
+  --negative-border: oklch(67% 0.175 25 / 0.25);
+  --neutral:         oklch(65% 0.03  280);
+
+  /* --- Text --- */
+  --text-primary:   oklch(96% 0      0);
+  --text-secondary: oklch(65% 0.015  280);
+  --text-muted:     oklch(42% 0.012  280);
+  --text-purple:    oklch(72% 0.12   290);
+
+  /* --- Gold (imperial accent, kept) --- */
+  --gold:           oklch(79% 0.12   82);
+  --gold-bg:        oklch(79% 0.12   82 / 0.08);
+
+  /* --- Spacing --- */
+  --space-xs: 0.375rem;
+  --space-sm: 0.625rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* --- Radius --- */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-2xl: 28px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   GLASSMORPHISM UTILITIES
+   ═══════════════════════════════════════════════ */
+.glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-purple);
+  border-radius: var(--r-lg);
+}
+
+.glass-rim {
+  position: relative;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border-purple);
+  overflow: hidden;
+}
+.glass-rim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, var(--rim-purple) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════════ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  height: 56px;
+  background: oklch(7% 0.007 280 / 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-purple);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.nav-logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  box-shadow: 0 0 8px var(--accent-purple);
+}
+.nav-links {
+  display: flex;
+  gap: var(--space-xs);
+  list-style: none;
+}
+.nav-link {
+  padding: 6px 14px;
+  border-radius: var(--r-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
+}
+.nav-link:hover { color: var(--text-primary); background: var(--accent-purple-bg); }
+.nav-link.active {
+  color: var(--accent-purple);
+  background: var(--accent-purple-bg);
+  border: 1px solid oklch(70% 0.14 290 / 0.2);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.period-pill {
+  padding: 5px 12px;
+  border-radius: var(--r-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+  color: var(--text-purple);
+  background: var(--accent-purple-bg);
+  border: 1px solid oklch(70% 0.14 290 / 0.2);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════ */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-xl);
+}
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xl);
+}
+.page-title span { color: var(--accent-purple); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+   METRIC CARDS GRID
+   ═══════════════════════════════════════════════ */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+.metric-card {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+.metric-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.metric-value {
+  font-size: 1.875rem;
+  font-weight: 300;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.metric-value.positive { color: var(--positive); }
+.metric-value.negative { color: var(--negative); }
+.metric-value.neutral  { color: var(--text-primary); }
+.metric-value.purple   { color: var(--accent-purple); }
+.metric-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.metric-badge {
+  padding: 2px 7px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+}
+.badge-positive { background: var(--positive-bg); color: var(--positive); border: 1px solid var(--positive-border); }
+.badge-negative { background: var(--negative-bg); color: var(--negative); border: 1px solid var(--negative-border); }
+
+/* ═══════════════════════════════════════════════
+   MAIN GRID (chart + movements)
+   ═══════════════════════════════════════════════ */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+.section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+}
+
+/* ═══════════════════════════════════════════════
+   CATEGORY BARS
+   ═══════════════════════════════════════════════ */
+.cat-list { display: flex; flex-direction: column; gap: var(--space-sm); padding: var(--space-lg); }
+.cat-row { display: flex; flex-direction: column; gap: 5px; }
+.cat-header { display: flex; justify-content: space-between; align-items: center; }
+.cat-name { font-size: 0.8125rem; color: var(--text-secondary); font-weight: 500; }
+.cat-amount { font-size: 0.8125rem; font-family: 'SF Mono', 'Roboto Mono', monospace; }
+.cat-bar-bg {
+  height: 4px;
+  background: var(--border-subtle);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.cat-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent-purple), oklch(55% 0.1 290));
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cat-bar-fill.egreso {
+  background: linear-gradient(90deg, var(--negative), oklch(60% 0.15 30));
+}
+
+/* ═══════════════════════════════════════════════
+   MOVEMENTS TABLE
+   ═══════════════════════════════════════════════ */
+.movements { padding: var(--space-lg); }
+.mov-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 0.15s ease;
+  border-radius: var(--r-sm);
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0 -8px;
+}
+.mov-row:last-child { border-bottom: none; }
+.mov-row:hover { background: var(--accent-purple-bg); }
+.mov-left { display: flex; flex-direction: column; gap: 2px; }
+.mov-desc { font-size: 0.8125rem; color: var(--text-primary); font-weight: 500; }
+.mov-meta { display: flex; align-items: center; gap: var(--space-sm); }
+.mov-date { font-size: 0.6875rem; color: var(--text-muted); font-family: 'SF Mono', 'Roboto Mono', monospace; }
+.cat-tag {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 100px;
+  color: var(--text-purple);
+  background: var(--accent-purple-bg);
+  border: 1px solid oklch(70% 0.14 290 / 0.15);
+}
+.mov-amount {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+  letter-spacing: -0.01em;
+}
+.mov-amount.pos { color: var(--positive); }
+.mov-amount.neg { color: var(--negative); }
+
+/* ═══════════════════════════════════════════════
+   MINI CHART (SVG-based)
+   ═══════════════════════════════════════════════ */
+.chart-wrap { padding: var(--space-lg); }
+.chart-container {
+  position: relative;
+  height: 180px;
+  margin-top: var(--space-sm);
+}
+.chart-svg { width: 100%; height: 100%; overflow: visible; }
+.chart-grid-line { stroke: var(--border-subtle); stroke-width: 1; }
+.chart-area-positive { fill: oklch(76% 0.155 145 / 0.06); }
+.chart-area-negative { fill: oklch(67% 0.175 25 / 0.06); }
+.chart-line-positive { stroke: var(--positive); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.chart-line-negative { stroke: var(--negative); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.chart-dot { r: 3.5; }
+.chart-x-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+.chart-x-label { font-size: 0.6875rem; color: var(--text-muted); font-family: monospace; text-align: center; flex: 1; }
+.chart-legend {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--text-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-dot.pos { background: var(--positive); box-shadow: 0 0 6px oklch(76% 0.155 145 / 0.5); }
+.legend-dot.neg { background: var(--negative); box-shadow: 0 0 6px oklch(67% 0.175 25 / 0.5); }
+
+/* ═══════════════════════════════════════════════
+   INSIGHTS STRIP
+   ═══════════════════════════════════════════════ */
+.insights-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+.insight-card { padding: var(--space-md) var(--space-lg); }
+.insight-icon {
+  font-size: 1.25rem;
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+.insight-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-purple); margin-bottom: 4px; }
+.insight-text { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.45; }
+.insight-text strong { color: var(--text-primary); }
+
+/* ═══════════════════════════════════════════════
+   TOKEN PALETTE (reference strip at bottom)
+   ═══════════════════════════════════════════════ */
+.token-strip {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+.token-strip-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+}
+.token-swatches { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: default;
+}
+.swatch-color {
+  width: 44px; height: 44px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-subtle);
+}
+.swatch-name { font-size: 0.5625rem; color: var(--text-muted); text-align: center; letter-spacing: 0.04em; font-family: monospace; }
+.divider { width: 1px; height: 44px; background: var(--border-subtle); align-self: flex-end; margin: 0 4px; }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ────────────────────────────── -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    TAUROS
+  </div>
+  <ul class="nav-links">
+    <li class="nav-link active">Dashboard</li>
+    <li class="nav-link">Movimientos</li>
+    <li class="nav-link">Categorías</li>
+    <li class="nav-link">Analytics</li>
+    <li class="nav-link">Insights</li>
+    <li class="nav-link">Reportes</li>
+  </ul>
+  <div class="nav-right">
+    <div class="period-pill">AGO 2025 ▾</div>
+  </div>
+</nav>
+
+<!-- ── MAIN CONTENT ───────────────────────────── -->
+<div class="container">
+
+  <h1 class="page-title">Dashboard <span>Agosto 2025</span></h1>
+
+  <!-- METRIC CARDS -->
+  <div class="metrics-grid">
+    <div class="glass-rim metric-card">
+      <div class="metric-label">Balance Neto</div>
+      <div class="metric-value positive">+$142.830</div>
+      <div class="metric-sub">
+        <span class="metric-badge badge-positive">+8.4%</span>
+        vs mes anterior
+      </div>
+    </div>
+    <div class="glass-rim metric-card">
+      <div class="metric-label">Ingresos</div>
+      <div class="metric-value positive">+$687.200</div>
+      <div class="metric-sub">
+        <span class="metric-badge badge-positive">+12.1%</span>
+        vs mes anterior
+      </div>
+    </div>
+    <div class="glass-rim metric-card">
+      <div class="metric-label">Egresos</div>
+      <div class="metric-value negative">–$544.370</div>
+      <div class="metric-sub">
+        <span class="metric-badge badge-negative">+3.7%</span>
+        vs mes anterior
+      </div>
+    </div>
+    <div class="glass-rim metric-card">
+      <div class="metric-label">Movimientos</div>
+      <div class="metric-value purple">653</div>
+      <div class="metric-sub" style="color:var(--text-muted)">
+        100% categorizados
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS STRIP -->
+  <div class="insights-strip">
+    <div class="glass insight-card">
+      <span class="insight-icon">⚡</span>
+      <div class="insight-title">Patrón detectado</div>
+      <div class="insight-text">OSPACA pagó <strong>2× el monto normal</strong> — timing: cubrió el mes anterior. No es cambio estructural.</div>
+    </div>
+    <div class="glass insight-card">
+      <span class="insight-icon">📈</span>
+      <div class="insight-title">Tendencia positiva</div>
+      <div class="insight-text">Ingresos creciendo <strong>+12% MoM</strong> por 3 meses consecutivos. Recurrencia confirmada.</div>
+    </div>
+    <div class="glass insight-card">
+      <span class="insight-icon">⚠️</span>
+      <div class="insight-title">Alerta liquidez</div>
+      <div class="insight-text">Impuestos y comisiones <strong>+23% vs promedio</strong>. Revisar impuesto al cheque del período.</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID: Categories + Movements -->
+  <div class="main-grid">
+
+    <!-- CATEGORIES -->
+    <div class="glass-rim">
+      <div class="cat-list">
+        <div class="section-title">Categorías top — egresos</div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Pagos y Transferencias</span>
+            <span class="cat-amount" style="color:var(--negative)">–$441.200</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill egreso" style="width:81%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Impuestos y Comisiones</span>
+            <span class="cat-amount" style="color:var(--negative)">–$32.080</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill egreso" style="width:5.9%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Comidas y Delivery</span>
+            <span class="cat-amount" style="color:var(--negative)">–$18.450</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill egreso" style="width:3.4%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Servicios</span>
+            <span class="cat-amount" style="color:var(--negative)">–$14.900</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill egreso" style="width:2.7%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Suscripciones Digitales</span>
+            <span class="cat-amount" style="color:var(--negative)">–$8.200</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill egreso" style="width:1.5%"></div></div>
+        </div>
+
+        <div style="margin-top:var(--space-md)">
+          <div class="section-title">Top ingresos</div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">OSPACA</span>
+            <span class="cat-amount" style="color:var(--positive)">+$380.000</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:55%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Prestaciones Médicas</span>
+            <span class="cat-amount" style="color:var(--positive)">+$190.000</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:28%"></div></div>
+        </div>
+
+        <div class="cat-row">
+          <div class="cat-header">
+            <span class="cat-name">Inversiones</span>
+            <span class="cat-amount" style="color:var(--positive)">+$117.200</span>
+          </div>
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:17%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOVEMENTS -->
+    <div class="glass-rim">
+      <div class="movements">
+        <div class="section-title">Últimos movimientos</div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">OSPACA — Pago Obra Social</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-15</span>
+              <span class="cat-tag">Ingresos</span>
+            </div>
+          </div>
+          <div class="mov-amount pos">+$380.000</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">Transferencia — Dr. González</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-14</span>
+              <span class="cat-tag">Pagos</span>
+            </div>
+          </div>
+          <div class="mov-amount neg">–$95.000</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">IVA Percep. Resp. Inscripto</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-14</span>
+              <span class="cat-tag">Impuestos</span>
+            </div>
+          </div>
+          <div class="mov-amount neg">–$4.230</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">Mercado Pago — Subs Netflix</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-13</span>
+              <span class="cat-tag">Suscripciones</span>
+            </div>
+          </div>
+          <div class="mov-amount neg">–$2.890</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">Prestaciones Médicas — Julio</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-12</span>
+              <span class="cat-tag">Ingresos</span>
+            </div>
+          </div>
+          <div class="mov-amount pos">+$190.000</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">Rappi — Delivery Almuerzo</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-11</span>
+              <span class="cat-tag">Comidas</span>
+            </div>
+          </div>
+          <div class="mov-amount neg">–$3.450</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">Comisión Bancaria Supervielle</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-10</span>
+              <span class="cat-tag">Impuestos</span>
+            </div>
+          </div>
+          <div class="mov-amount neg">–$1.180</div>
+        </div>
+
+        <div class="mov-row">
+          <div class="mov-left">
+            <div class="mov-desc">FCI Liquidez — Rescate</div>
+            <div class="mov-meta">
+              <span class="mov-date">2025-08-08</span>
+              <span class="cat-tag">Inversiones</span>
+            </div>
+          </div>
+          <div class="mov-amount pos">+$117.200</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TREND CHART -->
+  <div class="glass-rim chart-wrap">
+    <div class="section-title">Flujo mensual — Jun · Jul · Ago 2025</div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot pos"></div> Ingresos</div>
+      <div class="legend-item"><div class="legend-dot neg"></div> Egresos</div>
+    </div>
+    <div class="chart-container">
+      <svg class="chart-svg" viewBox="0 0 900 180" preserveAspectRatio="none">
+        <!-- Grid lines (purple-tinted) -->
+        <line class="chart-grid-line" x1="0" y1="20"  x2="900" y2="20"  stroke-dasharray="4 6"/>
+        <line class="chart-grid-line" x1="0" y1="60"  x2="900" y2="60"  stroke-dasharray="4 6"/>
+        <line class="chart-grid-line" x1="0" y1="100" x2="900" y2="100" stroke-dasharray="4 6"/>
+        <line class="chart-grid-line" x1="0" y1="140" x2="900" y2="140" stroke-dasharray="4 6"/>
+
+        <!-- Income area -->
+        <polygon class="chart-area-positive"
+          points="80,55 430,40 780,45 780,180 430,180 80,180"/>
+        <!-- Expenses area -->
+        <polygon class="chart-area-negative"
+          points="80,95 430,105 780,108 780,180 430,180 80,180"/>
+
+        <!-- Income line -->
+        <polyline class="chart-line-positive" points="80,55 430,40 780,45"/>
+        <circle class="chart-dot" cx="80"  cy="55"  fill="oklch(76% 0.155 145)"/>
+        <circle class="chart-dot" cx="430" cy="40"  fill="oklch(76% 0.155 145)"/>
+        <circle class="chart-dot" cx="780" cy="45"  fill="oklch(76% 0.155 145)"/>
+
+        <!-- Expenses line -->
+        <polyline class="chart-line-negative" points="80,95 430,105 780,108"/>
+        <circle class="chart-dot" cx="80"  cy="95"  fill="oklch(67% 0.175 25)"/>
+        <circle class="chart-dot" cx="430" cy="105" fill="oklch(67% 0.175 25)"/>
+        <circle class="chart-dot" cx="780" cy="108" fill="oklch(67% 0.175 25)"/>
+
+        <!-- Value labels (income) -->
+        <text x="80"  y="42"  font-size="13" fill="oklch(76% 0.155 145)" font-family="monospace" text-anchor="middle">$614k</text>
+        <text x="430" y="27"  font-size="13" fill="oklch(76% 0.155 145)" font-family="monospace" text-anchor="middle">$643k</text>
+        <text x="780" y="32"  font-size="13" fill="oklch(76% 0.155 145)" font-family="monospace" text-anchor="middle">$687k</text>
+
+        <!-- Value labels (expenses) -->
+        <text x="80"  y="117" font-size="13" fill="oklch(67% 0.175 25)" font-family="monospace" text-anchor="middle">$524k</text>
+        <text x="430" y="127" font-size="13" fill="oklch(67% 0.175 25)" font-family="monospace" text-anchor="middle">$538k</text>
+        <text x="780" y="130" font-size="13" fill="oklch(67% 0.175 25)" font-family="monospace" text-anchor="middle">$544k</text>
+      </svg>
+    </div>
+    <div class="chart-x-labels">
+      <span class="chart-x-label">JUN 2025</span>
+      <span class="chart-x-label">JUL 2025</span>
+      <span class="chart-x-label">AGO 2025</span>
+    </div>
+  </div>
+
+  <!-- TOKEN PALETTE REFERENCE -->
+  <div class="token-strip">
+    <div class="token-strip-title">OKLCH Token Palette — design system reference</div>
+    <div class="token-swatches">
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(5% 0 0)"></div>
+        <div class="swatch-name">bg-base</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(9% 0.006 280)"></div>
+        <div class="swatch-name">bg-surface</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(13% 0.008 280)"></div>
+        <div class="swatch-name">bg-elevated</div>
+      </div>
+      <div class="divider"></div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(22% 0.04 285)"></div>
+        <div class="swatch-name">border-subtle</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(38% 0.07 285)"></div>
+        <div class="swatch-name">border-purple</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(52% 0.10 285)"></div>
+        <div class="swatch-name">border-hover</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(70% 0.14 290)"></div>
+        <div class="swatch-name">accent-purple</div>
+      </div>
+      <div class="divider"></div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(76% 0.155 145)"></div>
+        <div class="swatch-name">positive</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(76% 0.155 145 / 0.09)"></div>
+        <div class="swatch-name">positive-bg</div>
+      </div>
+      <div class="divider"></div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(67% 0.175 25)"></div>
+        <div class="swatch-name">negative</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(67% 0.175 25 / 0.09)"></div>
+        <div class="swatch-name">negative-bg</div>
+      </div>
+      <div class="divider"></div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(79% 0.12 82)"></div>
+        <div class="swatch-name">gold</div>
+      </div>
+      <div class="divider"></div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(96% 0 0); border:1px solid oklch(22% 0 0)"></div>
+        <div class="swatch-name">text-primary</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(65% 0.015 280)"></div>
+        <div class="swatch-name">text-secondary</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:oklch(42% 0.012 280)"></div>
+        <div class="swatch-name">text-muted</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>

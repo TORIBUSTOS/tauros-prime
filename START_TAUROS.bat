@@ -1,69 +1,65 @@
 @echo off
-TITLE TAUROS Prime - Intelligence Hub (Stabilizer v2)
-SETLOCAL EnableExtensions
+REM ==========================================================
+REM TAUROS PRIME - STABILIZER SCRIPT v5 (Final Path Fix)
+REM ==========================================================
+TITLE TAUROS Prime (Path Refined)
 
-:: 1. IDENTIFICAR DIRECTORIO BASE (Compatible con OneDrive/UNC)
 SET "BASE_DIR=%~dp0"
 IF "%BASE_DIR:~-1%"=="\" SET "BASE_DIR=%BASE_DIR:~0,-1%"
 
 SET "BACKEND_DIR=%BASE_DIR%\backend"
 SET "FRONTEND_DIR=%BASE_DIR%\frontend"
+SET "VENV_PY=%BACKEND_DIR%\venv\Scripts\python.exe"
 
-echo ==========================================================
-echo [TAUROS] Iniciando Motores de Inteligencia...
-echo [PATH] %BASE_DIR%
-echo ==========================================================
+echo ----------------------------------------------------------
+echo [TAUROS] Directorio: %BASE_DIR%
+echo ----------------------------------------------------------
 
-:: 2. VERIFICAR PYTHON Y DEPENDENCIAS
-echo [BACKEND] Verificando entorno Python...
-where python >nul 2>nul
-if %ERRORLEVEL% EQU 0 (
-    SET "PY_CMD=python"
-) else (
-    where py >nul 2>nul
-    if %ERRORLEVEL% EQU 0 (
-        SET "PY_CMD=py"
-    ) else (
-        echo [ERROR] No se detecto Python instalado. Por favor instala Python 3.10+
+REM 1. VERIFICAR VENV
+IF EXIST "%VENV_PY%" (
+    echo [OK] Entorno virtual encontrado.
+    goto :PREPARE
+)
+
+echo [WARNING] No se encontro el entorno virtual.
+echo [INFO] Creando nuevo entorno virtual...
+
+REM Intentar con 'python' luego con 'py'
+python --version >nul 2>nul
+IF %ERRORLEVEL% EQU 0 (
+    SET "G_PY=python"
+) ELSE (
+    py --version >nul 2>nul
+    IF %ERRORLEVEL% EQU 0 (
+        SET "G_PY=py"
+    ) ELSE (
+        echo [ERROR] No se encontro Python en el sistema.
         pause
         exit /b 1
     )
 )
 
-echo [BACKEND] Instalando/Actualizando dependencias...
-pushd "%BACKEND_DIR%"
-%PY_CMD% -m pip install -r requirements.txt --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo [WARNING] Hubo un problema instalando dependencias. Intentando arrancar de todos modos...
-)
-popd
+"%G_PY%" -m venv "%BACKEND_DIR%\venv"
 
-:: 3. LANZAR SERVICIOS (Windows Terminal vs CMD)
-where wt.exe >nul 2>nul
-if %ERRORLEVEL% EQU 0 (
-    echo [TAUROS] Usando Windows Terminal...
-    :: Backend con uvicorn directo (mas estable que -m src.main)
-    wt -d "%BASE_DIR%" --title "TAUROS Backend" cmd /k "pushd \"%BACKEND_DIR%\" && echo Iniciando Backend... && %PY_CMD% -m uvicorn src.main:app --host 0.0.0.0 --port 9000 --reload"; ^
-       new-tab -d "%BASE_DIR%" --title "TAUROS Frontend" cmd /k "pushd \"%FRONTEND_DIR%\" && echo Iniciando Frontend... && npm run dev"
-) else (
-    echo [TAUROS] Usando consolas separadas...
-    
-    :: Iniciar Backend
-    start "TAUROS Backend (9000)" cmd /k "pushd \"%BACKEND_DIR%\" && %PY_CMD% -m uvicorn src.main:app --host 0.0.0.0 --port 9000 --reload"
-    
-    :: Iniciar Frontend
-    start "TAUROS Frontend (7000)" cmd /k "pushd \"%FRONTEND_DIR%\" && npm run dev"
-)
+:PREPARE
+REM 2. ASEGURAR DEPENDENCIAS
+echo [INFO] Verificando dependencias en venv...
+"%VENV_PY%" -m pip install uvicorn fastapi python-multipart -r "%BACKEND_DIR%\requirements.txt" --quiet
 
-:: 4. ESPERAR Y LANZAR BROWSER
-echo [TAUROS] Esperando a que el motor caliente (10s)...
+REM 3. LANZAR SERVICIOS (Usando /D para evitar errores de sintaxis en el comando)
+echo [INFO] Lanzando Backend...
+start "TAUROS_BACKEND" /D "%BACKEND_DIR%" cmd /k ""%VENV_PY%" -m uvicorn src.main:app --host 0.0.0.0 --port 9000 --reload"
+
+echo [INFO] Lanzando Frontend...
+start "TAUROS_FRONTEND" /D "%FRONTEND_DIR%" cmd /k "npm run dev"
+
+echo [INFO] Esperando inicializacion (10s)...
 timeout /t 10 /nobreak >nul
 
-echo [TAUROS] Desplegando interfaz en Chrome...
+echo [OK] Abriendo navegador...
 start chrome "http://localhost:7000"
 
 echo ==========================================================
-echo [OK] TAUROS Prime esta operativo.
-echo Si ves un error de 'Failed to Fetch', revisa la ventana de Backend.
+echo PROCESO FINALIZADO. Revisa las otras ventanas.
 echo ==========================================================
 pause

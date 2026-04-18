@@ -61,26 +61,26 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
     if (active && payload && payload.length) {
       const item = payload[0].payload;
       return (
-        <div className="bg-[#131314]/95 backdrop-blur-xl border border-imperial-accent/20 p-4 rounded-2xl shadow-2xl min-w-[200px]">
-          <p className="text-[10px] font-black text-imperial-accent uppercase tracking-[0.2em] mb-3 border-b border-white/5 pb-2">
+        <div className="bg-surface/95 backdrop-blur-xl border border-primary/20 p-4 rounded-2xl shadow-2xl min-w-[200px]">
+          <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-3 border-b border-primary/5 pb-2">
             Proyección {item.month}
           </p>
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-bold text-imperial-text-mute uppercase tracking-widest">Resultado Esperado</span>
-              <span className={`text-[11px] font-black tabular-nums ${item.monto_proyectado >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest">Resultado Esperado</span>
+              <span className={`text-[11px] font-black tabular-nums ${item.monto_proyectado >= 0 ? 'text-success' : 'text-error'}`}>
                 ${item.monto_proyectado.toLocaleString()}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-bold text-imperial-accent/60 uppercase tracking-widest">Escenario Optimista</span>
-              <span className={`text-[11px] font-black tabular-nums ${item.monto_max >= 0 ? 'text-emerald-400/70' : 'text-rose-400/70'}`}>
+              <span className="text-[9px] font-bold text-primary/60 uppercase tracking-widest">Escenario Optimista</span>
+              <span className={`text-[11px] font-black tabular-nums ${item.monto_max >= 0 ? 'text-success/70' : 'text-error/70'}`}>
                 ${item.monto_max.toLocaleString()}
               </span>
             </div>
           </div>
-          <div className="mt-3 bg-imperial-accent/5 px-2 py-1.5 rounded-lg border border-imperial-accent/10">
-             <p className="text-[8px] text-imperial-accent font-black uppercase tracking-tighter italic text-center">
+          <div className="mt-3 bg-primary/5 px-2 py-1.5 rounded-lg border border-primary/10">
+             <p className="text-[8px] text-primary font-black uppercase tracking-tighter italic text-center">
                Cálculo basado en patrones históricos
              </p>
           </div>
@@ -91,22 +91,22 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
   };
 
   return (
-    <BaseCard className="w-full h-full flex flex-col group overflow-hidden border-imperial-bronze/20">
+    <BaseCard className="w-full h-full flex flex-col group overflow-hidden border-primary/10">
       <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none">
-        <TrendingUp size={120} className="text-imperial-gold" />
+        <TrendingUp size={120} className="text-primary" />
       </div>
 
       <div className="flex justify-between items-start relative z-10 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={16} className="text-imperial-gold animate-pulse" />
-            <h3 className="text-imperial-text-prime font-black text-xs uppercase tracking-[0.2em]">Forecasting 3M</h3>
+            <Sparkles size={16} className="text-primary animate-pulse" />
+            <h3 className="text-text-prime font-black text-xs uppercase tracking-[0.2em]">Forecasting 3M</h3>
           </div>
-          <p className="text-imperial-text-mute/40 text-[9px] font-bold uppercase tracking-[0.3em]">Proyección algorítmica de flujo neto</p>
+          <p className="text-text-muted/40 text-[9px] font-bold uppercase tracking-[0.3em]">Proyección algorítmica de flujo neto</p>
         </div>
         
-        <div className="px-3 py-1 bg-imperial-gold/10 rounded-full border border-imperial-gold/20">
-           <span className="text-[8px] font-black text-imperial-gold uppercase tracking-widest">IA Powered</span>
+        <div className="px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+           <span className="text-[8px] font-black text-primary uppercase tracking-widest">IA Powered</span>
         </div>
       </div>
 
@@ -116,30 +116,30 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorMax" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--imperial-accent)" stopOpacity={0.1}/>
-                  <stop offset="95%" stopColor="var(--imperial-accent)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--text-muted)" strokeOpacity={0.05} />
               <XAxis 
                 dataKey="name" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 800 }}
+                tick={{ fill: 'var(--text-muted)', fillOpacity: 0.3, fontSize: 9, fontWeight: 800 }}
                 dy={10}
               />
               <YAxis 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 800 }}
+                tick={{ fill: 'var(--text-muted)', fillOpacity: 0.3, fontSize: 9, fontWeight: 800 }}
                 tickFormatter={(value) => `$${(value/1000).toFixed(0)}k`}
               />
               <Tooltip content={<CustomTooltip />} />
-              <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" strokeWidth={1} />
+              <ReferenceLine y={0} stroke="var(--text-muted)" strokeOpacity={0.1} strokeWidth={1} />
               <Area 
                 type="monotone" 
                 dataKey="monto_max" 
-                stroke="var(--imperial-accent)" 
+                stroke="var(--primary)" 
                 strokeDasharray="5 5"
                 strokeWidth={1}
                 fillOpacity={1} 
@@ -149,7 +149,7 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
               <Area 
                 type="monotone" 
                 dataKey="monto_proyectado" 
-                stroke="var(--imperial-accent)" 
+                stroke="var(--primary)" 
                 strokeWidth={4}
                 fill="transparent"
                 name="Proyectado"

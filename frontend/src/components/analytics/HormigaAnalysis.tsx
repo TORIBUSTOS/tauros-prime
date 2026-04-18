@@ -54,18 +54,18 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
   };
 
   return (
-    <BaseCard className="w-full h-full flex flex-col gap-6 group overflow-hidden relative border-imperial-bronze/10">
+    <BaseCard className="w-full h-full flex flex-col gap-6 group overflow-hidden relative border-primary/10">
       <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-700 pointer-events-none">
-        <Bug size={120} className="text-imperial-bronze" />
+        <Bug size={120} className="text-primary" />
       </div>
 
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex items-center gap-2 mb-2">
-            <Bug size={16} className="text-imperial-bronze" />
-            <h3 className="text-imperial-text-prime font-black text-xs uppercase tracking-[0.2em]">Fugas de Capital (Hormiga)</h3>
+            <Bug size={16} className="text-primary" />
+            <h3 className="text-text-prime font-black text-xs uppercase tracking-[0.2em]">Fugas de Capital (Hormiga)</h3>
           </div>
-          <p className="text-imperial-text-mute/40 text-[9px] font-bold uppercase tracking-[0.3em]">
+          <p className="text-text-muted/40 text-[9px] font-bold uppercase tracking-[0.3em]">
             {selectedDesc ? `Detalle: ${selectedDesc}` : 'Análisis de egresos recurrentes de baja magnitud'}
           </p>
         </div>
@@ -73,7 +73,7 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
         {selectedDesc && (
           <button 
             onClick={() => setSelectedDesc(null)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all text-[9px] font-black uppercase tracking-widest text-imperial-text-prime"
+            className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all text-[9px] font-black uppercase tracking-widest text-text-prime"
           >
             <ChevronLeft size={12} />
             Volver
@@ -92,7 +92,7 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
               className="flex flex-col gap-3 h-full overflow-y-auto pr-1 custom-scrollbar"
             >
               {hormigas.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center opacity-30 italic text-sm text-imperial-text-mute py-8">
+                <div className="flex-1 flex flex-col items-center justify-center opacity-30 italic text-sm text-text-muted py-8">
                   <Target size={32} className="mb-4 opacity-20" />
                   No se detectaron fugas relevantes
                 </div>
@@ -101,27 +101,27 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
                   <button 
                     key={i} 
                     onClick={() => setSelectedDesc(h.descripcion)}
-                    className="flex items-center justify-between p-4 bg-[#131314]/40 rounded-2xl border border-white/5 hover:border-imperial-bronze/40 hover:bg-imperial-bronze/5 transition-all duration-300 group/item text-left w-full"
+                    className="flex items-center justify-between p-4 bg-surface/40 rounded-2xl border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 group/item text-left w-full"
                   >
                     <div className="flex flex-col gap-1 overflow-hidden">
-                      <span className="text-imperial-text-prime text-[11px] font-black uppercase truncate tracking-tight group-hover/item:text-imperial-bronze transition-colors flex items-center gap-2">
+                      <span className="text-text-prime text-[11px] font-black uppercase truncate tracking-tight group-hover/item:text-primary transition-colors flex items-center gap-2">
                         {h.descripcion}
                         <ExternalLink size={10} className="opacity-0 group-hover/item:opacity-100 transition-opacity" />
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[9px] text-imperial-text-mute/40 font-bold uppercase tracking-widest">{h.categoria}</span>
+                        <span className="text-[9px] text-text-muted/40 font-bold uppercase tracking-widest">{h.categoria}</span>
                         <div className="w-1 h-1 rounded-full bg-white/10"></div>
-                        <span className="text-[9px] text-imperial-bronze/70 font-black uppercase">
+                        <span className="text-[9px] text-primary/70 font-black uppercase">
                           {h.count}x transacciones
                         </span>
                       </div>
                     </div>
                     
                     <div className="text-right flex flex-col shrink-0">
-                      <span className="text-rose-400 font-black text-sm tabular-nums tracking-tighter">
+                      <span className="text-error font-black text-sm tabular-nums tracking-tighter">
                         -${h.total.toLocaleString()}
                       </span>
-                      <span className="text-[9px] text-imperial-text-mute/30 font-bold uppercase tracking-widest">Impacto Mes</span>
+                      <span className="text-[9px] text-text-muted/30 font-bold uppercase tracking-widest">Impacto Mes</span>
                     </div>
                   </button>
                 ))
@@ -131,14 +131,14 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
                 <motion.div 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  className="mt-auto p-4 bg-imperial-bronze/5 border border-imperial-bronze/10 rounded-2xl relative group-hover:border-imperial-bronze/20 transition-colors"
+                  className="mt-auto p-4 bg-primary/5 border border-primary/10 rounded-2xl relative group-hover:border-primary/20 transition-colors"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                     <TrendingDown size={14} className="text-imperial-bronze" />
-                     <span className="text-[10px] font-black text-imperial-bronze uppercase tracking-widest">Potencial de Optimización</span>
+                     <TrendingDown size={14} className="text-primary" />
+                     <span className="text-[10px] font-black text-primary uppercase tracking-widest">Potencial de Optimización</span>
                   </div>
-                  <p className="text-[11px] text-imperial-text-prime/70 italic leading-snug">
-                    La eliminación estratégica de estas fugas redireccionaría <b className="text-imperial-bronze not-italic">${totalPossibleSavings.toLocaleString()}</b> a tu balance este mes.
+                  <p className="text-[11px] text-text-prime/70 italic leading-snug">
+                    La eliminación estratégica de estas fugas redireccionaría <b className="text-primary not-italic">${totalPossibleSavings.toLocaleString()}</b> a tu balance este mes.
                   </p>
                 </motion.div>
               )}
@@ -155,13 +155,13 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
                 {selectedDetails.map((mov, idx) => (
                   <div key={idx} className="flex items-center justify-between p-3 bg-white/2 rounded-xl border border-white/5">
                     <div className="flex flex-col">
-                      <span className="text-[10px] text-imperial-text-prime font-bold uppercase">{mov.categoria}</span>
-                      <div className="flex items-center gap-2 text-[8px] text-imperial-text-mute/50 font-black uppercase">
+                      <span className="text-[10px] text-text-prime font-bold uppercase">{mov.categoria}</span>
+                      <div className="flex items-center gap-2 text-[8px] text-text-muted/50 font-black uppercase">
                         <Calendar size={8} />
                         {new Date(mov.fecha).toLocaleDateString()}
                       </div>
                     </div>
-                    <span className="text-[11px] font-black tabular-nums text-rose-400">
+                    <span className="text-[11px] font-black tabular-nums text-error">
                       -${Math.abs(mov.monto).toLocaleString()}
                     </span>
                   </div>
@@ -170,7 +170,7 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
 
               <button 
                 onClick={handleOptimize}
-                className="w-full py-3 bg-imperial-bronze text-black font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-imperial-gold transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-primary text-background font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-gold transition-colors flex items-center justify-center gap-2"
               >
                 <Target size={14} />
                 Optimizar Egresos Recurrentes

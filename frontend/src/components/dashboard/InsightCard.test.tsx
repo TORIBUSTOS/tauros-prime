@@ -125,8 +125,8 @@ describe('InsightCard', () => {
     const { container } = renderWithTheme(<InsightCard insight={mockInsightPatron} />)
 
     const iconBadge = container.querySelector('.icon-badge')
-    // Medium confidence (0.5-0.8) should have text-imperial-bronze class
-    expect(iconBadge).toHaveClass('text-imperial-bronze')
+    // Medium confidence (0.5-0.8) should have text-primary class
+    expect(iconBadge).toHaveClass('text-primary')
   })
 
   it('should apply class based on low confidence', () => {
@@ -147,7 +147,7 @@ describe('InsightCard', () => {
     const { container } = renderWithTheme(<InsightCard insight={mockInsightPatron} />)
 
     const typeSpan = container.querySelector('.insight-type')
-    expect(typeSpan).toHaveClass('text-imperial-bronze')
+    expect(typeSpan).toHaveClass('text-primary')
   })
 
   it('should display confidence value with correct class', () => {

@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;500;800&family=Roboto+Mono:wght@500;700&display=swap');
+
+/* ==========================================================================
+   DESIGN TOKENS - TAUROS PRIME v2
+   Single Source of Truth for Design Variables
+   ========================================================================== */
+
+:root {
+  /* --- 1. PRIMITIVE TOKENS (Base Palette) --- */
+  
+  /* Imperial Palette (Metales y Tierra) */
+  --p-imperial-gold: #D4AF37;
+  --p-imperial-gold-rgb: 212, 175, 55;
+  --p-imperial-gold-bright: #FFD700; /* Oro más puro */
+  --p-imperial-gold-muted: #8B7330;
+  
+  --p-imperial-bronze: #C09891;
+  --p-imperial-bronze-rgb: 192, 152, 145;
+  --p-imperial-bronze-muted: #775144;
+  
+  --p-imperial-silver: #A8A9AD;
+  --p-imperial-silver-bright: #D1D5DB;
+  
+  /* Grayscale & Backgrounds */
+  --p-black-vault: #0a0a0b; /* Más profundo */
+  --p-gray-900: #131314;
+  --p-gray-800: #1E1F20;
+  --p-gray-950: #0e0e0f;
+  
+  /* Text */
+  --p-text-bone: #ffffff; /* Ex-Bone, now Pure White */
+  --p-text-muted: #94a3b8; /* Neutral Slate */
+  
+  /* Semantic Bases */
+  --p-success: #A3E635;
+  --p-error: #EF4444;
+  --p-warning: #F59E0B;
+
+  /* --- 2. SEMANTIC TOKENS (Default: FINANCE FIRST 💰) --- */
+  
+  /* Colors */
+  --t-background: #09090a; /* Deep Tech Black */
+  --t-foreground: #ffffff;
+  
+  --t-accent: var(--p-imperial-bronze);
+  --t-accent-rgb: var(--p-imperial-bronze-rgb);
+  --t-accent-gold: var(--p-imperial-gold);
+  --t-accent-gold-rgb: var(--p-imperial-gold-rgb);
+  
+  --t-surface: #111112;
+  --t-surface-deep: #050505;
+  
+  --t-text-primary: var(--p-text-bone);
+  --t-text-muted: var(--p-text-muted);
+  
+  --t-success: var(--p-success);
+  --t-error: var(--p-error);
+  --t-warning: var(--p-warning);
+
+  /* Typography */
+  --t-font-sans: 'Inter', sans-serif;
+  --t-font-mono: 'Roboto Mono', monospace;
+  
+  --t-metric-font: var(--t-font-mono); /* Números técnicos */
+  --t-metric-value-size: 2.25rem;
+  --t-metric-value-line-height: 1;
+  --t-metric-value-weight: 700;
+  --t-metric-value-color: #ffffff;
+  
+  --t-metric-label-size: 0.8rem;
+  --t-metric-label-weight: 800;
+  --t-metric-label-color: var(--p-imperial-bronze);
+  
+  --t-metric-change-positive: var(--p-success);
+  --t-metric-change-negative: var(--p-error);
+
+  /* Forms & Layers */
+  --t-card-bg: #111112;
+  --t-card-border: 1px solid rgba(255, 255, 255, 0.03);
+  --t-card-radius: 2px; /* Brutalist/Sharp */
+  --t-card-padding: 1.25rem;
+  --t-card-gap: 0.5rem;
+  
+  /* Glass tokens */
+  --t-glass-blur: 0px; 
+  --t-glass-opacity: 1;
+  
+  /* Spacing */
+  --t-section-gap: 1.25rem;
+  --t-component-gap: 0.75rem;
+
+  /* Shadows */
+  --t-shadow-card: 0 4px 0px rgba(0, 0, 0, 0.8); /* Shadow rígida */
+  --t-shadow-card-hover: 0 6px 0px rgba(0, 0, 0, 0.9);
+
+  /* Transitions */
+  --t-transition-duration: 0.15s;
+  --t-transition-timing: linear;
+}
+
+/* --- 3. THEME OVERRIDES: PREMIUM GLASS (✨) --- */
+
+:root[data-theme='premium-glass'] {
+  --t-background: #08080c; /* Deep Midnight Blue Tint */
+  --t-accent: #facc15; /* More vibrant Yellow-Gold */
+  --t-accent-rgb: 250, 204, 21; 
+  --t-accent-gold: #fde047; /* Bright Sun Gold */
+  --t-accent-gold-rgb: 253, 224, 71;
+  
+  /* Text Colors */
+  --t-foreground: #ffffff;
+  --t-text-primary: #ffffff;
+  --t-metric-value-color: #ffffff;
+  --t-text-muted: rgba(255, 255, 255, 0.5);
+  
+  /* Fonts */
+  --t-font-sans: 'Outfit', sans-serif;
+  --t-metric-font: var(--t-font-sans);
+  
+  --t-metric-value-size: 2.75rem;
+  --t-metric-value-line-height: 1.1;
+  --t-metric-label-size: 0.75rem;
+  --t-metric-label-weight: 600;
+  --t-metric-label-color: var(--t-accent-gold);
+  
+  /* Forms */
+  --t-card-radius: 40px; /* Even more rounded and organic */
+  --t-card-bg: rgba(255, 255, 255, 0.03);
+  --t-card-border: 1px solid rgba(250, 204, 21, 0.15);
+  --t-card-padding: 2rem;
+  --t-card-gap: 1.25rem;
+
+  /* Glass tokens */
+  --t-glass-blur: 32px; /* Heavy blur for premium feel */
+  --t-glass-opacity: 0.5;
+  
+  --t-section-gap: 2.5rem;
+  --t-component-gap: 1.5rem;
+  
+  --t-shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --t-shadow-card-hover: 0 35px 80px -15px rgba(250, 204, 21, 0.15);
+  
+  --t-transition-duration: 0.4s;
+  --t-transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy feel */
+}
+
+/* --- 4. TAILWIND 4 INTEGRATION --- */
+
+@theme inline {
+  --color-background: var(--t-background);
+  --color-foreground: var(--t-foreground);
+  
+  --color-primary: var(--t-accent);
+  --color-gold: var(--t-accent-gold);
+  --color-surface: var(--t-surface);
+  --color-surface-deep: var(--t-surface-deep);
+  
+  --color-text-prime: var(--t-text-primary);
+  --color-text-muted: var(--t-text-muted);
+  
+  --color-success: var(--t-success);
+  --color-error: var(--t-error);
+  --color-warning: var(--t-warning);
+  
+  --font-sans: var(--t-font-sans);
+  --font-mono: var(--t-font-mono);
+  
+  --spacing-section: var(--t-section-gap);
+  --spacing-component: var(--t-component-gap);
+  
+  --radius-card: var(--t-card-radius);
+}
