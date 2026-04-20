@@ -53,7 +53,7 @@ function RootNodeRow({ nodo }: { nodo: ReportNode }) {
             <div className="flex items-baseline gap-1">
                <span className="text-xs text-text-muted/30 font-light">$</span>
                <span className={`text-2xl font-black tracking-tight tabular-nums ${isIngreso ? 'text-success' : 'text-error'} ${isFtStyle ? 'font-mono text-xl' : ''}`}>
-                 {nodo.total.toLocaleString()}
+                 {nodo.total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                </span>
             </div>
           </div>
@@ -103,7 +103,7 @@ function CategoryRow({ nodo, isIngreso }: { nodo: ReportNode, isIngreso: boolean
 
         <div className="flex items-center gap-6">
           <span className={`text-sm font-black text-text-prime tabular-nums ${isFtStyle ? 'font-mono' : ''}`}>
-            ${nodo.total.toLocaleString()}
+            ${nodo.total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
           <button
             onClick={handleDrillDown}
@@ -141,7 +141,7 @@ function SubCategoryRow({ nodo, isIngreso }: { nodo: ReportNode, isIngreso: bool
           <span className={`text-xs text-text-muted font-medium ${isFtStyle ? 'font-mono uppercase text-[10px]' : ''}`}>{nodo.nombre}</span>
         </div>
         <div className="flex items-center gap-3">
-           <span className={`text-xs font-bold text-text-prime/40 tabular-nums ${isFtStyle ? 'font-mono' : ''}`}>${nodo.total.toLocaleString()}</span>
+           <span className={`text-xs font-bold text-text-prime/40 tabular-nums ${isFtStyle ? 'font-mono' : ''}`}>${nodo.total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
            <List size={12} className={`opacity-0 group-hover/sub:opacity-40 transition-opacity ${isExpanded ? 'opacity-100 text-primary' : ''}`} />
         </div>
       </div>
@@ -162,7 +162,7 @@ function SubCategoryRow({ nodo, isIngreso }: { nodo: ReportNode, isIngreso: bool
                   <td className="px-6 py-3 text-text-muted/50 font-mono">{m.fecha}</td>
                   <td className="px-6 py-3 text-text-prime/70 font-bold uppercase tracking-tight">{m.descripcion}</td>
                   <td className={`px-6 py-3 text-right font-black tabular-nums ${isIngreso ? 'text-success/80' : 'text-error/80'}`}>
-                    {isIngreso ? '+' : '-'}${Math.abs(m.monto).toLocaleString()}
+                    {(isIngreso ? '+' : '-') + '$' + Math.abs(m.monto).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </td>
                 </tr>
               ))}

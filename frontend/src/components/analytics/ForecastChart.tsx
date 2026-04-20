@@ -110,46 +110,46 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex-1 h-[300px] relative z-10 -ml-4">
+      <div className="h-[300px] w-full relative z-10 -ml-4">
         {isMounted && (
-          <ResponsiveContainer width="100%" height="100%" minHeight={0}>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorMax" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.1}/>
-                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="oklch(70% 0.14 290)" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="oklch(70% 0.14 290)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--text-muted)" strokeOpacity={0.05} />
-              <XAxis 
-                dataKey="name" 
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'var(--text-muted)', fillOpacity: 0.3, fontSize: 9, fontWeight: 800 }}
+                tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 800 }}
                 dy={10}
               />
-              <YAxis 
+              <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'var(--text-muted)', fillOpacity: 0.3, fontSize: 9, fontWeight: 800 }}
+                tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 9, fontWeight: 800 }}
                 tickFormatter={(value) => `$${(value/1000).toFixed(0)}k`}
               />
               <Tooltip content={<CustomTooltip />} />
-              <ReferenceLine y={0} stroke="var(--text-muted)" strokeOpacity={0.1} strokeWidth={1} />
-              <Area 
-                type="monotone" 
-                dataKey="monto_max" 
-                stroke="var(--primary)" 
+              <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" strokeWidth={1} />
+              <Area
+                type="monotone"
+                dataKey="monto_max"
+                stroke="oklch(70% 0.14 290)"
                 strokeDasharray="5 5"
                 strokeWidth={1}
-                fillOpacity={1} 
-                fill="url(#colorMax)" 
+                fillOpacity={1}
+                fill="url(#colorMax)"
                 name="Optimista"
               />
-              <Area 
-                type="monotone" 
-                dataKey="monto_proyectado" 
-                stroke="var(--primary)" 
+              <Area
+                type="monotone"
+                dataKey="monto_proyectado"
+                stroke="oklch(70% 0.14 290)"
                 strokeWidth={4}
                 fill="transparent"
                 name="Proyectado"

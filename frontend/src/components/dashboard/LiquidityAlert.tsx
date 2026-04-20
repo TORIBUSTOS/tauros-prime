@@ -3,7 +3,7 @@
 import React from 'react';
 import { AlertTriangle, TrendingDown, ShieldAlert } from 'lucide-react';
 import BaseCard from '@/components/shared/BaseCard';
-import { useTheme } from '@/context/ThemeContext';
+
 
 interface LiquidityAlertProps {
   currentBalance: number;
@@ -16,7 +16,7 @@ const LiquidityAlert: React.FC<LiquidityAlertProps> = ({
   projectedBalance,
   confidence
 }) => {
-  const { currentTheme } = useTheme();
+
   const isCritical = projectedBalance < 0;
   const isWarning = !isCritical && projectedBalance < currentBalance * 0.2;
 
@@ -59,16 +59,8 @@ const LiquidityAlert: React.FC<LiquidityAlertProps> = ({
         <div className="flex items-center justify-between pt-2 border-t border-white/5 alert-footer">
           <div className="flex items-center gap-2">
             <TrendingDown className={`w-4 h-4 ${isCritical ? 'text-error' : 'text-primary'}`} />
-            <span className="text-[10px] font-bold text-muted/40 uppercase">Tendencia Negativa Detectada</span>
           </div>
-          <button className={`
-            px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 mitigate-button
-            ${isCritical 
-              ? 'bg-error text-white hover:bg-error/80 shadow-[0_0_15px_rgba(239,68,68,0.3)]' 
-              : 'border border-primary text-primary hover:bg-primary hover:text-black'}
-          `}>
-            Mitigar Riesgo
-          </button>
+
         </div>
       </div>
       {/* Elemento para satisfy .alert-blur selector si es necesario, aunque no tenga efecto visual fuerte */}

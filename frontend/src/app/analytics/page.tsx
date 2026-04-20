@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import FlowChart from '@/components/analytics/FlowChart';
 import CategoryPieChart from '@/components/analytics/CategoryPieChart';
 import HormigaAnalysis from '@/components/analytics/HormigaAnalysis';
@@ -20,6 +20,7 @@ export default function AnalyticsPage() {
   const { selectedPeriod } = usePeriod();
 
   const fetchData = async (period: string) => {
+    if (!period) return;
     setLoading(true);
     try {
       const [movData, plData, foreData] = await Promise.all([
@@ -41,7 +42,13 @@ export default function AnalyticsPage() {
     fetchData(selectedPeriod);
   }, [selectedPeriod]);
 
-  const burnRate = reportData ? (reportData.egresos_total / 30) : 0;
+  const burnRate = useMemo(() => {
+    if (!reportData || !selectedPeriod) return 0;
+    const [year, month] = selectedPeriod.split('-').map(Number);
+    const daysInMonth = new Date(year, month, 0).getDate();
+    return reportData.egresos_total / daysInMonth;
+  }, [reportData, selectedPeriod]);
+
   const savingsRate = reportData ? (reportData.resultado_neto / reportData.ingresos_total) * 100 : 0;
 
   // ─── Health Score dinámico ───────────────────────────────────────────────
@@ -150,7 +157,7 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <MetricCard
                 label="Burn Rate Diario"
-                value={burnRate.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                value={burnRate.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 subtitle="Promedio de egresos diarios"
                 accent="bronze"
              />

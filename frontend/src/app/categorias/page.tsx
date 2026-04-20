@@ -83,8 +83,8 @@ function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; ha
           </div>
 
           {/* Stats */}
-          <span className="text-[11px] font-black text-text-muted/50 tabular-nums hidden sm:block w-24 text-right">{sub.n_movimientos.toLocaleString('es-AR')}</span>
-          <span className="text-[11px] text-text-muted/30 tabular-nums hidden sm:block w-12 text-right">{sub.pct_movimientos}%</span>
+          <span className="text-[11px] font-black text-text-muted/80 tabular-nums hidden sm:block w-24 text-right">{sub.n_movimientos.toLocaleString('es-AR')}</span>
+          <span className="text-[11px] text-text-muted/70 tabular-nums hidden sm:block w-12 text-right">{sub.pct_movimientos}%</span>
           <span className="text-[11px] font-black text-error tabular-nums w-28 text-right">{fmt(sub.gasto)}</span>
           <span className="text-[11px] font-black text-primary tabular-nums w-12 text-right">{sub.pct_gasto}%</span>
         </div>
@@ -111,7 +111,7 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
             onClick={() => toggle(cat.categoria)}
             className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors text-left"
           >
-            <ChevronRight size={14} className={`text-primary/40 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
+            <ChevronRight size={14} className={`text-primary/70 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
 
             {/* Nombre */}
             <span className="flex-1 text-[12px] font-black text-text-prime uppercase tracking-tight">
@@ -129,29 +129,29 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
             {/* Stats */}
             <div className="flex items-center gap-6 shrink-0">
               <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Movs</p>
+                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Movs</p>
                 <p className="text-[11px] font-black text-text-prime tabular-nums">{cat.n_movimientos}</p>
               </div>
               <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">%Movs</p>
-                <p className="text-[11px] font-black text-text-muted/60 tabular-nums">{cat.pct_movimientos}%</p>
+                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">%Movs</p>
+                <p className="text-[11px] font-black text-text-muted/90 tabular-nums">{cat.pct_movimientos}%</p>
               </div>
               <div className="text-right">
-                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Gasto</p>
+                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Gasto</p>
                 <p className="text-[11px] font-black text-error tabular-nums">{fmt(cat.gasto)}</p>
               </div>
               <div className="text-right w-14">
-                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">%$</p>
+                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">%$</p>
                 <p className="text-[11px] font-black text-primary tabular-nums">{cat.pct_gasto}%</p>
               </div>
               <div className="text-right hidden md:block w-12">
-                <p className="text-[9px] text-text-muted/40 uppercase tracking-widest">Reglas</p>
-                <p className="text-[11px] font-black text-text-muted/50 tabular-nums">{cat.n_reglas}</p>
+                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Reglas</p>
+                <p className="text-[11px] font-black text-text-muted/80 tabular-nums">{cat.n_reglas}</p>
               </div>
               {/* Subcats badge */}
               {cat.subcategorias.length > 0 && (
                 <div className="hidden md:flex items-center gap-1 shrink-0">
-                  <span className="text-[9px] font-black text-primary/40 bg-primary/5 border border-primary/10 px-1.5 py-0.5 rounded-full">
+                  <span className="text-[9px] font-black text-primary/80 bg-primary/10 border border-primary/25 px-1.5 py-0.5 rounded-full">
                     {cat.subcategorias.length} sub
                   </span>
                 </div>
@@ -355,7 +355,7 @@ function TabMotor({
                       </span>
                     </td>
                     <td className="px-4 py-3 text-[10px] text-text-muted/40">{rule.subcategoria ?? '—'}</td>
-                    <td className="px-4 py-3 text-[11px] font-black text-text-muted/60 tabular-nums">{rule.peso.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-[11px] font-black text-text-muted/90 tabular-nums">{rule.peso.toFixed(2)}</td>
                     <td className="px-4 py-3 text-[11px] text-text-muted/40 tabular-nums">{rule.veces_usada}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -505,7 +505,7 @@ export default function CategoriasPage() {
         <h1 className="text-2xl font-black tracking-tighter text-text-prime uppercase italic">
           Gestión de <span className="text-primary not-italic">Categorías</span>
         </h1>
-        <p className="text-xs text-text-muted/40 font-medium">
+        <p className="text-xs text-text-muted/80 font-medium">
           Configurá el motor cascada, creá categorías y subcategorías sin tocar código.
         </p>
       </header>
@@ -519,7 +519,7 @@ export default function CategoriasPage() {
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
               tab === t.id
                 ? 'bg-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]'
-                : 'text-text-muted/40 hover:text-text-prime hover:bg-white/5'
+                : 'text-text-muted/80 hover:text-text-prime hover:bg-white/5'
             }`}
           >
             {t.icon}

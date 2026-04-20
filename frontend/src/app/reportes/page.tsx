@@ -20,6 +20,7 @@ export default function ReportesPage() {
 
   useEffect(() => {
     async function loadReport() {
+      if (!selectedPeriod) return;
       try {
         setLoading(true);
         const data = await apiService.getReportPL(selectedPeriod);
@@ -34,6 +35,30 @@ export default function ReportesPage() {
     }
     loadReport();
   }, [selectedPeriod]);
+
+  const exportCSV = () => {
+    if (!report) return;
+    const headers = ['Nivel 1', 'Nivel 2', 'Nivel 3', 'Total', 'Variación %'];
+    const rows: string[][] = [];
+
+    report.nodos.forEach(root => {
+      rows.push([root.nombre, '', '', root.total.toString(), '']);
+      root.hijos.forEach(cat => {
+        rows.push([root.nombre, cat.nombre, '', cat.total.toString(), (cat.variacion || 0).toString()]);
+        cat.hijos.forEach(sub => {
+          rows.push([root.nombre, cat.nombre, sub.nombre, sub.total.toString(), (sub.variacion || 0).toString()]);
+        });
+      });
+    });
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `reporte_pl_${selectedPeriod}.csv`);
+    link.click();
+  };
 
   if (loading) return <LoadingImperial message="Extrayendo datos de la Bóveda Financiera..." />;
 
@@ -59,7 +84,10 @@ export default function ReportesPage() {
              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
              {selectedPeriod}
           </div>
-          <button className="text-text-prime text-[10px] font-black px-6 py-3 rounded-xl hover:bg-primary hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 group">
+          <button 
+            onClick={exportCSV}
+            className="text-text-prime text-[10px] font-black px-6 py-3 rounded-xl hover:bg-primary hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 group"
+          >
             <Download size={14} className="group-hover:scale-110 transition-transform" />
             Exportar
           </button>
@@ -135,7 +163,7 @@ function SummaryCard({ title, value, color, label, highlight = false, icon }: an
         <div className="flex items-baseline gap-1">
           <span className="text-text-muted/30 text-xl font-light">$</span>
           <span className={`text-2xl font-black tracking-tighter tabular-nums ${color} drop-shadow-sm ${isFtStyle ? 'font-mono text-xl' : ''}`}>
-            {value.toLocaleString()}
+            {value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         </div>
         <span className="text-[10px] text-text-muted/40 mt-1 font-bold uppercase tracking-wider">{label}</span>

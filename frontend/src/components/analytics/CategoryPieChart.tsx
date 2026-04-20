@@ -19,12 +19,12 @@ interface CategoryPieChartProps {
 }
 
 const CHART_COLORS = [
-  'var(--primary)',
-  'var(--gold)',
-  'var(--success)',
-  'rgba(var(--t-accent-rgb), 0.7)',
-  'rgba(var(--t-accent-gold-rgb), 0.6)',
-  'var(--primary)', // Fallback / Repeat
+  'oklch(70% 0.14 290)',
+  'oklch(79% 0.12 82)',
+  'oklch(76% 0.155 145)',
+  'oklch(70% 0.14 290 / 0.7)',
+  'oklch(79% 0.12 82 / 0.6)',
+  'oklch(52% 0.10 285)',
 ];
 
 const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
@@ -170,7 +170,7 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex-1 h-[340px] relative z-10">
+      <div className="h-[340px] w-full relative z-10">
         {!data ? (
            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-30 italic text-sm text-text-muted">
              <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />

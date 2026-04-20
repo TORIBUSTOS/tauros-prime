@@ -102,10 +102,10 @@ function TopBar() {
     <div className="flex items-center justify-between gap-4 px-4 md:px-6 py-3 border-b border-white/5 bg-background/60 backdrop-blur-xl sticky top-0 z-40">
       {/* Left: Breadcrumb */}
       <div className="flex items-center gap-3 min-w-0">
-        <div className="hidden md:flex items-center gap-2 text-[10px] text-text-muted/30 font-bold uppercase tracking-[0.2em]">
+        <div className="hidden md:flex items-center gap-2 text-[10px] text-text-muted/60 font-bold uppercase tracking-[0.2em]">
           <span>TAUROS</span>
-          <span className="text-primary/30">/</span>
-          <span className="text-text-muted/50">{page.breadcrumb}</span>
+          <span className="text-primary/50">/</span>
+          <span className="text-text-muted/90">{page.breadcrumb}</span>
         </div>
         {/* Mobile: show page name only */}
         <span className="md:hidden text-xs font-black text-text-prime uppercase tracking-widest">{page.breadcrumb}</span>
@@ -116,7 +116,7 @@ function TopBar() {
         <PeriodDropdown />
         <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-card bg-white/[0.02] border border-white/5">
           <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shadow-[0_0_6px_rgba(var(--color-success),0.4)]" />
-          <span className="text-[9px] font-black text-text-muted/40 uppercase tracking-widest">En Línea</span>
+          <span className="text-[9px] font-black text-text-muted/80 uppercase tracking-widest">En Línea</span>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ function SidebarContent() {
               )}
               
               <div className="relative z-10 flex items-center gap-3 w-full">
-                <Icon className={`w-5 h-5 transition-transform duration-500 group-hover:scale-110 ${isActive ? "text-primary" : "text-text-muted/40 group-hover:text-primary/70"}`} />
+                <Icon className={`w-5 h-5 transition-transform duration-500 group-hover:scale-110 ${isActive ? "text-primary" : "text-text-muted/70 group-hover:text-primary/70"}`} />
                 <span className={`text-[13px] tracking-wide transition-all ${isActive ? "font-black" : "font-medium"}`}>
                   {item.name}
                 </span>
@@ -207,7 +207,7 @@ function SidebarContent() {
       {/* Bottom: Theme Toggle Only */}
       <div className="mt-auto pt-4 border-t border-white/5">
         <div className="p-3 rounded-card bg-surface/50 border border-white/5 backdrop-blur-sm">
-          <label className="text-[10px] text-text-muted/40 uppercase tracking-widest block mb-2 font-semibold">
+          <label className="text-[10px] text-text-muted/75 uppercase tracking-widest block mb-2 font-semibold">
             Tema Visual
           </label>
           <ThemeToggle />

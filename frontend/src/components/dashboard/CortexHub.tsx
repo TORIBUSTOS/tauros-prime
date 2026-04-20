@@ -113,15 +113,6 @@ const CortexHub: React.FC<CortexHubProps> = ({
              />
              
              {/* Future: Add more alert types like "Spending Spikes" */}
-             <div className="p-4 rounded-xl border border-white/5 bg-white/[0.02] opacity-50 pointer-events-none grayscale">
-                <div className="flex items-center gap-3 mb-2">
-                  <TrendingUp size={16} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Análisis de Tendencia</span>
-                </div>
-                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full w-2/3 bg-primary" />
-                </div>
-             </div>
           </div>
         )}
       </div>
@@ -135,13 +126,9 @@ const CortexHub: React.FC<CortexHubProps> = ({
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar size={10} />
-            Scan: <span className="text-prime">Every 24h</span>
+            Scan: <span className="text-prime">Bajo demanda</span>
           </div>
         </div>
-        
-        <button className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary hover:underline transition-all">
-          Optimizar <ChevronRight size={10} />
-        </button>
       </div>
 
       <style jsx global>{`

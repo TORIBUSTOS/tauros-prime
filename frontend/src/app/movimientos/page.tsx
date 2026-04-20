@@ -72,6 +72,29 @@ function MovimientosContent() {
 
   const safeSetPage = (p: number) => setCurrentPage(Math.min(Math.max(1, p), totalPages));
 
+  const exportToCSV = () => {
+    if (filteredMovements.length === 0) return;
+    
+    const headers = ['Fecha', 'Descripción', 'Categoría', 'Subcategoría', 'Tipo', 'Monto', 'Confianza AI'];
+    const rows = filteredMovements.map(m => [
+      m.fecha,
+      `"${m.descripcion.replace(/"/g, '""')}"`,
+      m.categoria,
+      m.subcategoria || '',
+      m.tipo,
+      m.monto,
+      m.confianza
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `auditoria_tauros_${selectedPeriod}.csv`);
+    link.click();
+  };
+
   if (loading) return <LoadingImperial message="Recuperando archivos de la Bóveda..." />;
 
   return (
@@ -92,7 +115,10 @@ function MovimientosContent() {
           </div>
         </div>
 
-        <button className="group flex items-center gap-3 bg-white/[0.02] text-primary text-[10px] font-black px-6 py-3 rounded-xl border border-primary/10 hover:border-primary/40 hover:bg-primary/5 transition-all uppercase tracking-widest shadow-xl">
+        <button 
+          onClick={exportToCSV}
+          className="group flex items-center gap-3 bg-white/[0.02] text-primary text-[10px] font-black px-6 py-3 rounded-xl border border-primary/10 hover:border-primary/40 hover:bg-primary/5 transition-all uppercase tracking-widest shadow-xl"
+        >
           <Download size={14} className="transition-transform group-hover:-translate-y-1" />
           Exportar Auditoría
         </button>

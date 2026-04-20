@@ -2,7 +2,7 @@
 
 import React from 'react';
 import BaseCard from '@/components/shared/BaseCard';
-import { useTheme } from '@/context/ThemeContext';
+
 
 interface MetricCardProps {
   label: string;
@@ -12,7 +12,6 @@ interface MetricCardProps {
   accent?: 'gold' | 'bronze' | 'none';
   onClick?: () => void;
   className?: string;
-  colorizeValue?: boolean;
   valueClassName?: string;
 }
 
@@ -24,21 +23,13 @@ const MetricCard: React.FC<MetricCardProps> = ({
   accent = 'none',
   onClick,
   className = '',
-  colorizeValue = false,
   valueClassName = ''
 }) => {
-  const { currentTheme } = useTheme();
-
-  const isNumericValue = typeof value === 'number';
-  const semanticColorClass = colorizeValue && isNumericValue
-    ? (value >= 0 ? 'text-success' : 'text-error')
-    : '';
-
-  const finalValueColorClass = valueClassName || semanticColorClass || 'text-foreground';
+  const finalValueColorClass = valueClassName || 'text-foreground';
 
   return (
     <BaseCard
-      accent={accent}
+      accent="none"
       onClick={onClick}
       className={`metric-card h-full flex flex-col justify-center ${className}`}
       hoverable={!!onClick}

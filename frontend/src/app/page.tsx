@@ -71,9 +71,13 @@ export default function DashboardPage() {
   };
 
   const nextMonthForecast = forecastData?.forecast?.[0];
-  const projectedNet = nextMonthForecast?.forecast.reduce((acc, item) => acc + item.expected_total, 0) || 0;
-  const currentBalance = summary?.balance || 0;
-  const confidence = nextMonthForecast?.forecast[0]?.confidence || 0.85;
+  const projectedNet = nextMonthForecast?.forecast.reduce((acc, item) => acc + item.expected_total, 0) ?? 0;
+  const currentBalance = summary?.balance ?? 0;
+  const projectedBalance = currentBalance + projectedNet;
+  const forecastItems = nextMonthForecast?.forecast ?? [];
+  const confidence = forecastItems.length > 0
+    ? forecastItems.reduce((s, f) => s + f.confidence, 0) / forecastItems.length
+    : 0;
 
   if ((loading || isPeriodLoading) && !importing) {
     return (
@@ -117,9 +121,9 @@ export default function DashboardPage() {
               <span className="text-[9px] font-black text-primary uppercase tracking-widest">Secure</span>
             </div>
           </div>
-          <p className="text-[10px] text-text-muted/40 font-medium">
-            Panel de control financiero — TAUROS v2.5
-          </p>
+            <p className="text-[10px] text-text-muted/40 font-medium">
+              Panel de control financiero
+            </p>
         </div>
       </header>
 
@@ -135,7 +139,6 @@ export default function DashboardPage() {
               <MetricCard 
                 label="Balance Imperial" 
                 value={currentBalance.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
-                trend={2.4}
                 accent="gold"
                 valueClassName={currentBalance >= 0 ? 'text-success' : 'text-error'}
               />
@@ -183,7 +186,7 @@ export default function DashboardPage() {
           <CortexHub 
             insights={insights?.insights || []}
             currentBalance={currentBalance}
-            projectedBalance={projectedNet}
+            projectedBalance={projectedBalance}
             confidence={confidence}
           />
         </div>

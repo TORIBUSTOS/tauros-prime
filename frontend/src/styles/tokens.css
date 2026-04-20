@@ -41,7 +41,7 @@
   /* Text */
   --p-text-primary:   oklch(96% 0     0);
   --p-text-secondary: oklch(65% 0.015 280);
-  --p-text-muted:     oklch(42% 0.012 280);
+  --p-text-muted:     oklch(62% 0.012 280);
   --p-text-purple:    oklch(72% 0.12  290);
 
   /* ── 2. SEMANTIC TOKENS (consume primitives) ─────────────────────────── */

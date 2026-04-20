@@ -34,7 +34,7 @@ def get_movements(period: str = Query(None, pattern=r"^\d{4}-\d{2}$"), categoria
         query = query.filter(Movimiento.fecha.like(f"{period}%"))
     if categoria:
         query = query.filter(Movimiento.categoria == categoria)
-    return query.order_by(Movimiento.fecha.desc()).limit(500).all()
+    return query.order_by(Movimiento.fecha.desc()).limit(5000).all()
 
 @router.get("/summary", response_model=SummaryResponse)
 def get_summary(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):
