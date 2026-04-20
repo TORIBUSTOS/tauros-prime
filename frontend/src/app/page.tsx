@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Shield, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import MetricCard from '@/components/dashboard/MetricCard';
 import TopCategorias from '@/components/dashboard/TopCategorias';
 import CortexHub from '@/components/dashboard/CortexHub';
@@ -116,10 +116,6 @@ export default function DashboardPage() {
             <h1 className="text-xl font-black text-foreground tracking-tighter uppercase italic font-sans">
               Digital <span className="text-primary not-italic">Vault</span>
             </h1>
-            <div className="bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 flex items-center gap-1.5">
-              <Shield className="w-2.5 h-2.5 text-primary" />
-              <span className="text-[9px] font-black text-primary uppercase tracking-widest">Secure</span>
-            </div>
           </div>
             <p className="text-[10px] text-text-muted/40 font-medium">
               Panel de control financiero

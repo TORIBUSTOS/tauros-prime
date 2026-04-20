@@ -202,7 +202,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div>
                   <h3 className="text-prime font-black text-sm uppercase tracking-[0.2em]">Estado de Salud</h3>
-                  <p className="text-[10px] font-bold text-muted/40 uppercase">Auditoría en Tiempo Real</p>
+                  <p className="text-[10px] font-bold text-muted/40 uppercase">Análisis del Período</p>
                 </div>
              </div>
              
@@ -226,8 +226,8 @@ export default function AnalyticsPage() {
                  </div>
                  <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/5">
                    <div
-                     className={`${healthBarColor} h-full rounded-full shadow-[0_0_15px_rgba(var(--p-primary-rgb),0.4)] transition-all duration-1000`}
-                     style={{ width: `${healthScore}%` }}
+                     className={`${healthBarColor} h-full rounded-full transition-all duration-1000`}
+                     style={{ width: `${healthScore}%`, boxShadow: '0 0 15px oklch(70% 0.14 290 / 0.4)' }}
                    />
                  </div>
                </div>

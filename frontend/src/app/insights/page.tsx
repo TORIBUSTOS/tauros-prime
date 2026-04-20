@@ -14,16 +14,19 @@ export default function InsightsPage() {
   const { selectedPeriod } = usePeriod();
   const [insights, setInsights] = useState<InsightItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     async function fetchInsights() {
       setLoading(true);
+      setError(false);
       try {
         const data = await apiService.getInsights(selectedPeriod);
         setInsights(data.insights || []);
       } catch (err) {
         console.error('Error loading insights:', err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -56,21 +59,19 @@ export default function InsightsPage() {
 
   const getIcon = (type: string) => {
     switch (type.toLowerCase()) {
-      case 'anomaly':           return <AlertTriangle className="text-error" size={20} />;
-      case 'saving_opportunity': return <TrendingDown className="text-success" size={20} />;
-      case 'recurring':         return <Zap className="text-primary-muted" size={20} />;
-      case 'budget_alert':      return <Target className="text-warning" size={20} />;
-      default:                  return <Sparkles className="text-primary" size={20} />;
+      case 'outlier':         return <AlertTriangle className="text-error" size={20} />;
+      case 'pattern':         return <Zap className="text-primary" size={20} />;
+      case 'context_anomaly': return <Target className="text-amber-400" size={20} />;
+      default:                return <Sparkles className="text-primary" size={20} />;
     }
   };
 
   const getTypeName = (type: string) => {
     switch (type.toLowerCase()) {
-      case 'anomaly':           return 'Anomalía Detectada';
-      case 'saving_opportunity': return 'Oportunidad de Ahorro';
-      case 'recurring':         return 'Patrón Recurrente';
-      case 'budget_alert':      return 'Alerta de Presupuesto';
-      default:                  return 'Hallazgo de Inteligencia';
+      case 'outlier':         return 'Anomalía Detectada';
+      case 'pattern':         return 'Patrón Recurrente';
+      case 'context_anomaly': return 'Anomalía Contextual';
+      default:                return 'Hallazgo de Inteligencia';
     }
   };
 
@@ -121,10 +122,12 @@ export default function InsightsPage() {
                     <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-text-muted/40 mb-1 text-center font-bold">Confianza Promedio</div>
                     <div className="text-lg md:text-xl font-bold text-primary text-center">{(avgConfidence * 100).toFixed(1)}%</div>
                   </div>
-                  <div className="bg-surface/50 backdrop-blur-sm border border-white/5 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl min-w-fit flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                    <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-text-prime font-bold">Analizador Activo</div>
-                  </div>
+                  {!error && (
+                    <div className="bg-surface/50 backdrop-blur-sm border border-white/5 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl min-w-fit flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                      <div className="text-[9px] md:text-[10px] uppercase tracking-widest text-text-prime font-bold">Analizador Activo</div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

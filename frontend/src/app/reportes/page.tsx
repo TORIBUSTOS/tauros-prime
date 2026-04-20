@@ -81,7 +81,7 @@ export default function ReportesPage() {
 
         <div className="flex items-center gap-4 p-1 bg-surface/50 rounded-2xl border border-white/5 backdrop-blur-md">
           <div className="text-primary text-[10px] font-black px-6 py-3 uppercase tracking-[0.2em] border-r border-white/10 flex items-center gap-2">
-             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+             <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
              {selectedPeriod}
           </div>
           <button 

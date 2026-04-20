@@ -102,7 +102,7 @@ function MovimientosContent() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-2 border-b border-white/5">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.4em] text-primary">
-            <Database size={12} className="animate-pulse" />
+            <Database size={12} />
             Registros Históricos
           </div>
           <h1 className="text-2xl font-black tracking-tighter text-text-prime uppercase italic">

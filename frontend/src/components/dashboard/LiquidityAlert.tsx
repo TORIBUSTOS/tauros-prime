@@ -63,8 +63,6 @@ const LiquidityAlert: React.FC<LiquidityAlertProps> = ({
 
         </div>
       </div>
-      {/* Elemento para satisfy .alert-blur selector si es necesario, aunque no tenga efecto visual fuerte */}
-      <div className="alert-blur hidden"></div>
     </BaseCard>
   );
 };
