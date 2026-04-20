@@ -47,6 +47,19 @@ Sin eso, la clase se genera vacía (no error, sólo ausencia de estilo). Ver `sr
 - `services/api.service.ts` — todos los fetch al backend
 - `types/api.ts` — interfaces TypeScript que espejean los schemas Pydantic del backend
 
+## Recharts + Tailwind v4 — SVG color gotcha
+En atributos SVG (`stroke=`, `stopColor=`, `fill=`), las CSS custom properties NO resuelven de forma confiable. Tailwind v4 genera `--color-primary` (no `--primary`). **Usar literales OKLCH directamente**: `stroke="oklch(70% 0.14 290)"` en vez de `stroke="var(--primary)"`. Afecta: FlowChart, ForecastChart, CategoryPieChart — corregido 2026-04-20.
+
+## MetricCard + BaseCard — composición
+MetricCard renderiza dentro de BaseCard. Siempre pasar `accent="none"` a BaseCard desde MetricCard — la franja izquierda en MetricCard maneja el acento visual. Pasar accent a BaseCard crea triple-borde: CSS border de metric-card + border-primary/40 + ring-1 + rim-light.
+
+## Contraste / Opacidades mínimas (tema OKLCH oscuro)
+Con `--p-text-muted: oklch(62% 0.012 280)`, opacidades mínimas legibles:
+- Cuerpo/labels: `/60` mínimo (preferir `/75`+)
+- Valores secundarios: `/80` mínimo
+- Decorativo/inactivo: `/50` mínimo
+Cualquier valor por debajo de `/40` sobre base `oklch(62%)` falla WCAG en fondo negro.
+
 ## Agregar nueva página
 1. Crear `src/app/<nombre>/page.tsx` con `'use client'`
 2. Usar `usePeriod()` para el período activo
