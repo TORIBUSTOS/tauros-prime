@@ -14,10 +14,12 @@ import {
   FileText,
   Tag,
   ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 import { PeriodProvider, usePeriod } from "@/context/PeriodContext";
-import { ToastProvider } from "@/context/ToastContext";
+import { ToastProvider, useToast } from "@/context/ToastContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { apiService } from "@/services/api.service";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -129,6 +131,21 @@ function TopBar() {
 // ── Sidebar ────────────────────────────────────────────────────────────────
 function SidebarContent() {
   const pathname = usePathname();
+  const { showToast } = useToast();
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleSync = async () => {
+    setIsSyncing(true);
+    showToast("Iniciando sincronización global...", "info");
+    try {
+      const result = await apiService.recategorizeAll();
+      showToast(`Sincronización completada: ${result.total} registros procesados`, "success");
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (err) {
+      showToast("Error en la sincronización remota", "error");
+      setIsSyncing(false);
+    }
+  };
 
   const navItems = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -206,6 +223,20 @@ function SidebarContent() {
           );
         })}
       </nav>
+
+      {/* Sincronización Global */}
+      <div className="mt-4 mb-2 px-1">
+        <button
+          onClick={handleSync}
+          disabled={isSyncing}
+          className={`w-full group flex items-center gap-3 px-4 py-3 rounded-card transition-all duration-300 bg-primary/5 border border-primary/10 hover:border-primary/30 hover:bg-primary/10 text-primary ${isSyncing ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+          <RefreshCw className={`w-5 h-5 transition-transform ${isSyncing ? 'animate-spin' : ''}`} />
+          <span className="text-[13px] tracking-wide font-black uppercase tracking-widest">
+            {isSyncing ? 'Sincronizando...' : 'Sincronizar'}
+          </span>
+        </button>
+      </div>
 
       {/* Bottom: Theme Toggle Only */}
       <div className="mt-auto pt-4 border-t border-white/5">

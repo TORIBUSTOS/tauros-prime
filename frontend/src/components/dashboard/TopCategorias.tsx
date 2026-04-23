@@ -3,11 +3,11 @@
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BarChart2, ArrowUpRight, Hash, DollarSign } from 'lucide-react';
-import { MovimientoMapped } from '@/types/api';
+import { CategoryStats } from '@/types/api';
 import BaseCard from '@/components/shared/BaseCard';
 
 interface TopCategoriasProps {
-  movements: MovimientoMapped[];
+  categories: CategoryStats[];
   period: string;
 }
 
@@ -22,44 +22,38 @@ const ACCENT_COLORS = [
   'bg-slate-600',
 ];
 
-const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
+const TopCategorias: React.FC<TopCategoriasProps> = ({ categories, period }) => {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>('monto');
 
-  const { categorias, totalEgresos, totalCount } = useMemo(() => {
-    const egresos = movements.filter(m => m.tipo === 'egreso');
-    const total = egresos.reduce((sum, m) => sum + Math.abs(m.monto), 0);
+  const { displayCategories, totalEgresos, totalCount } = useMemo(() => {
+    // Backend already filters by period and only sends categories with data
+    // We just need to handle the egresos part (which is 'gasto' in CategoryStats)
+    const egresosOnly = categories.filter(c => c.gasto > 0);
+    const total = egresosOnly.reduce((sum, c) => sum + c.gasto, 0);
+    const totalQty = egresosOnly.reduce((sum, c) => sum + c.n_movimientos, 0);
 
-    const mapMonto = new Map<string, number>();
-    const mapCount = new Map<string, number>();
-    for (const m of egresos) {
-      const cat = m.categoria || 'Sin categorizar';
-      mapMonto.set(cat, (mapMonto.get(cat) ?? 0) + Math.abs(m.monto));
-      mapCount.set(cat, (mapCount.get(cat) ?? 0) + 1);
-    }
-
-    const sorted = Array.from(mapMonto.entries())
-      .map(([nombre, monto]) => ({
-        nombre,
-        monto,
-        count: mapCount.get(nombre) ?? 0,
-        pctMonto: total > 0 ? (monto / total) * 100 : 0,
-        pctCount: egresos.length > 0 ? ((mapCount.get(nombre) ?? 0) / egresos.length) * 100 : 0,
-      }));
+    const sorted = egresosOnly.map(c => ({
+      nombre: c.categoria,
+      monto: c.gasto,
+      count: c.n_movimientos,
+      pctMonto: c.pct_gasto,
+      pctCount: c.pct_movimientos,
+    }));
 
     // Sort by active mode
     sorted.sort((a, b) => viewMode === 'monto' ? b.monto - a.monto : b.count - a.count);
 
     return { 
-      categorias: sorted.slice(0, 6), 
+      displayCategories: sorted.slice(0, 6), 
       totalEgresos: total,
-      totalCount: egresos.length,
+      totalCount: totalQty,
     };
-  }, [movements, viewMode]);
+  }, [categories, viewMode]);
 
   const maxValue = viewMode === 'monto' 
-    ? (categorias[0]?.monto ?? 1) 
-    : (categorias[0]?.count ?? 1);
+    ? (displayCategories[0]?.monto ?? 1) 
+    : (displayCategories[0]?.count ?? 1);
 
   return (
     <BaseCard className="flex flex-col h-full bg-surface/40">
@@ -107,7 +101,7 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
         </div>
       </div>
 
-      {categorias.length === 0 ? (
+      {displayCategories.length === 0 ? (
         <div className="flex flex-col items-center justify-center flex-1 gap-3 py-10">
           <div className="p-3 rounded-full bg-white/5 text-text-muted/20">
             <BarChart2 size={24} />
@@ -118,7 +112,7 @@ const TopCategorias: React.FC<TopCategoriasProps> = ({ movements, period }) => {
         </div>
       ) : (
         <div className="flex flex-col gap-3 flex-1">
-          {categorias.map((cat, i) => {
+          {displayCategories.map((cat, i) => {
             const currentValue = viewMode === 'monto' ? cat.monto : cat.count;
             const currentPct = viewMode === 'monto' ? cat.pctMonto : cat.pctCount;
             

@@ -11,7 +11,7 @@ import FileUploadZone from '@/components/dashboard/FileUploadZone';
 import BaseCard from '@/components/shared/BaseCard';
 import FlowChart from '@/components/analytics/FlowChart';
 import { apiService } from '@/services/api.service';
-import { MovimientoMapped, InsightsResponse, ForecastResponse } from '@/types/api';
+import { MovimientoMapped, InsightsResponse, ForecastResponse, CategoryStats } from '@/types/api';
 import { usePeriod } from '@/context/PeriodContext';
 import { useToast } from '@/context/ToastContext';
 
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const [insights, setInsights] = useState<InsightsResponse | null>(null);
   const [summary, setSummary] = useState<any>(null);
   const [forecastData, setForecastData] = useState<ForecastResponse | null>(null);
+  const [categories, setCategories] = useState<CategoryStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
@@ -33,16 +34,18 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [movData, insData, sumData, foreData] = await Promise.all([
+      const [movData, insData, sumData, foreData, catData] = await Promise.all([
         apiService.getMovements(period),
         apiService.getInsights(period),
         apiService.getSummary(period),
-        apiService.getForecast(period)
+        apiService.getForecast(period),
+        apiService.getCategories(period)
       ]);
       setMovements(movData);
       setInsights(insData);
       setSummary(sumData);
       setForecastData(foreData);
+      setCategories(catData);
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
       showToast("Error de conexión con la Bóveda Digital", "error");
@@ -70,14 +73,27 @@ export default function DashboardPage() {
     }
   };
 
+  const currentBalance = summary?.equity ?? 0;
+  const currentNet = summary?.balance ?? 0;
+  
   const nextMonthForecast = forecastData?.forecast?.[0];
-  const projectedNet = nextMonthForecast?.forecast.reduce((acc, item) => acc + item.expected_total, 0) ?? 0;
-  const currentBalance = summary?.balance ?? 0;
-  const projectedBalance = currentBalance + projectedNet;
+  const totalForecastedNet = nextMonthForecast?.forecast.reduce((acc, item) => acc + item.expected_total, 0) ?? 0;
+  
+  // El balance proyectado al cierre es: Balance Actual + (Lo que falta ocurrir del forecast)
+  // remainingNet = Forecast Total - Lo que ya ocurrió
+  const remainingNet = totalForecastedNet - currentNet;
+  const projectedBalance = currentBalance + remainingNet;
+  
   const forecastItems = nextMonthForecast?.forecast ?? [];
   const confidence = forecastItems.length > 0
     ? forecastItems.reduce((s, f) => s + f.confidence, 0) / forecastItems.length
     : 0;
+
+  const stability = projectedBalance < 0 
+    ? 'Crítica' 
+    : currentNet < 0 
+      ? 'Bajo Control' 
+      : 'Creciente';
 
   if ((loading || isPeriodLoading) && !importing) {
     return (
@@ -137,6 +153,7 @@ export default function DashboardPage() {
                 value={currentBalance.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
                 accent="gold"
                 valueClassName={currentBalance >= 0 ? 'text-success' : 'text-error'}
+                subtitle="Patrimonio líquido acumulado"
               />
             </div>
             <div className="md:col-span-1">
@@ -167,7 +184,7 @@ export default function DashboardPage() {
               <FlowChart movements={movements} period={selectedPeriod} />
             </div>
             <div className="min-h-[350px] md:min-h-[400px]">
-              <TopCategorias movements={movements} period={selectedPeriod} />
+              <TopCategorias categories={categories} period={selectedPeriod} />
             </div>
           </div>
           
@@ -184,6 +201,7 @@ export default function DashboardPage() {
             currentBalance={currentBalance}
             projectedBalance={projectedBalance}
             confidence={confidence}
+            stability={stability}
           />
         </div>
 

@@ -3,8 +3,8 @@
 > Este documento registra el progreso de **Antigravity** en el desarrollo del Frontend de TAUROS v2.
 > Gemini se encarga de la estética "Imperial Tech" y la integración con el motor de Claude.
 
-## Estado del Proyecto: SPRINT 4 IN PROGRESS — CORTEX INTELLIGENCE & PURE ANALYTICS 🧠
-La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando capacidades operativas para maximizar el análisis proactivo y la predictibilidad.
+## Estado del Proyecto: SPRINT 4 COMPLETED ✅ — CORTEX INTELLIGENCE & STABILIZATION
+La plataforma ha sido estabilizada. Se eliminaron mocks, se activaron botones muertos y se optimizó el backend para soportar hasta 5,000 registros con exportación real.
 
 ---
 
@@ -16,6 +16,21 @@ La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando c
 ---
 
 ## Log de Trabajo (Changelog de Antigravity)
+
+### [2026-04-22] - Bloque de Cierre Sprint 4: Fixes Críticos & Real Data
+**Objetivo**: Eliminar los últimos vestigios de mocks y asegurar la operatividad total del sistema en producción.
+
+- **Backend Hardening**: 
+  - Ajuste de límite de seguridad a 5,000 registros en `routes.py`.
+  - Sincronización de tipos Pydantic ↔ TypeScript para categorías.
+- **CortexHub (Intelligence)**:
+  - **Data Re-wiring**: Conexión de `stability`, `confidence` y `projectedBalance` con el motor de forecast real.
+  - **Deduplicación**: Implementación de lógica de filtrado de insights repetidos en el frontend.
+  - **UI Interaction**: Activación de botones "OPTIMIZAR" y "MITIGAR RIESGO".
+- **Exportación & Reportes**:
+  - **CSV Export**: Activación de descarga real en Movimientos y Reportes P&L.
+  - **Dashboard Fix**: Corrección de props en `TopCategorias` que rompían el build de producción.
+- **Build & Quality**: Verificación de build exitosa y limpieza total de consola.
 
 ### [2026-04-15] - Bloque BN-008: Paginación & Health Score Dinámico
 **Objetivo**: Optimizar el rendimiento de la bóveda de movimientos y dynamizar la auditoría de salud financiera.
@@ -81,6 +96,6 @@ La plataforma ha transicionado a un modelo de "Sólo Inteligencia", eliminando c
 
 ---
 
-*Versión: 4.1*  
-*Última actualización: 2026-04-15 (Paginación & Dynamic Score)*  
+*Versión: 4.5*  
+*Última actualización: 2026-04-22 (Fixes Críticos & Real Data)*  
 *Responsable: Antigravity*

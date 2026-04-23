@@ -3,13 +3,15 @@
 import React, { useEffect, useState, Suspense, useMemo } from 'react';
 import { usePeriod } from '@/context/PeriodContext';
 import { apiService } from '@/services/api.service';
+import { useToast } from '@/context/ToastContext';
 import { MovimientoMapped } from '@/types/api';
-import LoadingImperial from '@/components/shared/LoadingImperial';
-import EmptyState from '@/components/shared/EmptyState';
+import { Pagination } from '@/components/ui/Pagination';
+import LoadingImperial from '@/components/ui/LoadingImperial';
+import EmptyState from '@/components/ui/EmptyState';
 import BaseCard from '@/components/shared/BaseCard';
 import {
-  Search, ArrowDownLeft, ArrowUpRight, Filter, Download,
-  Database, Calendar, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,
+  Search, ArrowDownLeft, ArrowUpRight, Download,
+  Database, Calendar
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
@@ -17,6 +19,7 @@ const PAGE_SIZE = 25;
 
 function MovimientosContent() {
   const { selectedPeriod } = usePeriod();
+  const { showToast } = useToast();
   const searchParams = useSearchParams();
   const categoriaParam = searchParams.get('categoria');
   const tipoParam = searchParams.get('tipo') as 'ingreso' | 'egreso' | null;
@@ -26,6 +29,8 @@ function MovimientosContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'ingreso' | 'egreso'>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Sync URL params → state
   useEffect(() => {
@@ -34,49 +39,46 @@ function MovimientosContent() {
   }, [categoriaParam, tipoParam]);
 
   useEffect(() => {
-    async function fetchMovements() {
-      setLoading(true);
-      try {
-        const data = await apiService.getMovements(selectedPeriod);
-        setMovements(data);
-        setCurrentPage(1); // reset on period change
-      } catch (err) {
-        console.error('Error loading movements:', err);
-      } finally {
-        setLoading(false);
+    const timer = setTimeout(() => {
+      async function fetchMovements() {
+        setLoading(true);
+        try {
+          const result = await apiService.getMovements({
+            period: selectedPeriod,
+            page: currentPage,
+            pageSize: PAGE_SIZE,
+            search: searchTerm,
+            tipo: filterType
+          });
+          setMovements(result.items);
+          setTotalRecords(result.total);
+          setTotalPages(result.totalPages);
+        } catch (err) {
+          console.error('Error loading movements:', err);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-    fetchMovements();
-  }, [selectedPeriod]);
+      fetchMovements();
+    }, 300); // Simple debounce for search
 
-  // Reset page when search/filter changes
+    return () => clearTimeout(timer);
+  }, [selectedPeriod, currentPage, searchTerm, filterType]);
+
+  // Reset page when search/filter/period changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterType]);
+  }, [searchTerm, filterType, selectedPeriod]);
 
-  const filteredMovements = useMemo(() =>
-    movements.filter(m => {
-      const matchesSearch =
-        m.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.categoria.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = filterType === 'all' || m.tipo === filterType;
-      return matchesSearch && matchesType;
-    }),
-  [movements, searchTerm, filterType]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredMovements.length / PAGE_SIZE));
-  const paginatedMovements = useMemo(
-    () => filteredMovements.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
-    [filteredMovements, currentPage],
-  );
-
-  const safeSetPage = (p: number) => setCurrentPage(Math.min(Math.max(1, p), totalPages));
+  const paginatedMovements = movements;
 
   const exportToCSV = () => {
-    if (filteredMovements.length === 0) return;
+    if (movements.length === 0) return;
+    
+    showToast(`Generando reporte de auditoría (Página ${currentPage}): ${selectedPeriod}`, "success");
     
     const headers = ['Fecha', 'Descripción', 'Categoría', 'Subcategoría', 'Tipo', 'Monto', 'Confianza AI'];
-    const rows = filteredMovements.map(m => [
+    const rows = movements.map(m => [
       m.fecha,
       `"${m.descripcion.replace(/"/g, '""')}"`,
       m.categoria,
@@ -225,90 +227,16 @@ function MovimientosContent() {
           </table>
         </div>
 
-        {/* ── Pagination Footer ── */}
-        {filteredMovements.length > 0 && (
-          <div className="flex items-center justify-between px-8 py-4 border-t border-white/5 bg-white/[0.01] backdrop-blur-sm">
-            {/* Info */}
-            <div className="flex items-center gap-2 text-[10px] font-black text-text-muted/30 uppercase tracking-widest">
-              <Filter size={11} className="text-primary/40" />
-              <span>
-                {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filteredMovements.length)}
-                {' '}de{' '}
-                <span className="text-primary">{filteredMovements.length}</span> registros
-              </span>
-            </div>
-
-            {/* Page controls */}
-            <div className="flex items-center gap-1">
-              <PaginationBtn onClick={() => safeSetPage(1)} disabled={currentPage === 1} title="Primera">
-                <ChevronsLeft size={13} />
-              </PaginationBtn>
-              <PaginationBtn onClick={() => safeSetPage(currentPage - 1)} disabled={currentPage === 1} title="Anterior">
-                <ChevronLeft size={13} />
-              </PaginationBtn>
-
-              {/* Page numbers */}
-              <div className="flex gap-1 mx-1">
-                {getPageRange(currentPage, totalPages).map((p, i) =>
-                  p === '...' ? (
-                    <span key={`dot-${i}`} className="w-8 text-center text-[10px] text-text-muted/20 font-black">…</span>
-                  ) : (
-                    <button
-                      key={p}
-                      onClick={() => safeSetPage(p as number)}
-                      className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all duration-200 ${
-                        currentPage === p
-                          ? 'bg-primary text-black shadow-primary/30'
-                          : 'text-text-muted/40 hover:bg-white/5 hover:text-text-prime'
-                      }`}
-                    >
-                      {p}
-                    </button>
-                  ),
-                )}
-              </div>
-
-              <PaginationBtn onClick={() => safeSetPage(currentPage + 1)} disabled={currentPage === totalPages} title="Siguiente">
-                <ChevronRight size={13} />
-              </PaginationBtn>
-              <PaginationBtn onClick={() => safeSetPage(totalPages)} disabled={currentPage === totalPages} title="Última">
-                <ChevronsRight size={13} />
-              </PaginationBtn>
-            </div>
-          </div>
-        )}
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalRecords={totalRecords}
+          pageSize={PAGE_SIZE}
+          onPageChange={setCurrentPage}
+        />
       </BaseCard>
     </div>
   );
-}
-
-/* ── Helpers ── */
-function PaginationBtn({ children, onClick, disabled, title }: {
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled: boolean;
-  title?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      title={title}
-      className="w-8 h-8 flex items-center justify-center rounded-lg text-text-muted/40 hover:bg-white/5 hover:text-text-prime transition-all duration-200 disabled:opacity-20 disabled:cursor-not-allowed"
-    >
-      {children}
-    </button>
-  );
-}
-
-function getPageRange(current: number, total: number): (number | '...')[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const pages: (number | '...')[] = [1];
-  if (current > 3) pages.push('...');
-  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) pages.push(p);
-  if (current < total - 2) pages.push('...');
-  pages.push(total);
-  return pages;
 }
 
 export default function MovimientosPage() {

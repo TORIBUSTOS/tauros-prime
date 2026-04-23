@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from src.models.movement import get_db, Movimiento, CascadaRule
+from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente
 from src.services.parser import ParserService
 from src.services.categorizer import CategorizerService
 from src.services.insights import InsightsService
@@ -27,14 +27,46 @@ async def import_file(file: UploadFile = File(...), db: Session = Depends(get_db
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/movements", response_model=List[MovimientoResponse])
-def get_movements(period: str = Query(None, pattern=r"^\d{4}-\d{2}$"), categoria: str = None, db: Session = Depends(get_db)):
+@router.get("/movements", response_model=PaginatedMovementsResponse)
+def get_movements(
+    period: str = Query(None, pattern=r"^\d{4}-\d{2}$"),
+    categoria: str = None,
+    search: str = None,
+    tipo: str = None,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(25, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
     query = db.query(Movimiento)
     if period:
         query = query.filter(Movimiento.fecha.like(f"{period}%"))
     if categoria:
         query = query.filter(Movimiento.categoria == categoria)
-    return query.order_by(Movimiento.fecha.desc()).limit(5000).all()
+    if search:
+        search_filter = f"%{search}%"
+        query = query.filter(
+            (Movimiento.descripcion.like(search_filter)) |
+            (Movimiento.categoria.like(search_filter))
+        )
+    if tipo:
+        if tipo == 'ingreso':
+            query = query.filter(Movimiento.monto > 0)
+        elif tipo == 'egreso':
+            query = query.filter(Movimiento.monto < 0)
+
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    skip = (page - 1) * page_size
+    items = query.order_by(Movimiento.fecha.desc()).offset(skip).limit(page_size).all()
+    
+    return PaginatedMovementsResponse(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages
+    )
 
 @router.get("/summary", response_model=SummaryResponse)
 def get_summary(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):
@@ -54,11 +86,23 @@ def get_summary(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session 
             Movimiento.fecha.like(f"{period}%")
         ).scalar() or 0
         
+        # Cálculo de Equity acumulado hasta el final de este periodo
+        year, month = map(int, period.split('-'))
+        if month == 12:
+            next_period = f"{year+1}-01"
+        else:
+            next_period = f"{year}-{month+1:02d}"
+            
+        equity = db.query(func.sum(Movimiento.monto)).filter(
+            Movimiento.fecha < f"{next_period}-01"
+        ).scalar() or 0.0
+        
         return SummaryResponse(
             period=period,
             ingresos_total=ingresos,
             egresos_total=egresos,
             balance=ingresos - egresos,
+            equity=equity,
             transaction_count=count
         )
     except Exception as e:
@@ -87,6 +131,38 @@ def get_forecast(desde: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@router.get("/insights/patrones", response_model=List[PatronRecurrenteResponse])
+def get_recurring_patterns(db: Session = Depends(get_db)):
+    """Retorna los patrones de gasto recurrentes detectados y persistidos."""
+    patrones = db.query(PatronRecurrente).filter(PatronRecurrente.activo == True).all()
+    return [
+        PatronRecurrenteResponse(
+            id=p.id,
+            concepto=p.concepto,
+            monto_promedio=p.monto_promedio,
+            dia_mes=p.dia_mes,
+            frecuencia=p.frecuencia,
+            confianza=p.confianza,
+            ultimo_movimiento=p.ultimo_movimiento,
+            proxima_estimada=p.proxima_estimada
+        ) for p in patrones
+    ]
+
+@router.get("/insights/hormigas", response_model=HormigasResponse)
+def get_hormigas(db: Session = Depends(get_db)):
+    """Analiza y retorna los 'gastos hormiga'."""
+    return InsightsService.get_hormigas_analysis(db)
+
+@router.get("/insights/salud", response_model=HealthFlagsResponse)
+def get_health_flags(db: Session = Depends(get_db)):
+    """Retorna indicadores de salud financiera y alertas."""
+    return InsightsService.get_financial_health_flags(db)
+
+@router.get("/insights/projections")
+def get_projections(db: Session = Depends(get_db)):
+    """Retorna proyecciones de gasto para el mes en curso."""
+    return InsightsService.get_projections(db)
+
 @router.get("/reports/pl", response_model=PLReportResponse)
 def get_pl_report(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):
     try:
@@ -99,33 +175,58 @@ def get_pl_report(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Sessio
 # ── CATEGORÍAS ─────────────────────────────────────────────────────────────
 
 @router.get("/categories", response_model=List[CategoryStatsResponse])
-def get_categories(db: Session = Depends(get_db)):
-    """Estadísticas de todas las categorías en toda la base."""
-    total_movs = db.query(func.count(Movimiento.id)).scalar() or 1
-    total_gasto = db.query(func.sum(func.abs(Movimiento.monto))).filter(Movimiento.monto < 0).scalar() or 1
+def get_categories(period: str = Query(None, pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):
+    """Estadísticas de todas las categorías, opcionalmente filtradas por periodo."""
+    
+    # Base queries for totals
+    query_total_movs = db.query(func.count(Movimiento.id))
+    query_total_gasto = db.query(func.sum(func.abs(Movimiento.monto))).filter(Movimiento.monto < 0)
+    
+    if period:
+        query_total_movs = query_total_movs.filter(Movimiento.fecha.like(f"{period}%"))
+        query_total_gasto = query_total_gasto.filter(Movimiento.fecha.like(f"{period}%"))
+        
+    total_movs = query_total_movs.scalar() or 1
+    total_gasto = query_total_gasto.scalar() or 1
 
-    rows = db.query(
+    # Base query for category grouping
+    query_rows = db.query(
         Movimiento.categoria,
-        func.count(Movimiento.id).label("n"),
-        func.sum(func.abs(func.min(Movimiento.monto, 0))).label("gasto"),
-        func.sum(func.max(Movimiento.monto, 0)).label("ingreso"),
-    ).group_by(Movimiento.categoria).all()
+        func.count(Movimiento.id).label("n")
+    )
+    
+    if period:
+        query_rows = query_rows.filter(Movimiento.fecha.like(f"{period}%"))
+        
+    rows = query_rows.group_by(Movimiento.categoria).all()
 
     result = []
     for row in rows:
         cat = row.categoria
         n = row.n
-        # Calcular gasto e ingreso manualmente (SQLite compat)
-        gasto = db.query(func.sum(func.abs(Movimiento.monto))).filter(
+        
+        # Gasto e Ingreso por categoría (SQLite compat)
+        q_gasto = db.query(func.sum(func.abs(Movimiento.monto))).filter(
             Movimiento.categoria == cat, Movimiento.monto < 0
-        ).scalar() or 0.0
-        ingreso = db.query(func.sum(Movimiento.monto)).filter(
+        )
+        q_ingreso = db.query(func.sum(Movimiento.monto)).filter(
             Movimiento.categoria == cat, Movimiento.monto > 0
-        ).scalar() or 0.0
+        )
+        
+        if period:
+            q_gasto = q_gasto.filter(Movimiento.fecha.like(f"{period}%"))
+            q_ingreso = q_ingreso.filter(Movimiento.fecha.like(f"{period}%"))
+            
+        gasto = q_gasto.scalar() or 0.0
+        ingreso = q_ingreso.scalar() or 0.0
 
-        subcats = db.query(Movimiento.subcategoria).filter(
+        subcats_query = db.query(Movimiento.subcategoria).filter(
             Movimiento.categoria == cat, Movimiento.subcategoria != None
-        ).distinct().all()
+        )
+        if period:
+            subcats_query = subcats_query.filter(Movimiento.fecha.like(f"{period}%"))
+            
+        subcats = subcats_query.distinct().all()
 
         n_reglas = db.query(func.count(CascadaRule.id)).filter(
             CascadaRule.categoria == cat, CascadaRule.activo == 1

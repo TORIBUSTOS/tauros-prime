@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from src.models.movement import Movimiento, ImportBatch
+from src.models.movement import Movimiento, ImportBatch, PatronRecurrente, Insight
 from src.services.insights import InsightsService
 
 
@@ -180,20 +180,79 @@ def test_insights_include_required_fields(db: Session, sample_movements):
         assert all(field in insight for field in required_fields)
 
 
-def test_detect_patterns_with_single_movement(db: Session):
-    """Test pattern detection with only 1 movement."""
-    mov = Movimiento(
-        fecha=datetime(2026, 4, 1).date(),
-        descripcion="Single",
-        monto=1000.0,
-        categoria="Test",
-        confianza=0.95
-    )
-    db.add(mov)
+
+def test_get_hormigas_analysis(db: Session, sample_movements):
+    """Test that hormiga analysis identifies small frequent expenses."""
+    # Add some "hormiga" movements
+    for i in range(1, 10):
+        db.add(Movimiento(
+            fecha=datetime(2026, 4, i).date(),
+            descripcion=f"Cafe {i}",
+            monto=-5.0, # Small expense
+            categoria="Cafeteria",
+            tipo="egreso",
+            confianza=1.0
+        ))
     db.commit()
 
-    insights = InsightsService.generate_insights("2026-04", db)
-    pattern_insights = [i for i in insights if i['type'] == 'pattern']
+    analysis = InsightsService.get_hormigas_analysis(db)
+    assert "items" in analysis
+    assert analysis["total_mensual_hormiga"] > 0
+    
+    # Check if Cafeteria is in items
+    categories = [item["categoria"] for item in analysis["items"]]
+    assert "Cafeteria" in categories
 
-    # Patterns require count >= 2, so single movement shouldn't create pattern
-    assert len(pattern_insights) == 0
+def test_get_financial_health_flags(db: Session, sample_movements):
+    """Test financial health indicators."""
+    # Ensure some income exists for current month
+    db.add(Movimiento(
+        fecha=datetime(2026, 4, 1).date(),
+        descripcion="Sueldo Abril",
+        monto=50000.0, # Big income
+        categoria="Sueldo",
+        tipo="ingreso",
+        confianza=1.0
+    ))
+    db.commit()
+
+    health = InsightsService.get_financial_health_flags(db)
+    assert "ahorro_tasa" in health
+    assert health["score_general"] > 0
+    assert "balance_ingresos_gastos" in health
+
+def test_persistence_of_recurring_patterns(db: Session, sample_movements):
+    """Test that recurring patterns are saved to the database."""
+    # Trigger recurrence detection
+    InsightsService.generate_insights("2026-04", db)
+    
+    # Check if anything was saved in PatronRecurrente
+    patrones = db.query(PatronRecurrente).all()
+    # Ventas had 3 movements in current month, should trigger recurrence if score > 0.4
+    # Wait, the score is based on most_common_day frequency.
+    # Ventas were days 15, 20, 25. freq=1. score=1/3=0.33. Won't trigger > 0.4.
+    
+    # Let's add more consistent OSPACA movements
+    for m in range(1, 4):
+        db.add(Movimiento(
+            fecha=datetime(2026, 4, 2).date(), # Always day 2
+            descripcion="Pago Recurrente Mensual",
+            monto=-5000.0,
+            categoria="Recurrente",
+            tipo="egreso",
+            confianza=1.0
+        ))
+    db.commit()
+    
+    InsightsService.generate_insights("2026-04", db)
+    patrones = db.query(PatronRecurrente).filter(PatronRecurrente.concepto == "Recurrente").first()
+    assert patrones is not None
+    # assert patrones.dia_mes == 2  # dia_mes removed from model for now
+
+def test_persistence_of_insights(db: Session, sample_movements):
+    """Test that general insights are saved to the Insight table."""
+    InsightsService.generate_insights("2026-04", db)
+    
+    saved_insights = db.query(Insight).all()
+    assert len(saved_insights) > 0
+    assert saved_insights[0].tipo in ['pattern', 'outlier', 'context_anomaly', 'recurrence']

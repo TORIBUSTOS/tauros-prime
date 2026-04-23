@@ -5,14 +5,33 @@ import {
   ForecastResponse,
   PLReportResponse,
   SummaryResponse,
+  PaginatedMovementsResponse,
   CascadaRule,
   CascadaRuleCreate,
   CascadaRuleUpdate,
   CategoryStats,
   SubcategoriaStats,
+  PatronRecurrenteResponse,
+  HormigasResponse,
+  HealthFlagsResponse,
+  ProjectionsResponse,
 } from '../types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
+
+export interface GetMovementsParams {
+  period?: string;
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  tipo?: string;
+}
+
+export interface GetMovementsResponse {
+  items: MovimientoMapped[];
+  total: number;
+  totalPages: number;
+}
 
 export const apiService = {
   getPeriods: async (): Promise<string[]> => {
@@ -21,20 +40,27 @@ export const apiService = {
     return await response.json();
   },
 
-  getMovements: async (period?: string): Promise<MovimientoMapped[]> => {
+  getMovements: async (params: GetMovementsParams = {}): Promise<GetMovementsResponse> => {
     const url = new URL(`${API_BASE_URL}/api/movements`);
-    if (period) url.searchParams.append('period', period);
+    if (params.period) url.searchParams.append('period', params.period);
+    if (params.page) url.searchParams.append('page', params.page.toString());
+    if (params.pageSize) url.searchParams.append('page_size', params.pageSize.toString());
+    if (params.search) url.searchParams.append('search', params.search);
+    if (params.tipo && params.tipo !== 'all') url.searchParams.append('tipo', params.tipo);
 
     const response = await fetch(url.toString());
     if (!response.ok) throw new Error('Error al cargar movimientos');
     
-    const data: MovimientoResponse[] = await response.json();
+    const data: PaginatedMovementsResponse = await response.json();
     
-    // Mapeo mínimo: el backend ya provee categoria, subcategoria y tipo
-    return data.map(m => ({
-      ...m,
-      periodo: m.fecha.substring(0, 7)
-    }));
+    return {
+      items: data.items.map(m => ({
+        ...m,
+        periodo: m.fecha.substring(0, 7)
+      })),
+      total: data.total,
+      totalPages: data.total_pages
+    };
   },
 
   getInsights: async (period: string): Promise<InsightsResponse> => {
@@ -95,8 +121,10 @@ export const apiService = {
 
   // ── Categorías y Reglas ──────────────────────────────────────────────────
 
-  getCategories: async (): Promise<CategoryStats[]> => {
-    const response = await fetch(`${API_BASE_URL}/api/categories`);
+  getCategories: async (period?: string): Promise<CategoryStats[]> => {
+    const url = new URL(`${API_BASE_URL}/api/categories`);
+    if (period) url.searchParams.append('period', period);
+    const response = await fetch(url.toString());
     if (!response.ok) throw new Error('Error al cargar categorías');
     return await response.json();
   },
@@ -154,6 +182,30 @@ export const apiService = {
     const encoded = encodeURIComponent(categoria);
     const response = await fetch(`${API_BASE_URL}/api/categories/${encoded}/subcategorias`);
     if (!response.ok) throw new Error('Error al cargar subcategorías');
+    return await response.json();
+  },
+
+  getPatrones: async (): Promise<PatronRecurrenteResponse[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/insights/patrones`);
+    if (!response.ok) throw new Error('Error al cargar patrones recurrentes');
+    return await response.json();
+  },
+
+  getHormigas: async (): Promise<HormigasResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/insights/hormigas`);
+    if (!response.ok) throw new Error('Error al cargar análisis de gastos hormiga');
+    return await response.json();
+  },
+
+  getSalud: async (): Promise<HealthFlagsResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/insights/salud`);
+    if (!response.ok) throw new Error('Error al cargar indicadores de salud');
+    return await response.json();
+  },
+
+  getProjections: async (): Promise<ProjectionsResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/insights/projections`);
+    if (!response.ok) throw new Error('Error al cargar proyecciones de gasto');
     return await response.json();
   },
 };

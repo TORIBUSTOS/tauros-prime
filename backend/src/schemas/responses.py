@@ -14,6 +14,13 @@ class MovimientoResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class PaginatedMovementsResponse(BaseModel):
+    items: List[MovimientoResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
 class ImportResponse(BaseModel):
     batch_id: int
     movimientos: int
@@ -29,6 +36,34 @@ class InsightResponse(BaseModel):
 class InsightsResponse(BaseModel):
     period: str
     insights: List[InsightResponse]
+
+class HormigaItem(BaseModel):
+    categoria: str
+    monto_promedio: float
+    frecuencia_mensual: float
+    impacto_anual_estimado: float
+
+class HormigasResponse(BaseModel):
+    items: List[HormigaItem]
+    total_mensual_hormiga: float
+    recomendacion: str
+
+class HealthFlagsResponse(BaseModel):
+    ahorro_tasa: float
+    variabilidad_gastos: float
+    balance_ingresos_gastos: float
+    score_general: float
+    alertas: List[str]
+
+class PatronRecurrenteResponse(BaseModel):
+    id: int
+    concepto: str
+    frecuencia: str
+    monto_promedio: float
+    dia_mes: int | None = None
+    ultimo_movimiento: date | None = None
+    proxima_estimada: date | None = None
+    confianza: float
 
 class ForecastItemResponse(BaseModel):
     categoria: str
@@ -69,6 +104,7 @@ class SummaryResponse(BaseModel):
     ingresos_total: float
     egresos_total: float
     balance: float
+    equity: float
     transaction_count: int
 
 # ── Categorías y Reglas ────────────────────────────────────────────────────

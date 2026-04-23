@@ -12,13 +12,15 @@ interface CortexHubProps {
   currentBalance: number;
   projectedBalance: number;
   confidence: number;
+  stability?: string;
 }
 
 const CortexHub: React.FC<CortexHubProps> = ({ 
   insights, 
   currentBalance, 
   projectedBalance, 
-  confidence 
+  confidence,
+  stability
 }) => {
   const [activeTab, setActiveTab] = useState<'hallazgos' | 'alertas'>('hallazgos');
   const [scannedCount, setScannedCount] = useState(0);
@@ -125,10 +127,16 @@ const CortexHub: React.FC<CortexHubProps> = ({
             Confidence: <span className="text-prime">{(confidence * 100).toFixed(1)}%</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Calendar size={10} />
-            Scan: <span className="text-prime">Bajo demanda</span>
+            <TrendingUp size={10} className={stability === 'Crítica' ? 'text-error' : stability === 'Bajo Control' ? 'text-warning' : 'text-success'} />
+            Estabilidad: <span className="text-prime">{stability || 'Normal'}</span>
           </div>
         </div>
+        <button 
+          onClick={() => window.location.href = '/insights'}
+          className="flex items-center gap-1.5 px-3 py-1 bg-primary/10 hover:bg-primary/20 rounded-md text-[9px] font-black uppercase tracking-widest text-primary transition-all border border-primary/20 group/btn"
+        >
+          Optimizar <ChevronRight size={10} className="group-hover/btn:translate-x-0.5 transition-transform" />
+        </button>
       </div>
 
       <style jsx global>{`

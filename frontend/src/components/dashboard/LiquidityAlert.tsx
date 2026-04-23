@@ -60,6 +60,16 @@ const LiquidityAlert: React.FC<LiquidityAlertProps> = ({
           <div className="flex items-center gap-2">
             <TrendingDown className={`w-4 h-4 ${isCritical ? 'text-error' : 'text-primary'}`} />
           </div>
+          <button 
+            onClick={() => window.location.href = '/categorias'}
+            className={`px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${
+              isCritical 
+                ? 'bg-error text-white border-error/50 hover:bg-error/80' 
+                : 'bg-white/10 text-prime border-white/10 hover:bg-white/20'
+            }`}
+          >
+            Mitigar Riesgo
+          </button>
 
         </div>
       </div>

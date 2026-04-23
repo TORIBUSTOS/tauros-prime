@@ -10,6 +10,14 @@ export interface MovimientoMapped extends MovimientoResponse {
   periodo: string;
 }
 
+export interface PaginatedMovementsResponse {
+  items: MovimientoResponse[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
 export interface MovimientoResponse {
   id: number;
   fecha: string; // ISO date string from API
@@ -115,4 +123,51 @@ export interface SubcategoriaStats {
   ingreso: number;
   pct_gasto: number;
   pct_movimientos: number;
+}
+
+// ── Insights Engine ────────────────────────────────────────────────────────
+
+export interface HormigaItem {
+  categoria: string;
+  monto_promedio: number;
+  frecuencia_mensual: number;
+  impacto_anual_estimado: number;
+}
+
+export interface HormigasResponse {
+  items: HormigaItem[];
+  total_mensual_hormiga: number;
+  recomendacion: string;
+}
+
+export interface HealthFlagsResponse {
+  ahorro_tasa: number;
+  variabilidad_gastos: number;
+  balance_ingresos_gastos: number;
+  score_general: number;
+  alertas: string[];
+}
+
+export interface PatronRecurrenteResponse {
+  id: number;
+  concepto: string;
+  frecuencia: string;
+  monto_promedio: number;
+  ultimo_movimiento: string | null;
+  proxima_estimada: string | null;
+  confianza: number;
+}
+
+export interface ProjectionsResponse {
+  mes_actual: string;
+  dia_del_mes: number;
+  gasto_actual: number;
+  proyeccion_lineal: number;
+  pendientes_recurrentes: number;
+  proyeccion_total: number;
+  patrones_pendientes: Array<{
+    concepto: string;
+    monto: number;
+    dia: number;
+  }>;
 }

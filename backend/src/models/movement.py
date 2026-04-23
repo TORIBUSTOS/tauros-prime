@@ -19,6 +19,32 @@ class Movimiento(Base):
     confianza = Column(Float, default=0.0)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Insight(Base):
+    __tablename__ = "insights"
+    id = Column(Integer, primary_key=True, index=True)
+    periodo = Column(String(7), nullable=False, index=True) # YYYY-MM
+    tipo = Column(String(50), nullable=False) # patron | outlier | hormiga | salud
+    concepto = Column(String(255), nullable=False)
+    valor = Column(Float, nullable=True)
+    contexto = Column(String(500), nullable=True)
+    score_importancia = Column(Float, default=0.0)
+    recomendacion = Column(String(500), nullable=True)
+    data_json = Column(String, nullable=True) # JSON stored as string for simplicity in SQLite if needed
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class PatronRecurrente(Base):
+    __tablename__ = "patrones_recurrentes"
+    id = Column(Integer, primary_key=True, index=True)
+    concepto = Column(String(255), nullable=False, unique=True)
+    frecuencia = Column(String(50), nullable=False) # mensual | quincenal | semanal
+    monto_promedio = Column(Float, nullable=False)
+    dia_mes = Column(Integer, nullable=True) # Día del mes sugerido
+    ultimo_movimiento = Column(Date, nullable=True)
+    proxima_estimada = Column(Date, nullable=True)
+    confianza = Column(Float, default=0.0)
+    activo = Column(Integer, default=1)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 class ImportBatch(Base):
     __tablename__ = "import_batches"
     id = Column(Integer, primary_key=True, index=True)

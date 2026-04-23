@@ -9,6 +9,7 @@ import { useTheme } from '@/context/ThemeContext';
 import BaseCard from '@/components/shared/BaseCard';
 import LoadingImperial from '@/components/shared/LoadingImperial';
 import { Download, FileText, ChevronRight } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 
 export default function ReportesPage() {
   const [report, setReport] = useState<PLReportResponse | null>(null);
@@ -16,6 +17,7 @@ export default function ReportesPage() {
   const [error, setError] = useState<string | null>(null);
   const { selectedPeriod } = usePeriod();
   const { currentTheme } = useTheme();
+  const { showToast } = useToast();
   const isFtStyle = currentTheme === 'finance-first';
 
   useEffect(() => {
@@ -38,6 +40,7 @@ export default function ReportesPage() {
 
   const exportCSV = () => {
     if (!report) return;
+    showToast(`Generando reporte P&L: ${selectedPeriod}`, "success");
     const headers = ['Nivel 1', 'Nivel 2', 'Nivel 3', 'Total', 'Variación %'];
     const rows: string[][] = [];
 
