@@ -3,8 +3,8 @@
 > Este documento registra el progreso de **Antigravity** en el desarrollo del Frontend de TAUROS v2.
 > Gemini se encarga de la estética "Imperial Tech" y la integración con el motor de Claude.
 
-## Estado del Proyecto: SPRINT 4 COMPLETED ✅ — CORTEX INTELLIGENCE & STABILIZATION
-La plataforma ha sido estabilizada. Se eliminaron mocks, se activaron botones muertos y se optimizó el backend para soportar hasta 5,000 registros con exportación real.
+## Estado del Proyecto: SPRINT 5 IN PROGRESS 🔄 — FINANCIAL PROJECTION ENGINE
+La plataforma ahora cuenta con capacidades predictivas activas. Se implementó el motor de proyecciones lineales combinadas con detección de patrones recurrentes pendientes.
 
 ---
 
@@ -16,6 +16,19 @@ La plataforma ha sido estabilizada. Se eliminaron mocks, se activaron botones mu
 ---
 
 ## Log de Trabajo (Changelog de Antigravity)
+
+### [2026-04-23] - Bloque BN-010: Financial Projection Engine
+**Objetivo**: Implementar capacidades predictivas en tiempo real para anticipar el saldo a fin de mes.
+
+- **Backend Intelligence**: 
+  - **Lógica Proyectiva**: Implementación de `InsightsService.get_projections` integrando ritmo lineal (velocidad de gasto) y patrones recurrentes (compromisos futuros).
+  - **Detección de Pendientes**: Algoritmo que identifica suscripciones o servicios no cobrados en el mes actual basados en el día del mes histórico.
+- **Frontend Predictive UI**:
+  - **Dashboard Proyectivo**: Nueva sección en `/insights` con visualización de gasto proyectado, barra de progreso de consumo mensual y feed de "Próximos Cargos".
+  - **Imperial Tech Polish**: Integración de estados de carga, animaciones de entrada con Framer Motion y tipografía de alta precisión para cifras proyectadas.
+- **Integración API**:
+  - Exposición del endpoint `/api/insights/projections`.
+  - Tipado estricto en TypeScript para respuestas de proyección.
 
 ### [2026-04-22] - Bloque de Cierre Sprint 4: Fixes Críticos & Real Data
 **Objetivo**: Eliminar los últimos vestigios de mocks y asegurar la operatividad total del sistema en producción.
@@ -96,6 +109,6 @@ La plataforma ha sido estabilizada. Se eliminaron mocks, se activaron botones mu
 
 ---
 
-*Versión: 4.5*  
-*Última actualización: 2026-04-22 (Fixes Críticos & Real Data)*  
+*Versión: 5.0*  
+*Última actualización: 2026-04-23 (Financial Projection Engine)*  
 *Responsable: Antigravity*

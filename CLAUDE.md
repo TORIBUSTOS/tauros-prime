@@ -124,7 +124,9 @@ Backend (FastAPI)
 | **005** | Dashboard Base | B | ✅ COMPLETADO | - |
 | **006** | Reportes (P&L) | B | ✅ COMPLETADO | - |
 | **007** | Analytics | B | ✅ COMPLETADO | - |
-| **008** | Integración Frontend | B | 🔄 EN PROGRESO | - |
+| **008** | Integración Frontend | B | ✅ COMPLETADO | - |
+| **009** | Estabilización Final | B | ✅ COMPLETADO | - |
+| **010** | Motor de Proyecciones | A/B | 🔄 EN PROGRESO | - |
 
 **Backend Coverage Total: 88%** ✅ | **Test Suite: 86/86 passing** ✅
 **Performance: /insights 0.47s** ✅ | **Datos: 1,776 movs / 100% categorizados** ✅
@@ -172,6 +174,15 @@ Proyecciones de 3 meses con 3 escenarios.
   - `scenarios`: {realistic, optimistic, pessimistic}
   - Cada scenario incluye `total_3m`
 - **Testeo**: Generó proyecciones realistas ✅
+
+### GET `/api/insights/projections`
+Retorna proyecciones de gasto para el mes en curso.
+- **Output**: `ProjectionsResponse`
+  - `proyeccion_total`: Gasto estimado a fin de mes.
+  - `gasto_actual`: Gasto real hasta hoy.
+  - `pendientes_recurrentes`: Suma de patrones que aún no ocurrieron.
+  - `patrones_pendientes`: Lista de objetos `{concepto, monto, dia}`.
+  - `dia_del_mes`: Día actual.
 
 ### GET `/health`
 Health check básico.
@@ -593,8 +604,8 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 ---
 
-*Versión: 3.3*  
-*Última actualización: 2026-04-15*  
+*Versión: 3.4*  
+*Última actualización: 2026-04-23*  
 *Responsables: Claude (Backend) + Antigravity (Frontend)*  
-*Status: BN-001-007 ✅ COMPLETO | BN-008 🔄 EN PROGRESO*  
-*Datos Reales: 1,776 movimientos Supervielle (jun-ago 2025) | Categorización: 100% (59 reglas) | Confianza: 83.7%*
+*Status: BN-001-009 ✅ COMPLETO | BN-010 🔄 EN PROGRESO*  
+*Datos Reales: 1,776 movimientos Supervielle | Motor de Proyecciones: Activo*
