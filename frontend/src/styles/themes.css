@@ -3,7 +3,7 @@
    Consumes design tokens from tokens.css — no hardcoded colors here.
    ========================================================================== */
 
-/* ── MetricCard ──────────────────────────────────────────────────────────── */
+/* == 4. SCROLLBARS ========================================================= */
 
 .metric-card {
   background: var(--t-card-bg);
@@ -59,7 +59,7 @@
 
 .font-currency { font-family: var(--t-metric-font); }
 
-/* ── Premium Glass overrides ─────────────────────────────────────────────── */
+/* == 2. GLASS EFFECT CLASSES =============================================== */
 
 [data-theme='premium-glass'] .metric-card {
   box-shadow: var(--t-shadow-card);
@@ -78,7 +78,7 @@
   filter: drop-shadow(0 2px 4px oklch(0% 0 0 / 0.3));
 }
 
-/* ── Glass utilities (from OKLCH mockup) ─────────────────────────────────── */
+/* == GLASS UTILITIES (FROM OKLCH MOCKUP) =================================== */
 
 /* Standard glass card */
 .glass-card {
@@ -117,7 +117,7 @@
   box-shadow: inset 0 1px 0 0 var(--t-border-purple);
 }
 
-/* ── Cortex Hub ──────────────────────────────────────────────────────────── */
+/* == CORTEX HUB ============================================================ */
 
 .cortex-hub {
   background: var(--t-card-bg);
@@ -126,13 +126,13 @@
   -webkit-backdrop-filter: blur(var(--t-glass-blur));
 }
 
-/* ── Liquidity Alert ─────────────────────────────────────────────────────── */
+/* == LIQUIDITY ALERT ======================================================= */
 
 .liquidity-alert {
   border-left-width: 4px;
 }
 
-/* ── Layout containers ───────────────────────────────────────────────────── */
+/* == LAYOUT CONTAINERS ===================================================== */
 
 .dashboard-section {
   display: flex;
@@ -146,7 +146,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* ── Category bar fills ──────────────────────────────────────────────────── */
+/* == CATEGORY BAR FILLS ==================================================== */
 
 .bar-fill-income {
   background: linear-gradient(90deg, var(--p-purple-accent), var(--p-purple-hover));
@@ -156,13 +156,13 @@
   background: linear-gradient(90deg, var(--p-negative), oklch(60% 0.15 30));
 }
 
-/* ── Amount coloring (used inline via className) ─────────────────────────── */
+/* == AMOUNT COLORING (USED INLINE VIA CLASSNAME) =========================== */
 
 .amount-positive { color: var(--p-positive); }
 .amount-negative { color: var(--p-negative); }
 .amount-neutral  { color: var(--p-text-secondary); }
 
-/* ── Tag / badge ─────────────────────────────────────────────────────────── */
+/* == TAG / BADGE =========================================================== */
 
 .cat-tag {
   font-size: 0.625rem;
@@ -176,7 +176,7 @@
   border: 1px solid oklch(70% 0.14 290 / 0.18);
 }
 
-/* ── Global theme transitions ────────────────────────────────────────────── */
+/* == 1. IMPERIAL BASE (GLOBAL RESET & FONT) ================================ */
 
 * {
   transition:
@@ -191,7 +191,7 @@
   transition: none !important;
 }
 
-/* ── Print ───────────────────────────────────────────────────────────────── */
+/* == Print ================================================================= */
 
 @media print {
   .metric-card {

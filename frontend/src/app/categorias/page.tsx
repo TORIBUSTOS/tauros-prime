@@ -10,12 +10,12 @@ import { useToast } from '@/context/ToastContext';
 
 type Tab = 'resumen' | 'motor' | 'sincategorizar';
 
-// ── Helpers ────────────────────────────────────────────────────────────────
+// == Helpers ================================================================
 
 const fmt = (n: number) =>
   n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 
-// ── Subcategory Drill-down Row ─────────────────────────────────────────────
+// == Subcategory Drill-down Row =============================================
 
 function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; hasSubcats: boolean }) {
   const [subs, setSubs] = useState<SubcategoriaStats[] | null>(null);
@@ -93,7 +93,7 @@ function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; ha
   );
 }
 
-// ── Tab: Resumen ───────────────────────────────────────────────────────────
+// == Tab: Resumen ===========================================================
 
 function TabResumen({ categories }: { categories: CategoryStats[] }) {
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -171,7 +171,7 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
   );
 }
 
-// ── Tab: Motor Cascada ─────────────────────────────────────────────────────
+// == Tab: Motor Cascada =====================================================
 
 function TabMotor({
   rules,
@@ -380,7 +380,7 @@ function TabMotor({
   );
 }
 
-// ── Tab: Sin Categorizar ───────────────────────────────────────────────────
+// == Tab: Sin Categorizar ===================================================
 
 function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
   const { showToast } = useToast();
@@ -467,7 +467,7 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
   );
 }
 
-// ── Page ───────────────────────────────────────────────────────────────────
+// == Page ===================================================================
 
 export default function CategoriasPage() {
   const [tab, setTab] = useState<Tab>('resumen');

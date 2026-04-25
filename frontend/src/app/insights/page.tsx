@@ -144,7 +144,7 @@ export default function InsightsPage() {
         </motion.p>
       </header>
 
-      {/* ── SECCIÓN 1: SALUD FINANCIERA ────────────────────────────────────── */}
+      {/* == SECCIÓN 1: SALUD FINANCIERA ====================================== */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <BaseCard className="lg:col-span-2 overflow-hidden group bg-gradient-to-br from-surface to-surface/50">
           <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:opacity-[0.1] transition-all duration-700 scale-125 pointer-events-none">
@@ -202,7 +202,7 @@ export default function InsightsPage() {
           </div>
         </BaseCard>
 
-        {/* ── SECCIÓN 2: GASTO HORMIGA ─────────────────────────────────────── */}
+        {/* == SECCIÓN 2: GASTO HORMIGA ======================================= */}
         <motion.div variants={itemVariants} className="h-full">
           <BaseCard className="overflow-hidden group border-amber-500/20 bg-gradient-to-br from-surface to-amber-500/5 h-full">
           <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:opacity-[0.1] transition-all duration-700 pointer-events-none">
@@ -247,7 +247,7 @@ export default function InsightsPage() {
         </motion.div>
       </motion.div>
 
-      {/* ── SECCIÓN 3: PATRONES RECURRENTES ───────────────────────────────── */}
+      {/* == SECCIÓN 3: PATRONES RECURRENTES ================================= */}
       <motion.div variants={itemVariants} className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -289,7 +289,7 @@ export default function InsightsPage() {
           )}
         </div>
       
-      {/* ── SECCIÓN 2.5: PROYECCIONES INTELIGENTES ─────────────────────────── */}
+      {/* == SECCIÓN 2.5: PROYECCIONES INTELIGENTES =========================== */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <BaseCard className="lg:col-span-3 overflow-hidden bg-gradient-to-r from-surface to-primary/5 border-primary/10 relative">
           <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none">
@@ -375,7 +375,7 @@ export default function InsightsPage() {
         </BaseCard>
       </motion.div>
 
-      {/* ── SECCIÓN 4: FEED DE INTELIGENCIA (Hallazgos Puntuales) ────────── */}
+      {/* == SECCIÓN 4: FEED DE INTELIGENCIA (Hallazgos Puntuales) ========== */}
       <motion.div variants={itemVariants} className="flex flex-col gap-4 mt-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg text-primary">

@@ -5,7 +5,7 @@ import MovimientosPage from './page'
 import { apiService } from '@/services/api.service'
 import { mockMovimientos, mockMovimientos26 } from '@/test/fixtures'
 
-// ── Mocks de next/navigation con searchParams configurable ───────────────────
+// == Mocks de next/navigation con searchParams configurable ===================
 
 const mockGetSearchParam = vi.hoisted(() => vi.fn().mockReturnValue(null))
 
@@ -15,7 +15,7 @@ vi.mock('next/navigation', () => ({
   usePathname: vi.fn().mockReturnValue('/movimientos'),
 }))
 
-// ── Mocks de servicio y contexto ─────────────────────────────────────────────
+// == Mocks de servicio y contexto =============================================
 
 vi.mock('@/services/api.service', () => ({
   apiService: {
@@ -33,7 +33,7 @@ vi.mock('@/context/PeriodContext', () => ({
   }),
 }))
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// == Tests =====================================================================
 
 describe('MovimientosPage', () => {
   beforeEach(() => {

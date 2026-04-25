@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
 
   const savingsRate = reportData ? (reportData.resultado_neto / reportData.ingresos_total) * 100 : 0;
 
-  // ─── Health Score dinámico ───────────────────────────────────────────────
+  // === Health Score dinámico ===============================================
   // Compuesto por 4 indicadores (25 pts c/u):
   //  1. Savings rate > 10% → positivo
   //  2. Confianza AI promedio > 80%
@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
   );
 }
 
-// ─── Sub-componente MiniKpi ───────────────────────────────────────────────
+// === Sub-componente MiniKpi ===============================================
 function MiniKpi({ label, value, ok }: { label: string; value: string; ok: boolean }) {
   return (
     <div className={`flex flex-col gap-1 p-2.5 rounded-xl border transition-colors ${

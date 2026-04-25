@@ -24,7 +24,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
-// ── Period Selector Dropdown (used in TopBar) ──────────────────────────────
+// == Period Selector Dropdown (used in TopBar) ==============================
 function PeriodDropdown() {
   const { selectedPeriod, setSelectedPeriod, availablePeriods, isLoading } = usePeriod();
   const [open, setOpen] = useState(false);
@@ -86,7 +86,7 @@ function PeriodDropdown() {
   );
 }
 
-// ── TopBar ─────────────────────────────────────────────────────────────────
+// == TopBar =================================================================
 const PAGE_TITLES: Record<string, { label: string; breadcrumb: string }> = {
   '/':            { label: 'Digital Vault',          breadcrumb: 'Dashboard' },
   '/movimientos': { label: 'Bóveda de Movimientos',  breadcrumb: 'Movimientos' },
@@ -128,7 +128,7 @@ function TopBar() {
   );
 }
 
-// ── Sidebar ────────────────────────────────────────────────────────────────
+// == Sidebar ================================================================
 function SidebarContent() {
   const pathname = usePathname();
   const { showToast } = useToast();

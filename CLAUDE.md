@@ -126,7 +126,7 @@ Backend (FastAPI)
 | **007** | Analytics | B | ✅ COMPLETADO | - |
 | **008** | Integración Frontend | B | ✅ COMPLETADO | - |
 | **009** | Estabilización Final | B | ✅ COMPLETADO | - |
-| **010** | Motor de Proyecciones | A/B | 🔄 EN PROGRESO | - |
+| **010** | Motor de Proyecciones | A/B | ✅ INTEGRADO | - |
 
 **Backend Coverage Total: 88%** ✅ | **Test Suite: 86/86 passing** ✅
 **Performance: /insights 0.47s** ✅ | **Datos: 1,776 movs / 100% categorizados** ✅
@@ -607,5 +607,5 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 *Versión: 3.4*  
 *Última actualización: 2026-04-23*  
 *Responsables: Claude (Backend) + Antigravity (Frontend)*  
-*Status: BN-001-009 ✅ COMPLETO | BN-010 🔄 EN PROGRESO*  
+*Status: BN-001-010 ✅ COMPLETO | Versión 1.0.0 LISTA*  
 *Datos Reales: 1,776 movimientos Supervielle | Motor de Proyecciones: Activo*

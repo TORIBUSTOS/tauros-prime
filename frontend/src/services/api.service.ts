@@ -119,7 +119,7 @@ export const apiService = {
     return await response.json();
   },
 
-  // ── Categorías y Reglas ──────────────────────────────────────────────────
+  // == Categorías y Reglas ==================================================
 
   getCategories: async (period?: string): Promise<CategoryStats[]> => {
     const url = new URL(`${API_BASE_URL}/api/categories`);

@@ -1,0 +1,11 @@
+{
+  "project": "TAUROS PRIME",
+  "sprint": "Sprint 4",
+  "agents": [
+    { "id": "tori",    "status": "done",    "bn": "BN-009", "step": "VISION.md",       "updated_at": "2026-04-22T07:00:00Z" },
+    { "id": "rosario", "status": "done",    "bn": "BN-009", "step": "ARCHITECTURE.md", "updated_at": "2026-04-22T08:00:00Z" },
+    { "id": "claude",  "status": "done",    "bn": "BN-009", "step": "SPECS.md",        "updated_at": "2026-04-22T11:15:00Z" },
+    { "id": "ag",      "status": "waiting", "bn": null,     "step": null,              "updated_at": "2026-04-22T09:00:00Z" },
+    { "id": "gemini",  "status": "waiting", "bn": null,     "step": null,              "updated_at": "2026-04-22T09:00:00Z" }
+  ]
+}

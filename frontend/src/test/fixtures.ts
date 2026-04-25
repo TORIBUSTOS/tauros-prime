@@ -8,7 +8,7 @@ import type {
   CascadaRule,
 } from '@/types/api'
 
-// ── Movimientos ──────────────────────────────────────────────────────────────
+// == Movimientos ==============================================================
 
 export const mockMovimientos: MovimientoMapped[] = [
   {
@@ -59,7 +59,7 @@ export const mockMovimientos26: MovimientoMapped[] = Array.from({ length: 26 }, 
   periodo: '2025-06',
 }))
 
-// ── Summary ──────────────────────────────────────────────────────────────────
+// == Summary ==================================================================
 
 export const mockSummary: SummaryResponse = {
   period: '2025-06',
@@ -69,7 +69,7 @@ export const mockSummary: SummaryResponse = {
   transaction_count: 35,
 }
 
-// ── Insights ─────────────────────────────────────────────────────────────────
+// == Insights =================================================================
 
 export const mockInsightsResponse: InsightsResponse = {
   period: '2025-06',
@@ -96,7 +96,7 @@ export const mockInsightsEmpty: InsightsResponse = {
   insights: [],
 }
 
-// ── P&L Report ───────────────────────────────────────────────────────────────
+// == P&L Report ===============================================================
 
 export const mockPLReport: PLReportResponse = {
   period: '2025-06',
@@ -126,7 +126,7 @@ export const mockPLReportNegative: PLReportResponse = {
   resultado_neto: -10000,
 }
 
-// ── Forecast ─────────────────────────────────────────────────────────────────
+// == Forecast =================================================================
 
 export const mockForecast: ForecastResponse = {
   period: '2025-06',
@@ -175,7 +175,7 @@ export const mockForecast: ForecastResponse = {
   },
 }
 
-// ── Categorías ───────────────────────────────────────────────────────────────
+// == Categorías ===============================================================
 
 export const mockCategories: CategoryStats[] = [
   {
@@ -210,7 +210,7 @@ export const mockCategories: CategoryStats[] = [
   },
 ]
 
-// ── Reglas Cascada ───────────────────────────────────────────────────────────
+// == Reglas Cascada ===========================================================
 
 export const mockRules: CascadaRule[] = [
   {

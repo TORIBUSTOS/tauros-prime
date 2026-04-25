@@ -4,7 +4,7 @@ import AnalyticsPage from './page'
 import { apiService } from '@/services/api.service'
 import { mockMovimientos, mockPLReport, mockForecast } from '@/test/fixtures'
 
-// ── Mocks de servicio ────────────────────────────────────────────────────────
+// == Mocks de servicio ========================================================
 
 vi.mock('@/services/api.service', () => ({
   apiService: {
@@ -32,7 +32,7 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }))
 
-// ── Stubs de componentes de charts ───────────────────────────────────────────
+// == Stubs de componentes de charts ===========================================
 
 vi.mock('@/components/analytics/FlowChart', () => ({
   default: () => <div data-testid="flow-chart" />,
@@ -50,7 +50,7 @@ vi.mock('@/components/analytics/HormigaAnalysis', () => ({
   default: () => <div data-testid="hormiga-analysis" />,
 }))
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// == Helpers ==================================================================
 
 function setupSuccessfulAPIs() {
   vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
@@ -58,7 +58,7 @@ function setupSuccessfulAPIs() {
   vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// == Tests =====================================================================
 
 describe('AnalyticsPage', () => {
   beforeEach(() => {

@@ -4,7 +4,7 @@ import DashboardPage from './page'
 import { apiService } from '@/services/api.service'
 import { mockMovimientos, mockInsightsResponse, mockSummary, mockForecast } from '@/test/fixtures'
 
-// ── Mocks de servicio ────────────────────────────────────────────────────────
+// == Mocks de servicio ========================================================
 
 vi.mock('@/services/api.service', () => ({
   apiService: {
@@ -16,7 +16,7 @@ vi.mock('@/services/api.service', () => ({
   },
 }))
 
-// ── Mocks de contextos ───────────────────────────────────────────────────────
+// == Mocks de contextos =======================================================
 
 vi.mock('@/context/PeriodContext', () => ({
   usePeriod: () => ({
@@ -41,7 +41,7 @@ vi.mock('@/context/ToastContext', () => ({
   useToast: () => ({ showToast: mockShowToast }),
 }))
 
-// ── Stubs de componentes pesados ─────────────────────────────────────────────
+// == Stubs de componentes pesados =============================================
 
 vi.mock('@/components/analytics/FlowChart', () => ({
   default: () => <div data-testid="flow-chart" />,
@@ -63,7 +63,7 @@ vi.mock('@/components/dashboard/FileUploadZone', () => ({
   ),
 }))
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// == Helpers ==================================================================
 
 function setupSuccessfulAPIs() {
   vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
@@ -72,7 +72,7 @@ function setupSuccessfulAPIs() {
   vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// == Tests =====================================================================
 
 describe('DashboardPage', () => {
   beforeEach(() => {

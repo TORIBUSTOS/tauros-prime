@@ -5,7 +5,7 @@ import CategoriasPage from './page'
 import { apiService } from '@/services/api.service'
 import { mockCategories, mockRules } from '@/test/fixtures'
 
-// ── Mocks de servicio ────────────────────────────────────────────────────────
+// == Mocks de servicio ========================================================
 
 vi.mock('@/services/api.service', () => ({
   apiService: {
@@ -16,14 +16,14 @@ vi.mock('@/services/api.service', () => ({
   },
 }))
 
-// ── Mock de ToastContext ─────────────────────────────────────────────────────
+// == Mock de ToastContext =====================================================
 
 const mockShowToast = vi.fn()
 vi.mock('@/context/ToastContext', () => ({
   useToast: () => ({ showToast: mockShowToast }),
 }))
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// == Helpers ==================================================================
 
 function setupSuccessfulAPIs() {
   vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
@@ -32,7 +32,7 @@ function setupSuccessfulAPIs() {
   vi.mocked(apiService.getMovements).mockResolvedValue([])
 }
 
-// ── Tests ─────────────────────────────────────────────────────────────────────
+// == Tests =====================================================================
 
 describe('CategoriasPage', () => {
   beforeEach(() => {

@@ -7,7 +7,7 @@
    ========================================================================== */
 
 :root {
-  /* ── 1. PRIMITIVE OKLCH PALETTE ──────────────────────────────────────── */
+  /* == 1. PRIMITIVE OKLCH PALETTE ======================================== */
 
   /* Backgrounds */
   --p-bg-base:       oklch(5%  0      0);
@@ -44,7 +44,7 @@
   --p-text-muted:     oklch(62% 0.012 280);
   --p-text-purple:    oklch(72% 0.12  290);
 
-  /* ── 2. SEMANTIC TOKENS (consume primitives) ─────────────────────────── */
+  /* == 2. SEMANTIC TOKENS (consume primitives) =========================== */
 
   --t-background:     var(--p-bg-base);
   --t-foreground:     var(--p-text-primary);
@@ -121,7 +121,7 @@
   --t-transition-duration: 0.2s;
   --t-transition-timing:   cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* ── 3. PREMIUM GLASS OVERRIDE ───────────────────────────────────────── */
+  /* == 3. PREMIUM GLASS OVERRIDE ========================================= */
 }
 
 :root[data-theme='premium-glass'] {
@@ -166,7 +166,7 @@
   --t-transition-timing:   cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ── 4. TAILWIND v4 @theme inline ────────────────────────────────────────── */
+/* == 4. TAILWIND v4 @theme inline ========================================== */
 
 @theme inline {
   /* Backgrounds */

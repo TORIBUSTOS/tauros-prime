@@ -78,7 +78,7 @@ export interface ReportNode {
   movimientos: MovimientoResponse[];
 }
 
-// ── Categorías y Reglas ────────────────────────────────────────────────────
+// == Categorías y Reglas ====================================================
 
 export interface CascadaRule {
   id: number;
@@ -125,7 +125,7 @@ export interface SubcategoriaStats {
   pct_movimientos: number;
 }
 
-// ── Insights Engine ────────────────────────────────────────────────────────
+// == Insights Engine ========================================================
 
 export interface HormigaItem {
   categoria: string;
