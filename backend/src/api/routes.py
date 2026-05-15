@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente
+from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente, AuditLog, ManualObligation
 from src.services.parser import ParserService
 from src.services.categorizer import CategorizerService
 from src.services.insights import InsightsService
@@ -347,12 +347,132 @@ def recategorize_all(db: Session = Depends(get_db)):
 
 @router.patch("/movements/{mov_id}/categoria")
 def patch_movement_categoria(mov_id: int, body: dict, db: Session = Depends(get_db)):
-    """Reasigna categoría y subcategoría a un movimiento individual."""
+    """Reasigna categoría y subcategoría a un movimiento individual y lo registra en auditoría."""
     mov = db.query(Movimiento).filter(Movimiento.id == mov_id).first()
     if not mov:
         raise HTTPException(status_code=404, detail="Movimiento no encontrado")
+    
+    old_cat = mov.categoria
+    old_sub = mov.subcategoria
+    
     mov.categoria = body.get("categoria", mov.categoria)
     mov.subcategoria = body.get("subcategoria", mov.subcategoria)
     mov.confianza = 1.0  # asignación manual = confianza total
+    
+    # Registro en Auditoría
+    audit = AuditLog(
+        entity_type="movimiento",
+        entity_id=mov_id,
+        action="recategorizacion",
+        old_value=f"{old_cat} | {old_sub}",
+        new_value=f"{mov.categoria} | {mov.subcategoria}",
+        details=f"Descripción: {mov.descripcion}"
+    )
+    db.add(audit)
     db.commit()
+    
     return {"id": mov_id, "categoria": mov.categoria, "subcategoria": mov.subcategoria}
+
+@router.get("/audit", response_model=AuditLogPaginatedResponse)
+def get_audit_logs(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    """Retorna el historial de cambios (Auditoría)."""
+    query = db.query(AuditLog)
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    skip = (page - 1) * page_size
+    items = query.order_by(AuditLog.timestamp.desc()).offset(skip).limit(page_size).all()
+    
+    return AuditLogPaginatedResponse(
+        items=items,
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=total_pages
+    )
+
+@router.post("/rules/from-movement", response_model=CascadaRuleResponse)
+def create_rule_from_movement(body: RuleFromMovementCreate, db: Session = Depends(get_db)):
+    """Crea una regla de motor cascada basada en un movimiento específico."""
+    mov = db.query(Movimiento).filter(Movimiento.id == body.movimiento_id).first()
+    if not mov:
+        raise HTTPException(status_code=404, detail="Movimiento no encontrado")
+    
+    # Si no se provee un patrón personalizado, usamos la descripción del movimiento (limpia)
+    patron = body.patron_personalizado or mov.descripcion.strip()
+    
+    # Verificar si ya existe el patrón
+    existing = db.query(CascadaRule).filter(CascadaRule.patron == patron).first()
+    if existing:
+        # Si ya existe, actualizamos su categoría y subcategoría
+        existing.categoria = body.categoria
+        existing.subcategoria = body.subcategoria
+        existing.activo = 1
+        db.commit()
+        db.refresh(existing)
+        rule = existing
+    else:
+        rule = CascadaRule(
+            patron=patron,
+            categoria=body.categoria,
+            subcategoria=body.subcategoria,
+            peso=0.95, # Reglas creadas por el usuario tienen peso alto
+            veces_usada=1,
+            activo=1
+        )
+        db.add(rule)
+        
+    # Auditoría de creación de regla
+    audit = AuditLog(
+        entity_type="regla",
+        entity_id=rule.id if hasattr(rule, 'id') else 0, # id se genera al commit
+        action="creacion_regla",
+        new_value=f"{rule.categoria} | {rule.patron}",
+        details=f"Creada desde movimiento {body.movimiento_id}"
+    )
+    db.add(audit)
+    db.commit()
+    db.refresh(rule)
+    
+    # Actualizar el ID en la auditoría si era nuevo
+    if audit.entity_id == 0:
+        audit.entity_id = rule.id
+        db.commit()
+        
+    return rule
+
+# ── OBLIGACIONES MANUALES ──────────────────────────────────────────────────
+
+@router.get("/obligations", response_model=List[ManualObligationResponse])
+def get_obligations(db: Session = Depends(get_db)):
+    return db.query(ManualObligation).order_by(ManualObligation.fecha_limite.asc()).all()
+
+@router.post("/obligations", response_model=ManualObligationResponse, status_code=201)
+def create_obligation(body: ManualObligationCreate, db: Session = Depends(get_db)):
+    obj = ManualObligation(**body.model_dump())
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+@router.patch("/obligations/{obj_id}", response_model=ManualObligationResponse)
+def update_obligation(obj_id: int, body: ManualObligationUpdate, db: Session = Depends(get_db)):
+    obj = db.query(ManualObligation).filter(ManualObligation.id == obj_id).first()
+    if not obj:
+        raise HTTPException(status_code=404, detail="Obligación no encontrada")
+    for field, val in body.model_dump(exclude_none=True).items():
+        setattr(obj, field, val)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+@router.delete("/obligations/{obj_id}", status_code=204)
+def delete_obligation(obj_id: int, db: Session = Depends(get_db)):
+    obj = db.query(ManualObligation).filter(ManualObligation.id == obj_id).first()
+    if not obj:
+        raise HTTPException(status_code=404, detail="Obligación no encontrada")
+    db.delete(obj)
+    db.commit()

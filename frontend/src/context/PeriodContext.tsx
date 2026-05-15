@@ -22,12 +22,14 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
     try {
       const periods = await apiService.getPeriods();
       setAvailablePeriods(periods);
-      // Solo seteamos el inicial si no hay uno seleccionado o el actual ya no existe
       if (periods.length > 0 && (!selectedPeriod || !periods.includes(selectedPeriod))) {
         setSelectedPeriod(periods[0]);
       }
     } catch (error) {
-      console.error('Error fetching periods:', error);
+      console.warn('Backend unavailable, using fallback periods');
+      const fallback = ['2026-04', '2026-03', '2026-02', '2026-01'];
+      setAvailablePeriods(fallback);
+      if (!selectedPeriod) setSelectedPeriod(fallback[0]);
     } finally {
       setIsLoading(false);
     }
@@ -38,12 +40,12 @@ export function PeriodProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PeriodContext.Provider value={{ 
-      selectedPeriod, 
-      setSelectedPeriod, 
-      availablePeriods, 
+    <PeriodContext.Provider value={{
+      selectedPeriod,
+      setSelectedPeriod,
+      availablePeriods,
       isLoading,
-      refreshPeriods: fetchPeriods 
+      refreshPeriods: fetchPeriods
     }}>
       {children}
     </PeriodContext.Provider>

@@ -17,3 +17,67 @@ body {
   -webkit-backdrop-filter: blur(var(--t-glass-blur));
   border: var(--t-card-border);
 }
+
+/* == PRINT STYLES (PDF EXPORT) ============================================= */
+@media print {
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+
+  /* Ocultar elementos de navegación y control */
+  aside, 
+  nav, 
+  .no-print,
+  button,
+  header + div > .flex.justify-between.items-end > button,
+  .sticky {
+    display: none !important;
+  }
+
+  /* Reset de layout para impresión */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .h-screen {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Estilizar tarjetas para papel */
+  .glass-panel,
+  [class*="bg-surface"],
+  [class*="bg-white/5"] {
+    background: white !important;
+    border: 1px solid #eee !important;
+    box-shadow: none !important;
+    color: black !important;
+    break-inside: avoid;
+  }
+
+  /* Ajustar textos para impresión */
+  .text-text-prime, 
+  .text-text-muted,
+  h1, h2, h3 {
+    color: black !important;
+  }
+
+  .text-primary {
+    color: #2563eb !important; /* Azul estándar para links/énfasis */
+  }
+
+  /* Forzar visualización de gráficos y fondos si el navegador lo permite */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

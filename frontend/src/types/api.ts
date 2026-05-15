@@ -171,3 +171,46 @@ export interface ProjectionsResponse {
     dia: number;
   }>;
 }
+
+export interface AuditLog {
+  id: number;
+  entity_type: string;
+  entity_id: number;
+  action: string;
+  old_value: string | null;
+  new_value: string | null;
+  details: string | null;
+  timestamp: string;
+}
+
+export interface AuditLogPaginatedResponse {
+  items: AuditLog[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+}
+
+export interface RuleFromMovementCreate {
+  movimiento_id: number;
+  categoria: string;
+  subcategoria?: string;
+  patron_personalizado?: string;
+}
+
+export interface ManualObligation {
+  id: number;
+  concepto: string;
+  monto: number;
+  fecha_limite: string;
+  prioridad: number;
+  pagado: number;
+  created_at: string;
+}
+
+export interface ManualObligationCreate {
+  concepto: string;
+  monto: number;
+  fecha_limite: string;
+  prioridad: number;
+}

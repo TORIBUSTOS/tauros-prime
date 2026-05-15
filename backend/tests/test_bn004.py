@@ -56,17 +56,19 @@ def sample_data(db: Session):
 
 
 def test_get_movements_success(client: TestClient):
-    """Test GET /api/movements endpoint exists and returns list."""
+    """Test GET /api/movements endpoint exists and returns paginated response."""
     response = client.get("/api/movements")
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    data = response.json()
+    assert isinstance(data["items"], list)
+    assert "total" in data and "page" in data and "total_pages" in data
 
 
 def test_get_movements_filters_by_period(client: TestClient):
     """Test GET /api/movements accepts period parameter."""
     response = client.get("/api/movements?period=2026-04")
     assert response.status_code == 200
-    movements = response.json()
+    movements = response.json()["items"]
     assert isinstance(movements, list)
 
 
@@ -74,7 +76,7 @@ def test_get_movements_filters_by_category(client: TestClient):
     """Test GET /api/movements accepts category parameter."""
     response = client.get("/api/movements?categoria=OSPACA")
     assert response.status_code == 200
-    movements = response.json()
+    movements = response.json()["items"]
     assert isinstance(movements, list)
     if len(movements) > 0:
         assert all(m['categoria'] == "OSPACA" for m in movements)
@@ -84,7 +86,7 @@ def test_get_movements_filters_by_both_period_and_category(client: TestClient):
     """Test GET /api/movements with both period and category filters."""
     response = client.get("/api/movements?period=2026-04&categoria=OSPACA")
     assert response.status_code == 200
-    movements = response.json()
+    movements = response.json()["items"]
     assert isinstance(movements, list)
 
 
@@ -97,9 +99,9 @@ def test_get_movements_invalid_period_format(client: TestClient):
 def test_get_movements_response_structure(client: TestClient):
     """Test that movement response has correct structure."""
     response = client.get("/api/movements")
-    movements = response.json()
+    data = response.json()
+    movements = data["items"]
 
-    # When there are movements, they should have the required structure
     if len(movements) > 0:
         required_fields = {'id', 'fecha', 'descripcion', 'monto', 'categoria', 'confianza'}
         for mov in movements:
@@ -216,18 +218,18 @@ def test_health_endpoint(client: TestClient):
 
 
 def test_get_movements_limit(client: TestClient):
-    """Test that movements endpoint respects limit."""
+    """Test that movements endpoint respects pagination."""
     response = client.get("/api/movements")
     assert response.status_code == 200
-    movements = response.json()
-    assert len(movements) <= 500
+    data = response.json()
+    assert len(data["items"]) <= data["page_size"]
 
 
 def test_get_movements_ordered_by_date_desc(client: TestClient):
     """Test that movements are ordered by date descending."""
     response = client.get("/api/movements")
     assert response.status_code == 200
-    movements = response.json()
+    movements = response.json()["items"]
 
     if len(movements) > 1:
         for i in range(len(movements) - 1):

@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.models.movement import init_db
+import src.models.auth  # registra User en Base.metadata antes de create_all
 from src.api.routes import router
+from src.api.auth_routes import router as auth_router
 
 app = FastAPI(title="TORO_Prime API", version="0.1.0", description="Motor financiero inteligente", docs_url="/docs")
 

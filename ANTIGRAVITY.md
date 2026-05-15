@@ -3,8 +3,18 @@
 > Este documento registra el progreso de **Antigravity** en el desarrollo del Frontend de TAUROS v2.
 > Gemini se encarga de la estética "Imperial Tech" y la integración con el motor de Claude.
 
-## Estado del Proyecto: BN-010 COMPLETED ✅ — V1.0 STABLE 🏛️
-La plataforma ha alcanzado su hito de Versión 1.0. Todas las capacidades predictivas, de análisis y de visualización están operativas y validadas con datos reales.
+---
+
+## 🧠 MEMORIA NEXUS (COMPARTIDA)
+Este proyecto está vinculado al sistema de memoria global:
+- **Ruta**: `C:\Users\mauri\OneDrive\Escritorio\TORO\_TORO_MEMORY_`
+- **Protocolo**: Consultar `PROTOCOL.md` al iniciar.
+- **Acción**: Actualiza `proyectos/tauros_v2.json` tras cada hito importante.
+
+---
+
+## Estado del Proyecto: BN-011/12/13 COMPLETED ✅ — VERSION 1.0 RELEASE 🚀
+La plataforma TAUROS Prime ha alcanzado su primer hito de madurez (v1.0) con la integración de gestión de obligaciones manuales, exportación de reportes y procesamiento masivo del Q1 2026.
 
 ---
 
@@ -16,6 +26,34 @@ La plataforma ha alcanzado su hito de Versión 1.0. Todas las capacidades predic
 ---
 
 ## Log de Trabajo (Changelog de Antigravity)
+
+### [2026-04-25] - Bloque BN-012 & BN-013: Future Obligations & Report Export
+**Objetivo**: Cerrar las brechas de planificación financiera manual y permitir la salida de datos profesional (PDF).
+
+- **Gestión de Obligaciones (BN-012)**:
+  - **Backend Persistence**: Creación del modelo `ManualObligation` para registrar compromisos de pago futuros (ej. tarjetas de crédito, cuotas).
+  - **Predictive Integration**: El motor de forecast ahora inyecta automáticamente las obligaciones pendientes en la proyección a 3 meses.
+  - **UI Management**: Nuevo componente `ObligationsManager` en la página de Insights para CRUD de compromisos.
+- **Exportación a PDF (BN-013)**:
+  - **Print Engine**: Implementación de reglas `@media print` en el CSS global para generar reportes limpios en formato A4.
+  - **One-Click Export**: Botón "Exportar Reporte" integrado en el Centro de Comando Cognitivo.
+- **Finalización v1.0**:
+  - Consolidación de toda la inteligencia de negocio.
+  - Verificación de consistencia de datos post-ingesta masiva.
+
+### [2026-04-25] - Bloque BN-011: Ciclo Fiscal 2026 & Data Modernization
+**Objetivo**: Inicializar el sistema para el nuevo año contable y procesar el primer trimestre de 2026.
+
+- **Data Reset**: Limpieza profunda de la base de datos para eliminar rastros de pruebas y datos obsoletos de 2025.
+- **Ingesta Masiva**: 
+  - Importación de 1,423 movimientos desde el extracto Supervielle (Enero-Marzo 2026).
+  - Sincronización de 128 reglas de categorización automática.
+- **Intelligence Bulk Processing**:
+  - Generación de 53 nuevos insights estratégicos para el Q1 2026.
+  - Recalibración del motor de proyecciones basado en el nuevo ritmo de gasto.
+- **Workflow Polish**:
+  - Verificación de paginación server-side funcional para el volumen de datos cargado.
+  - Limpieza de logs de desarrollo.
 
 ### [2026-04-23] - Bloque BN-010: Financial Projection Engine
 **Objetivo**: Implementar capacidades predictivas en tiempo real para anticipar el saldo a fin de mes.

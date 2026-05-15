@@ -36,7 +36,7 @@ const HormigaAnalysis: React.FC<HormigaAnalysisProps> = ({ movements }) => {
       }))
       .filter(h => h.count >= 2 || (h.average < 10000 && h.count >= 1))
       .sort((a, b) => b.total - a.total)
-      .slice(0, 5);
+      .slice(0, 15);
   }, [movements]);
 
   const selectedDetails = useMemo(() => {

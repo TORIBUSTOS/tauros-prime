@@ -5,6 +5,14 @@
 
 ---
 
+## 🧠 MEMORIA NEXUS (COMPARTIDA)
+Este proyecto está vinculado al sistema de memoria global:
+- **Ruta**: `C:\Users\mauri\OneDrive\Escritorio\TORO\_TORO_MEMORY_`
+- **Protocolo**: Consultar `PROTOCOL.md` al iniciar.
+- **Acción**: Al finalizar tareas, actualiza `proyectos/tauros_v2.json` y registra la sesión.
+
+---
+
 ## Protocolo TORO LAB v2
 
 Este proyecto **SIGUE ESTRICTAMENTE** el Protocolo TORO LAB v2:

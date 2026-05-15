@@ -15,6 +15,7 @@ import {
   Tag,
   ChevronDown,
   RefreshCw,
+  History,
 } from "lucide-react";
 import { PeriodProvider, usePeriod } from "@/context/PeriodContext";
 import { ToastProvider, useToast } from "@/context/ToastContext";
@@ -94,6 +95,7 @@ const PAGE_TITLES: Record<string, { label: string; breadcrumb: string }> = {
   '/reportes':    { label: 'Reporte P&L',            breadcrumb: 'Reportes' },
   '/analytics':   { label: 'Inteligencia Analítica', breadcrumb: 'Análisis' },
   '/insights':    { label: 'Feed de Insights',       breadcrumb: 'Insights' },
+  '/auditoria':   { label: 'Historial de Auditoría', breadcrumb: 'Auditoría' },
 };
 
 function TopBar() {
@@ -154,6 +156,7 @@ function SidebarContent() {
     { name: 'Reportes', href: '/reportes', icon: FileText },
     { name: 'Análisis', href: '/analytics', icon: BarChart3 },
     { name: 'Insights', href: '/insights', icon: Zap },
+    { name: 'Auditoría', href: '/auditoria', icon: History },
   ];
 
   return (

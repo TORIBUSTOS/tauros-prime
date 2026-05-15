@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import date
+from datetime import date, datetime
 from typing import List, Dict, Any
 
 class MovimientoResponse(BaseModel):
@@ -154,4 +154,53 @@ class SubcategoriaStatsResponse(BaseModel):
     ingreso: float
     pct_gasto: float    # % del gasto total de la categoría padre
     pct_movimientos: float  # % de movimientos de la categoría padre
+
+class AuditLogResponse(BaseModel):
+    id: int
+    entity_type: str
+    entity_id: int
+    action: str
+    old_value: str | None = None
+    new_value: str | None = None
+    details: str | None = None
+    timestamp: datetime
+    class Config:
+        from_attributes = True
+
+class AuditLogPaginatedResponse(BaseModel):
+    items: List[AuditLogResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
+class RuleFromMovementCreate(BaseModel):
+    movimiento_id: int
+    categoria: str
+    subcategoria: str | None = None
+    patron_personalizado: str | None = None
+
+class ManualObligationResponse(BaseModel):
+    id: int
+    concepto: str
+    monto: float
+    fecha_limite: date
+    prioridad: int
+    pagado: int
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class ManualObligationCreate(BaseModel):
+    concepto: str
+    monto: float
+    fecha_limite: date
+    prioridad: int = 1
+
+class ManualObligationUpdate(BaseModel):
+    concepto: str | None = None
+    monto: float | None = None
+    fecha_limite: date | None = None
+    prioridad: int | None = None
+    pagado: int | None = None
 

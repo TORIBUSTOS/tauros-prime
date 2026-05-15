@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
-from src.models.movement import Movimiento
+from src.models.movement import Movimiento, ManualObligation
 import statistics
 from collections import defaultdict, Counter
 
@@ -17,6 +17,9 @@ class ForecastService:
         if not hist_movs:
             return {'error': 'Insufficient historical data'}
 
+        # Obtener obligaciones manuales pendientes
+        obligations = db.query(ManualObligation).filter(ManualObligation.pagado == 0).all()
+
         forecast = []
         for offset in range(3):
             f_month = month + offset
@@ -26,6 +29,20 @@ class ForecastService:
                 f_year += 1
             month_str = f"{f_year}-{f_month:02d}"
             month_forecast = ForecastService._forecast_month(f_year, f_month, hist_movs, db)
+            
+            # Integrar obligaciones manuales del mes
+            month_obligations = [o for o in obligations if o.fecha_limite.year == f_year and o.fecha_limite.month == f_month]
+            if month_obligations:
+                total_obs = sum(o.monto for o in month_obligations)
+                month_forecast.append({
+                    'categoria': 'Obligaciones Manuales',
+                    'expected_count': len(month_obligations),
+                    'expected_total': -total_obs, # Egresos
+                    'expected_avg': total_obs / len(month_obligations),
+                    'confidence': 0.95,
+                    'metadata': {'manual': True, 'details': [o.concepto for o in month_obligations]}
+                })
+
             forecast.append({'period': month_str, 'forecast': month_forecast})
 
         scenarios = ForecastService._generate_scenarios(forecast)
@@ -56,7 +73,7 @@ class ForecastService:
                 # Aumentar confianza si hay un día muy común (ej. sueldos el 30)
                 is_periodic = (day_freq / len(movs)) > 0.4 if movs else False
                 base_confidence = 0.75 + (min(len(movs), 5) * 0.04)
-                final_confidence = min(0.98, base_confidence + (0.1 if is_periodic else 0))
+                final_confidence = min(0.95, base_confidence + (0.1 if is_periodic else 0))
 
                 month_forecast.append({
                     'categoria': categoria,
@@ -81,7 +98,7 @@ class ForecastService:
                         'expected_total': avg,
                         'expected_avg': avg,
                         'std_dev': statistics.stdev(amounts) if len(amounts) > 1 else 0,
-                        'confidence': 0.45,
+                        'confidence': 0.50,
                         'metadata': {'fallback': True}
                     })
         return month_forecast

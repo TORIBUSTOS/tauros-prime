@@ -1,11 +1,10 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from src.core.config import get_settings
+from src.models.base import Base
 
 settings = get_settings()
-Base = declarative_base()
 
 class Movimiento(Base):
     __tablename__ = "movimientos"
@@ -61,6 +60,27 @@ class CascadaRule(Base):
     peso = Column(Float, default=0.50)
     veces_usada = Column(Integer, default=1)
     activo = Column(Integer, default=1)
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    entity_type = Column(String(50), nullable=False, index=True) # movimiento, regla
+    entity_id = Column(Integer, nullable=False)
+    action = Column(String(50), nullable=False) # recategorizacion, creacion_regla, borrado
+    old_value = Column(String, nullable=True)
+    new_value = Column(String, nullable=True)
+    details = Column(String(500), nullable=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+class ManualObligation(Base):
+    __tablename__ = "manual_obligations"
+    id = Column(Integer, primary_key=True, index=True)
+    concepto = Column(String(255), nullable=False)
+    monto = Column(Float, nullable=False)
+    fecha_limite = Column(Date, nullable=False)
+    prioridad = Column(Integer, default=1) # 1: baja, 2: media, 3: alta
+    pagado = Column(Integer, default=0) # 0: no, 1: si
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

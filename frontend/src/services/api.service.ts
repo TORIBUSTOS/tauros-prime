@@ -15,6 +15,9 @@ import {
   HormigasResponse,
   HealthFlagsResponse,
   ProjectionsResponse,
+  AuditLog,
+  AuditLogPaginatedResponse,
+  RuleFromMovementCreate,
 } from '../types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
@@ -178,6 +181,19 @@ export const apiService = {
     if (!response.ok) throw new Error('Error al reasignar categoría');
   },
 
+  createRuleFromMovement: async (body: RuleFromMovementCreate): Promise<CascadaRule> => {
+    const response = await fetch(`${API_BASE_URL}/api/rules/from-movement`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Error al crear regla desde movimiento');
+    }
+    return await response.json();
+  },
+
   getSubcategoriaStats: async (categoria: string): Promise<SubcategoriaStats[]> => {
     const encoded = encodeURIComponent(categoria);
     const response = await fetch(`${API_BASE_URL}/api/categories/${encoded}/subcategorias`);
@@ -207,5 +223,49 @@ export const apiService = {
     const response = await fetch(`${API_BASE_URL}/api/insights/projections`);
     if (!response.ok) throw new Error('Error al cargar proyecciones de gasto');
     return await response.json();
+  },
+
+  // == Auditoría ============================================================
+  
+  getAuditLogs: async (page: number = 1, pageSize: number = 20): Promise<AuditLogPaginatedResponse> => {
+    const url = new URL(`${API_BASE_URL}/api/audit`);
+    url.searchParams.append('page', page.toString());
+    url.searchParams.append('page_size', pageSize.toString());
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error('Error al cargar logs de auditoría');
+    return await response.json();
+  },
+  
+  // == Obligaciones Manuales ===============================================
+  
+  getObligations: async (): Promise<any[]> => {
+    const response = await fetch(`${API_BASE_URL}/api/obligations`);
+    if (!response.ok) throw new Error('Error al cargar obligaciones');
+    return await response.json();
+  },
+
+  createObligation: async (body: any): Promise<any> => {
+    const response = await fetch(`${API_BASE_URL}/api/obligations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new Error('Error al crear obligación');
+    return await response.json();
+  },
+
+  updateObligation: async (id: number, body: any): Promise<any> => {
+    const response = await fetch(`${API_BASE_URL}/api/obligations/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new Error('Error al actualizar obligación');
+    return await response.json();
+  },
+
+  deleteObligation: async (id: number): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/api/obligations/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Error al eliminar obligación');
   },
 };

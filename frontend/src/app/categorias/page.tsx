@@ -398,7 +398,7 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
     });
   }, []);
 
-  const handleSave = async (id: number) => {
+  const handleSave = async (id: number, movement: any) => {
     const a = assignments[id];
     if (!a?.categoria) return showToast('Seleccioná una categoría', 'error');
     setSaving(id);
@@ -406,6 +406,16 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
       await apiService.patchMovimientoCategoria(id, a.categoria, a.subcategoria);
       setMovs(prev => prev.filter(m => m.id !== id));
       showToast('Movimiento categorizado', 'success');
+
+      // Feedback Loop
+      if (window.confirm(`¿Deseas crear una regla inteligente para que "${movement.descripcion}" se asocie siempre a "${a.categoria}"?`)) {
+        await apiService.createRuleFromMovement({
+          movement_id: id,
+          pattern: movement.descripcion,
+          target_categoria: a.categoria
+        });
+        showToast("Aprendizaje AI completado.", "success");
+      }
     } catch (e: any) { showToast(e.message, 'error'); }
     finally { setSaving(null); }
   };
@@ -454,7 +464,7 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
               className="w-32 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[11px] text-text-prime outline-none focus:border-primary/50 transition-colors"
             />
             <button
-              onClick={() => handleSave(m.id)}
+              onClick={() => handleSave(m.id, m)}
               disabled={saving === m.id || !assignments[m.id]?.categoria}
               className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30"
             >

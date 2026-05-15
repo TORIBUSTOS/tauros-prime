@@ -65,10 +65,10 @@ class TestMovementsEndpoint:
     """Tests para GET /movements"""
 
     def test_get_movements_empty(self, db):
-        """Verifica que GET /movements retorna [] cuando no hay datos"""
+        """Verifica que GET /movements retorna items vacío cuando no hay datos"""
         response = client.get("/api/movements")
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json()["items"] == []
 
     def test_get_movements_returns_all(self, db):
         """Verifica que GET /movements retorna todos los movimientos"""
@@ -90,7 +90,7 @@ class TestMovementsEndpoint:
 
         # Assert
         assert response.status_code == 200
-        assert len(response.json()) == 3
+        assert len(response.json()["items"]) == 3
 
     def test_get_movements_filters_by_period(self, db):
         """Verifica que period parameter filtra correctamente"""
@@ -112,8 +112,8 @@ class TestMovementsEndpoint:
 
         # Assert
         assert response.status_code == 200
-        assert len(response.json()) == 1
-        assert response.json()[0]["descripcion"] == "MOV6"
+        assert len(response.json()["items"]) == 1
+        assert response.json()["items"][0]["descripcion"] == "MOV6"
 
     def test_get_movements_filters_by_category(self, db):
         """Verifica que categoria parameter filtra correctamente"""
@@ -135,8 +135,8 @@ class TestMovementsEndpoint:
 
         # Assert
         assert response.status_code == 200
-        assert len(response.json()) == 1
-        assert response.json()[0]["categoria"] == "Ingresos"
+        assert len(response.json()["items"]) == 1
+        assert response.json()["items"][0]["categoria"] == "Ingresos"
 
     def test_get_movements_filters_by_both(self, db):
         """Verifica que ambos filtros funcionan juntos"""
@@ -158,8 +158,8 @@ class TestMovementsEndpoint:
 
         # Assert
         assert response.status_code == 200
-        assert len(response.json()) == 1
-        assert response.json()[0]["descripcion"] == "A"
+        assert len(response.json()["items"]) == 1
+        assert response.json()["items"][0]["descripcion"] == "A"
 
     def test_get_movements_invalid_period_format(self, db):
         """Verifica que periodo inválido falla"""
@@ -167,9 +167,9 @@ class TestMovementsEndpoint:
         assert response.status_code == 422  # Validation error
 
     def test_get_movements_respects_limit(self, db):
-        """Verifica que máximo 500 registros se retornan"""
+        """Verifica que la paginación funciona y page_size controla el límite"""
         # Arrange
-        for i in range(600):
+        for i in range(30):
             mov = Movimiento(
                 fecha=date(2025, 6, (i % 30) + 1),
                 descripcion=f"MOV{i}",
@@ -181,12 +181,15 @@ class TestMovementsEndpoint:
             db.add(mov)
         db.commit()
 
-        # Act
-        response = client.get("/api/movements")
+        # Act — page_size=10
+        response = client.get("/api/movements?page_size=10")
 
         # Assert
         assert response.status_code == 200
-        assert len(response.json()) == 500
+        data = response.json()
+        assert len(data["items"]) == 10
+        assert data["total"] == 30
+        assert data["total_pages"] == 3
 
 
 class TestSummaryEndpoint:

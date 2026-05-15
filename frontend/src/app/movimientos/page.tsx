@@ -11,7 +11,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import BaseCard from '@/components/shared/BaseCard';
 import {
   Search, ArrowDownLeft, ArrowUpRight, Download,
-  Database, Calendar
+  Database, Calendar, Settings, Brain
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
@@ -31,6 +31,9 @@ function MovimientosContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isProcessingRule, setIsProcessingRule] = useState<number | null>(null);
 
   // Sync URL params → state
   useEffect(() => {
@@ -69,6 +72,51 @@ function MovimientosContent() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterType, selectedPeriod]);
+
+  // Load categories for selector
+  useEffect(() => {
+    async function loadCats() {
+      try {
+        const cats = await apiService.getCategories();
+        setCategories(cats.map(c => c.categoria).sort());
+      } catch (err) {
+        console.error('Error loading categories:', err);
+      }
+    }
+    loadCats();
+  }, []);
+
+  const handleUpdateCategory = async (id: number, movement: MovimientoMapped, newCat: string) => {
+    if (newCat === movement.categoria) {
+      setEditingId(null);
+      return;
+    }
+
+    try {
+      await apiService.patchMovimientoCategoria(id, newCat);
+      showToast(`Movimiento recategorizado a ${newCat}`, "success");
+      
+      // Actualizar estado local para evitar recarga completa
+      setMovements(prev => prev.map(m => m.id === id ? { ...m, categoria: newCat } : m));
+      setEditingId(null);
+
+      // Trigger de feedback loop: Crear regla
+      const confirmMsg = `¿Deseas crear una regla inteligente para que "${movement.descripcion}" se asocie siempre a "${newCat}"?`;
+      if (window.confirm(confirmMsg)) {
+        setIsProcessingRule(id);
+        await apiService.createRuleFromMovement({
+          movement_id: id,
+          pattern: movement.descripcion,
+          target_categoria: newCat
+        });
+        showToast("Aprendizaje AI completado: Nueva regla generada.", "success");
+      }
+    } catch (err) {
+      showToast("Error al actualizar la categoría", "error");
+    } finally {
+      setIsProcessingRule(null);
+    }
+  };
 
   const paginatedMovements = movements;
 
@@ -193,9 +241,35 @@ function MovimientosContent() {
                       </div>
                     </td>
                     <td className="px-8 py-5 whitespace-nowrap">
-                      <span className="px-3 py-1 rounded-full text-[9px] font-black bg-white/5 text-text-muted/60 uppercase tracking-[0.1em] border border-white/5 group-hover:border-primary/20 transition-colors">
-                        {m.categoria}{m.subcategoria && <span className="text-primary opacity-40 ml-1.5">/ {m.subcategoria}</span>}
-                      </span>
+                      {editingId === m.id ? (
+                        <select
+                          className="bg-surface/80 border border-primary/40 rounded-xl px-3 py-1.5 text-[11px] font-bold text-text-prime outline-none focus:ring-1 focus:ring-primary/20 transition-all animate-in zoom-in-95 duration-200 shadow-2xl"
+                          value={m.categoria}
+                          autoFocus
+                          onBlur={() => setTimeout(() => setEditingId(null), 200)}
+                          onChange={(e) => handleUpdateCategory(m.id, m, e.target.value)}
+                        >
+                          <option value={m.categoria}>{m.categoria}</option>
+                          {categories.filter(c => c !== m.categoria).map(c => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <div 
+                          className="flex items-center gap-3 cursor-pointer group/cat"
+                          onClick={() => setEditingId(m.id)}
+                          title="Click para recategorizar"
+                        >
+                          <span className="px-3 py-1 rounded-full text-[9px] font-black bg-white/5 text-text-muted/60 uppercase tracking-[0.1em] border border-white/5 group-hover/cat:border-primary/40 group-hover/cat:text-primary transition-all flex items-center gap-2">
+                            {m.categoria}{m.subcategoria && <span className="text-primary opacity-40 ml-1.5">/ {m.subcategoria}</span>}
+                            <Settings size={10} className="opacity-0 group-hover/cat:opacity-100 transition-opacity" />
+                          </span>
+                          
+                          {isProcessingRule === m.id && (
+                            <Brain size={14} className="text-primary animate-pulse" />
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td className="px-8 py-5 whitespace-nowrap">
                       <div className="flex items-center gap-3">

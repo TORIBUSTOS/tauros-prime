@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { 
   AlertTriangle, Zap, Target, Sparkles, ShieldCheck, HeartPulse, 
   Activity, Coins, Calendar, ArrowRight, TrendingUp, Clock,
-  ChevronRight, AlertCircle, Info
+  ChevronRight, AlertCircle, Info, Printer
 } from 'lucide-react';
 
 import { usePeriod } from '@/context/PeriodContext';
@@ -20,6 +20,7 @@ import ScoreGauge from '@/components/insights/ScoreGauge';
 import BaseCard from '@/components/shared/BaseCard';
 import LoadingImperial from '@/components/shared/LoadingImperial';
 import EmptyState from '@/components/shared/EmptyState';
+import ObligationsManager from '@/components/analytics/ObligationsManager';
 
 export default function InsightsPage() {
   const { selectedPeriod } = usePeriod();
@@ -131,14 +132,25 @@ export default function InsightsPage() {
       variants={containerVariants}
       className="flex flex-col gap-8 pb-12"
     >
-      <header className="flex flex-col gap-2">
-        <motion.div variants={itemVariants} className="flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-primary font-bold">
-          <div className="w-4 h-[1px] bg-primary/40" />
-          Inteligencia Financiera
-        </motion.div>
-        <motion.h1 variants={itemVariants} className="text-2xl font-black tracking-tight text-text-prime">
-          Centro de <span className="text-primary">Comando Cognitivo</span>
-        </motion.h1>
+        <div className="flex justify-between items-end">
+          <div className="flex flex-col gap-2">
+            <motion.div variants={itemVariants} className="flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-primary font-bold">
+              <div className="w-4 h-[1px] bg-primary/40" />
+              Inteligencia Financiera
+            </motion.div>
+            <motion.h1 variants={itemVariants} className="text-2xl font-black tracking-tight text-text-prime">
+              Centro de <span className="text-primary">Comando Cognitivo</span>
+            </motion.h1>
+          </div>
+          <motion.button
+            variants={itemVariants}
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-text-muted hover:text-primary transition-all group no-print"
+          >
+            <Printer size={14} className="group-hover:scale-110 transition-transform" />
+            Exportar Reporte
+          </motion.button>
+        </div>
         <motion.p variants={itemVariants} className="text-sm text-text-muted max-w-2xl leading-relaxed">
           Análisis avanzado mediante modelos estadísticos para detectar patrones, anomalías y salud financiera en el periodo {selectedPeriod}.
         </motion.p>
@@ -373,6 +385,11 @@ export default function InsightsPage() {
              </div>
           </div>
         </BaseCard>
+      </motion.div>
+      
+      {/* == SECCIÓN 2.7: GESTIÓN DE COMPROMISOS ============================== */}
+      <motion.div variants={itemVariants}>
+        <ObligationsManager />
       </motion.div>
 
       {/* == SECCIÓN 4: FEED DE INTELIGENCIA (Hallazgos Puntuales) ========== */}
