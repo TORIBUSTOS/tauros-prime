@@ -5,6 +5,7 @@ from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrent
 from src.services.parser import ParserService
 from src.services.categorizer import CategorizerService
 from src.services.insights import InsightsService
+from src.services.insights_engine import InsightsEngineService
 from src.services.forecast import ForecastService
 from src.services.reports import ReportService
 from src.schemas.responses import *
@@ -154,14 +155,61 @@ def get_hormigas(db: Session = Depends(get_db)):
     return InsightsService.get_hormigas_analysis(db)
 
 @router.get("/insights/salud", response_model=HealthFlagsResponse)
-def get_health_flags(db: Session = Depends(get_db)):
+def get_health_flags(period: str = Query(None, pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):
     """Retorna indicadores de salud financiera y alertas."""
-    return InsightsService.get_financial_health_flags(db)
+    return InsightsService.get_financial_health_flags(db, period)
 
 @router.get("/insights/projections")
 def get_projections(db: Session = Depends(get_db)):
     """Retorna proyecciones de gasto para el mes en curso."""
     return InsightsService.get_projections(db)
+
+# ── INSIGHTS ENGINE CANÓNICO ───────────────────────────────────────────────
+
+@router.post("/insights-engine/evaluate", response_model=InsightEvaluationResponse)
+def evaluate_insights_engine(
+    period: str = Query(..., pattern=r"^\d{4}-\d{2}$"),
+    db: Session = Depends(get_db)
+):
+    """Evalúa reglas configurables y persiste candidatos trazables."""
+    try:
+        candidates = InsightsEngineService.evaluate_period(period, db)
+        return InsightEvaluationResponse(
+            period=period,
+            candidates=[InsightsEngineService.serialize_candidate(c) for c in candidates]
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/insights-engine/candidates", response_model=List[InsightCandidateResponse])
+def get_insight_candidates(
+    period: str = Query(None, pattern=r"^\d{4}-\d{2}$"),
+    estado_revision: str = Query(None, pattern=r"^(pending|approved|rejected|ignored|converted_to_rule)$"),
+    db: Session = Depends(get_db)
+):
+    candidates = InsightsEngineService.list_candidates(db, period, estado_revision)
+    return [InsightsEngineService.serialize_candidate(c) for c in candidates]
+
+@router.patch("/insights-engine/candidates/{candidate_id}/review", response_model=InsightCandidateResponse)
+def update_insight_review(
+    candidate_id: int,
+    body: InsightReviewUpdate,
+    db: Session = Depends(get_db)
+):
+    try:
+        candidate = InsightsEngineService.update_review_status(db, candidate_id, body.estado_revision)
+        return InsightsEngineService.serialize_candidate(candidate)
+    except LookupError:
+        raise HTTPException(status_code=404, detail="Insight candidate no encontrado")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/insights-engine/review/uncategorized", response_model=List[MovimientoResponse])
+def get_uncategorized_review_queue(
+    period: str = Query(None, pattern=r"^\d{4}-\d{2}$"),
+    db: Session = Depends(get_db)
+):
+    return InsightsEngineService.get_uncategorized_review_queue(db, period)
 
 @router.get("/reports/pl", response_model=PLReportResponse)
 def get_pl_report(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):

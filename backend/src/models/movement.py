@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, create_engine
+from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from src.core.config import get_settings
@@ -30,6 +30,23 @@ class Insight(Base):
     recomendacion = Column(String(500), nullable=True)
     data_json = Column(String, nullable=True) # JSON stored as string for simplicity in SQLite if needed
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class InsightCandidate(Base):
+    __tablename__ = "insight_candidates"
+    id = Column(Integer, primary_key=True, index=True)
+    candidate_uid = Column(String(64), nullable=False, unique=True, index=True)
+    tipo = Column(String(50), nullable=False, index=True)
+    titulo = Column(String(255), nullable=False)
+    descripcion = Column(Text, nullable=False)
+    severidad = Column(String(20), nullable=False, index=True)
+    periodo_analizado = Column(String(7), nullable=False, index=True)
+    regla_disparadora = Column(String(120), nullable=False, index=True)
+    datos_utilizados = Column(Text, nullable=False)
+    explicacion = Column(Text, nullable=False)
+    accion_sugerida = Column(Text, nullable=False)
+    estado_revision = Column(String(30), nullable=False, default="pending", index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class PatronRecurrente(Base):
     __tablename__ = "patrones_recurrentes"

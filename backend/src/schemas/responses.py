@@ -37,6 +37,32 @@ class InsightsResponse(BaseModel):
     period: str
     insights: List[InsightResponse]
 
+class InsightCandidateResponse(BaseModel):
+    id: int
+    candidate_uid: str
+    tipo: str
+    titulo: str
+    descripcion: str
+    severidad: str
+    periodo_analizado: str
+    regla_disparadora: str
+    datos_utilizados: Dict[str, Any]
+    explicacion: str
+    accion_sugerida: str
+    estado_revision: str
+    created_at: datetime
+    updated_at: datetime | None = None
+
+class InsightEvaluationResponse(BaseModel):
+    period: str
+    candidates: List[InsightCandidateResponse]
+
+class InsightReviewUpdate(BaseModel):
+    estado_revision: str = Field(
+        ...,
+        pattern=r"^(pending|approved|rejected|ignored|converted_to_rule)$"
+    )
+
 class HormigaItem(BaseModel):
     categoria: str
     monto_promedio: float
@@ -203,4 +229,3 @@ class ManualObligationUpdate(BaseModel):
     fecha_limite: date | None = None
     prioridad: int | None = None
     pagado: int | None = None
-

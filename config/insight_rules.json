@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "uncategorized_movement_review",
+      "enabled": true,
+      "kind": "uncategorized_movement",
+      "tipo": "revision_manual",
+      "classification": "revision_manual",
+      "severity": "medium",
+      "title_template": "Movimientos sin categoría para revisar",
+      "description_template": "Hay {count} movimiento(s) sin categoría en {periodo}.",
+      "thresholds": {
+        "medium_amount": 30000,
+        "high_amount": 100000,
+        "high_count": 3
+      },
+      "suggested_action": "Revisar la bandeja de movimientos sin categoría y decidir si corresponde crear una regla cascada."
+    },
+    {
+      "id": "income_dependency_shift",
+      "enabled": true,
+      "kind": "income_dependency",
+      "tipo": "dependencia",
+      "classification": "insight",
+      "severity": "high",
+      "title_template": "Concentración de ingresos en {source}",
+      "description_template": "{source} concentra {share_pct}% de los ingresos del período.",
+      "thresholds": {
+        "critical_share": 0.75,
+        "change_vs_baseline": 0.2,
+        "min_baseline_periods": 2,
+        "max_candidates": 3
+      },
+      "exclude_structural_entities": true,
+      "structural_entities": [
+        "OSPACA",
+        "Obra social"
+      ],
+      "suggested_action": "Validar si la concentración responde a un cambio real, timing de cobro o dependencia operativa."
+    },
+    {
+      "id": "category_variation_vs_baseline",
+      "enabled": true,
+      "kind": "category_variation",
+      "tipo": "anomalia",
+      "classification": "anomalia",
+      "severity": "medium",
+      "title_template": "Variación relevante en {category}",
+      "description_template": "{category} varió {change_pct}% contra su promedio histórico.",
+      "thresholds": {
+        "change_vs_baseline": 0.35,
+        "min_baseline_periods": 2,
+        "min_current_amount": 10000,
+        "max_candidates": 5
+      },
+      "suggested_action": "Abrir la categoría y revisar si el desvío corresponde a una operación esperada o a un evento extraordinario."
+    },
+    {
+      "id": "expected_recurrent_baseline",
+      "enabled": true,
+      "kind": "expected_recurrent",
+      "tipo": "kpi",
+      "classification": "kpi",
+      "severity": "info",
+      "default_review_status": "ignored",
+      "title_template": "Movimiento recurrente esperado: {source}",
+      "description_template": "{source} aparece como comportamiento estructural del período.",
+      "thresholds": {
+        "min_baseline_periods": 2,
+        "min_current_count": 1
+      },
+      "structural_entities": [
+        "OSPACA",
+        "Sueldos",
+        "AFIP",
+        "Visa"
+      ],
+      "suggested_action": "Mantener como baseline/KPI. No elevar como insight destacado salvo que cambie contra su patrón histórico."
+    }
+  ]
+}
