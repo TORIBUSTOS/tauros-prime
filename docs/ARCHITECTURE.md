@@ -19,7 +19,8 @@
 │ Routes:                                                      │
 │ • POST   /import        → ParserService                     │
 │ • GET    /movements     → Query + Filter                    │
-│ • GET    /insights      → InsightsService                   │
+│ • GET    /insights      → InsightsService (legacy feed)     │
+│ • /insights-engine/*    → InsightsEngineService             │
 │ • GET    /forecast      → ForecastService                   │
 │ • GET    /summary       → Aggregation Query                 │
 │ • GET    /reports/pl    → ReportService                     │
@@ -36,17 +37,19 @@
 
 ---
 
-## Data Flow: Import → Process → Insights
+## Data Flow: Import -> Process -> Insights
 
 ```
 1. IMPORT PHASE
 ═════════════════════════════════════════════════════════════
-User uploads Excel
+User uploads Excel/CSV
         │
         ↓
    ParserService.parse_excel()
         │
-        ├─ Validate columns (fecha, descripcion, monto)
+        ├─ Accept normalized format (fecha, descripcion, monto)
+        ├─ Accept Supervielle raw format
+        │  └─ Fecha + Concepto + Detalle + Debito + Credito
         ├─ Check duplicates (hash-based)
         └─ Insert to DB
         │
@@ -73,11 +76,17 @@ User uploads Excel
 3. INTELLIGENCE PHASE
 ═════════════════════════════════════════════════════════════
         │
-        ├─ On /insights call:
+        ├─ On /insights call (legacy UI feed):
         │  ├─ InsightsService.generate_insights()
         │  ├─ Detect patterns (recurrencias)
         │  ├─ Detect outliers (desviación)
         │  └─ Detect context anomalies (timing)
+        │
+        ├─ On /insights-engine/evaluate call:
+        │  ├─ Load config/insight_rules.json
+        │  ├─ Evaluate period against baseline
+        │  ├─ Persist InsightCandidate
+        │  └─ Track review status
         │
         └─ On /forecast call:
            ├─ ForecastService.forecast_3months()
@@ -109,6 +118,7 @@ User uploads Excel
 │ • Parser     │  │ • Query          │
 │ • Categorizer│  │ • Filter         │
 │ • Insights   │  │ • Aggregate      │
+│ • InsightsEngine││ • Persist trace │
 │ • Forecast   │  │ • Insert/Update  │
 │ • Reports    │  │                  │
 └──────────────┘  └────────┬─────────┘
@@ -120,6 +130,7 @@ User uploads Excel
                     │ • Movimiento│
                     │ • ImportBatch
                     │ • CascadaRule
+                    │ • InsightCandidate
                     │             │
                     └─────────────┘
                            │
@@ -195,6 +206,24 @@ veces_usada: int
 activo: int  # boolean
 ```
 
+### InsightCandidate
+```python
+id: int (PK)
+candidate_uid: str(64)  # idempotency key
+tipo: str(50)  # kpi | alerta | insight | anomalia | revision_manual
+titulo: str(255)
+descripcion: str
+severidad: str(20)
+periodo_analizado: str(7)
+regla_disparadora: str(120)
+datos_utilizados: JSON text
+explicacion: str
+accion_sugerida: str
+estado_revision: str  # pending | approved | rejected | ignored | converted_to_rule
+created_at: DateTime
+updated_at: DateTime
+```
+
 ---
 
 ## Technology Stack
@@ -215,6 +244,23 @@ activo: int  # boolean
 | | Vitest | Latest |
 
 ---
+
+## Current Data Baseline
+
+Estado operativo al 2026-05-18:
+
+| Periodo | Movimientos | Sin categoria |
+|---|---:|---:|
+| 2025-11 | 507 | 0 |
+| 2025-12 | 527 | 0 |
+| 2026-01 | 488 | 0 |
+| 2026-02 | 428 | 0 |
+| 2026-03 | 505 | 1 |
+| 2026-04 | 493 | 0 |
+
+Total: 2.948 movimientos. Duplicados exactos: 0.
+
+La unica excepcion sin categoria aceptada es `DOCUMENTO 27963963144` en marzo 2026.
 
 ## API-First Design
 
@@ -297,5 +343,5 @@ Frontend:
 
 ---
 
-*Arquitectura Actualizada: 2026-04-10*  
-*Status: Production-Ready Beta*
+*Arquitectura Actualizada: 2026-05-18*
+*Status: SP5 cerrado; SP6 baseline anual en preparacion*

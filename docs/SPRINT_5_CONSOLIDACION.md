@@ -247,3 +247,14 @@ Resultado operativo:
 - Auditoria visual P1/P2/P3 aplicada y documentada.
 - Dashboard, Insights, Movimientos, Categorias, Reportes, Analytics y Auditoria quedan aptos para validacion con abril.
 - Proximo bloque: carga controlada de abril y comparacion contra baseline enero-marzo.
+
+## Actualizacion Posterior - 2026-05-18
+
+Se completo la carga extendida Nov 2025 - Abr 2026:
+
+- Total actual: 2.948 movimientos.
+- Duplicados exactos: 0.
+- Noviembre y diciembre quedaron sin pendientes de categorizacion.
+- Abril quedo cargado y categorizado.
+- Permanece solo la excepcion aceptada `DOCUMENTO 27963963144` en marzo 2026.
+- Proximo sprint: SP6, expansion del baseline a 12 meses con carga 3 meses + 3 meses.

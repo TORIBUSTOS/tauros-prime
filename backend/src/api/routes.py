@@ -15,7 +15,7 @@ router = APIRouter(prefix="/api", tags=["toro-prime"])
 
 @router.post("/import", response_model=ImportResponse)
 async def import_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    if not file.filename.endswith(('.xlsx', '.csv')):
+    if not file.filename.lower().endswith(('.xlsx', '.csv')):
         raise HTTPException(status_code=400, detail="Solo .xlsx o .csv")
     try:
         contents = await file.read()

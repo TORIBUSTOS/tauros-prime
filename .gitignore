@@ -38,6 +38,7 @@ yarn-error.log*
 temp/
 logs/
 data/
+legacy/
 
 # AI Agents Metadata
 .codex/

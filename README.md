@@ -1,26 +1,92 @@
 # TAUROS v2: Financial Intelligence Hub
 
-Plataforma de alta fidelidad para la consolidación, análisis predictivo y visualización estratégica de TORO Holding. 
+TAUROS transforma extractos bancarios de SANARTE/TORO en una base financiera categorizada, auditable y preparada para generar insights reales. Es un sistema de **solo inteligencia**: no ejecuta pagos, no opera bancos y no realiza gestiones fiscales externas.
 
-> [!IMPORTANT]
-> TAUROS es un sistema de **sólo inteligencia**. No realiza operaciones de pago ni gestiones contables externas (Scope: Intelligence-Only).
+## Estado Actual
 
-## Características Core
-- **Cortex Hub**: Feed centralizado de hallazgos de IA y alertas de liquidez proactivas.
-- **Predictive Forecast**: Motor de proyecciones con detección de periocidad y patrones de gasto.
-- **Imperial UI**: Interfaz premium basada en *Financial Glassmorphism* y *Bento Grid*.
-- **Cascada Engine**: Motor de categorización de alta precisión (>99%).
+- **Sprint 5**: cerrado y validado.
+- **Datos cargados**: noviembre 2025 a abril 2026.
+- **Base actual**: 2.948 movimientos.
+- **Duplicados exactos**: 0.
+- **Sin categoria**: 1 movimiento aceptado manualmente (`DOCUMENTO 27963963144`, marzo 2026).
+- **Importacion Supervielle**: soporta formato normalizado (`fecha`, `descripcion`, `monto`) y extracto crudo (`Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`).
+- **Insights Engine**: base configurable creada en `config/insight_rules.json`.
 
-## Estructura del Proyecto
-- `backend/`: API REST asíncrona (FastAPI + SQLAlchemy).
-- `frontend/`: Dashboard Next.js con estética *Imperial Tech*.
-- `MAPS/`: Mapas de inteligencia del proyecto (Data Model, UI/UX, Blueprint).
-- `docs/`: Guías de identidad y estándares de desarrollo.
+## Modulos Core
 
-## Documentación de Referencia
-1. **Identidad**: [docs/PROJECT_IDENTITY.md](docs/PROJECT_IDENTITY.md)
-2. **Mapa del Sistema**: [MAPS/system_blueprint.md](MAPS/system_blueprint.md)
-3. **Draft del Sprint 4**: [NEXT_STEPS.md](NEXT_STEPS.md)
+- **Cascada Engine**: categorizacion por reglas editables en DB.
+- **Insights Engine**: candidatos trazables con reglas externas, estados de revision y bandeja de sin categoria.
+- **Forecast**: proyeccion a 3 meses sobre datos historicos.
+- **Reportes P&L**: lectura jerarquica por tipo, categoria y subcategoria.
+- **Auditoria**: historial de recategorizaciones y aprendizaje de reglas.
+- **Imperial UI**: dashboard Next.js con navegacion responsive y layout visual TAUROS.
+
+## Estructura
+
+- `backend/`: API FastAPI, servicios, modelos SQLAlchemy, migraciones Alembic y tests Pytest.
+- `frontend/`: Next.js App Router, componentes, servicios API y tests Vitest.
+- `config/`: configuracion editable, incluyendo reglas de insights.
+- `docs/`: arquitectura, contexto, auditorias, sprint notes y guias operativas.
+- `prd/`: documentos base de producto/protocolo.
+
+## Ejecucion Local
+
+Backend:
+
+```powershell
+cd backend
+.\venv\Scripts\python.exe -m uvicorn src.main:app --host 0.0.0.0 --port 9000
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm run dev
+```
+
+URLs:
+
+- Frontend: `http://localhost:7000`
+- Backend API: `http://localhost:9000/api`
+- Health: `http://localhost:9000/health`
+- OpenAPI: `http://localhost:9000/docs`
+
+## Verificacion
+
+Backend:
+
+```powershell
+cd backend
+.\venv\Scripts\python.exe -m pytest -q
+```
+
+Frontend:
+
+```powershell
+cd frontend
+npm test -- --run
+npm run build
+```
+
+## Documentacion Clave
+
+- Arquitectura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Contexto actual: [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md)
+- Insights Engine: [docs/INSIGHTS_ENGINE.md](docs/INSIGHTS_ENGINE.md)
+- Sprint 5: [docs/SPRINT_5_CONSOLIDACION.md](docs/SPRINT_5_CONSOLIDACION.md)
+- Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
+- Auditoria visual Sprint 5: [docs/ui-audit/taurus-sprint-5/INDEX.md](docs/ui-audit/taurus-sprint-5/INDEX.md)
+- Referencia tecnica: [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md)
+
+## Roadmap Inmediato
+
+1. **SP6**: consolidar base 6 meses y expandir a 12 meses cargando 3 meses + 3 meses.
+2. **SP7**: Canon TAUROS de Insights sobre baseline anual.
+3. **SP8**: UI de revision/aprobacion de candidatos de insights.
+4. **SP9**: forecast anualizado y proyecciones reales.
+5. **SP10**: cierre v1.1 ejecutivo.
 
 ---
-*TORO LAB v2 Protocol — Financial Intelligence*
+
+TORO LAB v2 Protocol - Financial Intelligence.

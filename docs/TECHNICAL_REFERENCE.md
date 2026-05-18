@@ -50,6 +50,26 @@ CREATE TABLE cascada_rules (
 CREATE INDEX idx_cascada_rules_patron ON cascada_rules(patron);
 ```
 
+### insight_candidates
+```sql
+CREATE TABLE insight_candidates (
+  id INTEGER PRIMARY KEY,
+  candidate_uid VARCHAR(64) UNIQUE NOT NULL,
+  tipo VARCHAR(50) NOT NULL,
+  titulo VARCHAR(255) NOT NULL,
+  descripcion TEXT NOT NULL,
+  severidad VARCHAR(20) NOT NULL,
+  periodo_analizado VARCHAR(7) NOT NULL,
+  regla_disparadora VARCHAR(120) NOT NULL,
+  datos_utilizados TEXT NOT NULL,
+  explicacion TEXT NOT NULL,
+  accion_sugerida TEXT NOT NULL,
+  estado_revision VARCHAR(30) NOT NULL DEFAULT 'pending',
+  created_at DATETIME,
+  updated_at DATETIME
+);
+```
+
 ---
 
 ## Pydantic Models
@@ -106,11 +126,13 @@ class ForecastResponse(BaseModel):
 ```python
 class ParserService:
     REQUIRED_COLUMNS = ['fecha', 'descripcion', 'monto']
+    SUPERVIELLE_COLUMNS = ['fecha', 'concepto', 'detalle', 'debito', 'credito']
     
     @staticmethod
     def parse_excel(file_bytes: bytes, filename: str, db: Session) -> ImportBatch:
         """
-        Parsea Excel, valida duplicados (hash-based), inserta a BD.
+        Parsea Excel/CSV, acepta formato normalizado o extracto Supervielle,
+        valida duplicados (hash-based), inserta a BD.
         Retorna ImportBatch con cantidad de movimientos nuevos.
         """
         
@@ -118,6 +140,20 @@ class ParserService:
     def _generate_hash(fecha: str, descripcion: str, monto: float) -> str:
         """MD5 hash para detectar duplicados."""
 ```
+
+Formatos aceptados:
+
+- Normalizado: `fecha`, `descripcion`, `monto`.
+- Supervielle crudo: `Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`.
+
+Para Supervielle, el parser calcula:
+
+```python
+monto = Credito - Debito
+descripcion = Concepto + " - " + Detalle
+```
+
+Las fechas se interpretan con `dayfirst=True` para formatos argentinos como `01/04/2026`.
 
 **Key Features**:
 - Validación de columnas requeridas

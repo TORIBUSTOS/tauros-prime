@@ -21,6 +21,31 @@ def test_parser_missing_columns(db):
     with pytest.raises(ValueError):
         ParserService.parse_excel(excel.getvalue(), "bad.xlsx", db)
 
+def test_parser_accepts_supervielle_extract_format(db):
+    df = pd.DataFrame({
+        'Fecha': ['01/04/2026', '02/04/2026'],
+        'Concepto': ['Crédito por Transferencia', 'Compra Visa Débito'],
+        'Detalle': ['SANARTE SRL', 'Farmacias Líder'],
+        'Débito': [0.0, 25000.0],
+        'Crédito': [120000.0, 0.0],
+        'Saldo': [120000.0, 95000.0],
+    })
+    excel = BytesIO()
+    df.to_excel(excel, index=False)
+    excel.seek(0)
+
+    batch = ParserService.parse_excel(excel.getvalue(), "Movimientos_Supervielle_04_2026.xlsx", db)
+
+    assert batch.cantidad_movimientos == 2
+    movements = db.query(Movimiento).order_by(Movimiento.fecha.asc()).all()
+    assert movements[0].fecha.isoformat() == "2026-04-01"
+    assert movements[0].descripcion == "Crédito por Transferencia - SANARTE SRL"
+    assert movements[0].monto == 120000.0
+    assert movements[0].tipo == "ingreso"
+    assert movements[1].descripcion == "Compra Visa Débito - Farmacias Líder"
+    assert movements[1].monto == -25000.0
+    assert movements[1].tipo == "egreso"
+
 def test_categorizer_applies_rule(db):
     db.add(CascadaRule(categoria="Test", patron="TEST", peso=0.9, activo=1))
     db.commit()

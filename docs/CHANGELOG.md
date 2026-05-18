@@ -22,3 +22,17 @@
 ### Improved
 - Responsividad de gráficos en dispositivos móviles.
 - Jerarquía visual del Dashboard (Bento Grid).
+
+## [0.6.0] — 2026-05-18
+### Added
+- Base real ampliada a noviembre 2025 - abril 2026: 2.948 movimientos.
+- Insights Engine configurable con reglas externas en `config/insight_rules.json`.
+- Tabla `insight_candidates` con estados de revision.
+- Auditoria visual Sprint 5 con capturas raw/anotadas y QA responsive.
+- Roadmap SP6-SP10 para baseline anual, Canon TAUROS de Insights y v1.1 ejecutivo.
+
+### Improved
+- Parser de importacion acepta extractos Supervielle crudos (`Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`).
+- Interpretacion de fechas argentinas con `dayfirst=True`.
+- Dashboard, Movimientos, Categorias, Reportes, Analytics, Insights y Auditoria refinados en Sprint 5.
+- Reglas de categorizacion ajustadas para noviembre/diciembre; solo queda 1 movimiento sin categoria aceptado manualmente.

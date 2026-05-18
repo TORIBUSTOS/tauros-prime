@@ -1,11 +1,13 @@
 import pandas as pd
 import hashlib
 from io import BytesIO
+import unicodedata
 from sqlalchemy.orm import Session
 from src.models.movement import Movimiento, ImportBatch
 
 class ParserService:
     REQUIRED_COLUMNS = ['fecha', 'descripcion', 'monto']
+    SUPERVIELLE_COLUMNS = ['fecha', 'concepto', 'detalle', 'debito', 'credito']
 
     @staticmethod
     def _generate_hash(fecha, descripcion, monto):
@@ -14,11 +16,49 @@ class ParserService:
         return hashlib.md5(row_str.encode()).hexdigest()
 
     @staticmethod
+    def _normalize_column_name(column: str) -> str:
+        normalized = unicodedata.normalize("NFKD", str(column))
+        normalized = "".join(char for char in normalized if not unicodedata.combining(char))
+        return normalized.strip().lower()
+
+    @staticmethod
+    def _read_dataframe(file_bytes: bytes, filename: str) -> pd.DataFrame:
+        if filename.lower().endswith(".csv"):
+            return pd.read_csv(BytesIO(file_bytes))
+        return pd.read_excel(BytesIO(file_bytes))
+
+    @staticmethod
+    def _prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+        df = df.rename(columns={col: ParserService._normalize_column_name(col) for col in df.columns})
+
+        if all(col in df.columns for col in ParserService.REQUIRED_COLUMNS):
+            return df[ParserService.REQUIRED_COLUMNS].copy()
+
+        if all(col in df.columns for col in ParserService.SUPERVIELLE_COLUMNS):
+            prepared = pd.DataFrame()
+            debito = pd.to_numeric(df["debito"], errors="coerce").fillna(0)
+            credito = pd.to_numeric(df["credito"], errors="coerce").fillna(0)
+            prepared["fecha"] = df["fecha"]
+            prepared["descripcion"] = (
+                df["concepto"].fillna("").astype(str).str.strip()
+                + " - "
+                + df["detalle"].fillna("").astype(str).str.strip()
+            ).str.strip(" -")
+            prepared["monto"] = credito - debito
+            return prepared
+
+        expected = ParserService.REQUIRED_COLUMNS
+        supervielle = ParserService.SUPERVIELLE_COLUMNS + ["saldo"]
+        raise ValueError(
+            "Formato no reconocido. Se esperaba columnas "
+            f"{expected} o extracto Supervielle con {supervielle}."
+        )
+
+    @staticmethod
     def parse_excel(file_bytes: bytes, filename: str, db: Session) -> ImportBatch:
         try:
-            df = pd.read_excel(BytesIO(file_bytes))
-            if not all(col in df.columns for col in ParserService.REQUIRED_COLUMNS):
-                raise ValueError(f"Faltan: {ParserService.REQUIRED_COLUMNS}")
+            df = ParserService._read_dataframe(file_bytes, filename)
+            df = ParserService._prepare_dataframe(df)
 
             # Obtener transacciones existentes para evitar duplicados
             # Para optimización, podríamos filtrar por fechas del Excel, pero por simplicidad
@@ -35,7 +75,7 @@ class ParserService:
 
             count_new = 0
             for _, row in df.iterrows():
-                fecha_val = pd.to_datetime(row['fecha']).date()
+                fecha_val = pd.to_datetime(row['fecha'], dayfirst=True).date()
                 desc_val = str(row['descripcion']).strip()
                 monto_val = float(row['monto'])
                 

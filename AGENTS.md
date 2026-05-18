@@ -121,7 +121,7 @@ Backend (FastAPI)
 
 ---
 
-## Estado del Proyecto — 2026-04-15
+## Estado del Proyecto — 2026-05-18
 
 | BN | Nombre | Track | Estado | Coverage |
 |:---|:---|:---|:---|:---|
@@ -136,9 +136,11 @@ Backend (FastAPI)
 | **009** | Estabilización Final | B | ✅ COMPLETADO | - |
 | **010** | Motor de Proyecciones | A/B | ✅ INTEGRADO | - |
 
-**Backend Coverage Total: 88%** ✅ | **Test Suite: 86/86 passing** ✅
-**Performance: /insights 0.47s** ✅ | **Datos: 1,776 movs / 100% categorizados** ✅
-**Categorías: /categorias page** ✅ (CRUD motor cascada sin tocar código)
+**Backend Tests:** 94/94 passing ✅ | **Frontend Tests:** 223/223 passing ✅
+**Frontend Build:** OK ✅ | **Datos:** 2,948 movs / Nov 2025 - Abr 2026 ✅
+**Duplicados exactos:** 0 ✅ | **Sin categoría:** 1 excepción aceptada manualmente ✅
+**Categorías:** `/categorias` page ✅ (CRUD motor cascada sin tocar código)
+**Insights Engine configurable:** `config/insight_rules.json` + `insight_candidates` ✅
 
 **Dependencias**:
 ```
@@ -153,9 +155,10 @@ BN-001 → (BN-002 + BN-003) → BN-004
 
 ### POST `/api/import`
 Carga archivos Excel/CSV con movimientos bancarios.
-- **Input**: Archivo Excel con columnas: `fecha`, `descripcion`, `monto`
+- **Input normalizado**: Archivo Excel/CSV con columnas: `fecha`, `descripcion`, `monto`
+- **Input Supervielle crudo**: `Fecha`, `Concepto`, `Detalle`, `Débito`, `Crédito`, `Saldo`
 - **Output**: `{batch_id, movimientos, status}`
-- **Ejemplo**: Testeado con 653 movimientos Supervielle en 1.75s ✅
+- **Transformación**: `monto = Crédito - Débito`, `descripcion = Concepto + Detalle`
 
 ### GET `/api/movements`
 Obtiene movimientos con filtros opcionales.
@@ -191,6 +194,24 @@ Retorna proyecciones de gasto para el mes en curso.
   - `pendientes_recurrentes`: Suma de patrones que aún no ocurrieron.
   - `patrones_pendientes`: Lista de objetos `{concepto, monto, dia}`.
   - `dia_del_mes`: Día actual.
+
+### POST `/api/insights-engine/evaluate`
+Evalúa reglas configurables y persiste candidatos trazables.
+- **Parámetro**: `period` (YYYY-MM)
+- **Reglas**: `config/insight_rules.json`
+- **Output**: `{period, candidates[]}`
+
+### GET `/api/insights-engine/candidates`
+Lista candidatos de insights con filtros.
+- **Parámetros**:
+  - `period` (YYYY-MM, opcional)
+  - `estado_revision`: `pending | approved | rejected | ignored | converted_to_rule`
+
+### PATCH `/api/insights-engine/candidates/{candidate_id}/review`
+Actualiza estado de revisión del candidato.
+
+### GET `/api/insights-engine/review/uncategorized`
+Bandeja especial de movimientos sin categoría.
 
 ### GET `/health`
 Health check básico.
@@ -239,10 +260,12 @@ Stats por subcategoría para una categoría dada. Lazy — se llama on-demand al
 ## Notas Operacionales para Importación de Datos
 
 ### Archivos Supervielle
-- Nombrados: `Movimientos_Supervielle_MM_YYYY.xlsx` (con prefijo "Movimientos_")
-- Columnas: Fecha | Concepto | Detalle | Débito | Crédito | Saldo
-- **REQUIERE TRANSFORMACIÓN**: Débito/Crédito → monto neto (Crédito - Débito)
-- Transformar ANTES de importar con pandas
+- Nombrados: `Movimientos_Supervielle_MM_YYYY.xlsx` o variantes descriptivas.
+- Columnas: Fecha | Concepto | Detalle | Débito | Crédito | Saldo.
+- El endpoint `/api/import` ya transforma el extracto crudo:
+  - `monto = Crédito - Débito`
+  - `descripcion = Concepto + " - " + Detalle`
+  - Fechas con `dayfirst=True`.
 
 ### Deduplicación
 - Si archivos con nombres diferentes tienen datos idénticos → se crean duplicados en BD
@@ -252,7 +275,7 @@ Stats por subcategoría para una categoría dada. Lazy — se llama on-demand al
 ### Workflow de Categorización
 - Motor cascada en `backend/src/services/categorizer.py`
 - **59 reglas activas** en tabla `cascada_rules` (desde 2026-04-15)
-- Sin categorizar: **0%** (1776/1776 movimientos categorizados)
+- Sin categorizar: **1 movimiento aceptado manualmente** (`DOCUMENTO 27963963144`, marzo 2026)
 - UI de gestión en `/categorias` — crear/editar/desactivar reglas sin tocar código
 - Después de editar reglas: llamar `POST /api/recategorize` para aplicar a toda la DB
 
@@ -601,19 +624,19 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 ---
 
-## 🎯 Próximos Pasos (al 2026-04-15)
+## 🎯 Próximos Pasos (al 2026-05-18)
 
 | Prioridad | Tarea | Contexto |
 |---|---|---|
-| 1 | **BN-008 Finalización** | Implementar estados de carga globales (`LoadingImperial`) en transiciones de página y refinar manejo de errores en `apiService`. |
-| 2 | **Auditoría de Tipos** | Sincronizar interfaces TypeScript con modelos Pydantic actualizados (especialmente en nuevos campos de Analytics). |
-| 3 | **Paginación Backend** | Evaluar migración de paginación client-side a server-side si el volumen supera los 2000 registros. |
-| 4 | **Refactorización** | Extraer componente `Pagination` de `/movimientos` para uso global. |
+| 1 | **SP6 Base Anual** | Consolidar Nov 2025 - Abr 2026 y cargar 3 meses + 3 meses para cerrar May 2025 - Abr 2026. |
+| 2 | **Canon TAUROS Insights** | Definir reglas reales SANARTE: KPI vs insight vs alerta vs ruido. |
+| 3 | **Bandeja de Revisión** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
+| 4 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
 
 ---
 
 *Versión: 3.4*
-*Última actualización: 2026-04-23*
+*Última actualización: 2026-05-18*
 *Responsables: Codex (Backend) + Antigravity (Frontend)*
 *Status: BN-001-010 ✅ COMPLETO | Versión 1.0.0 LISTA*
 *Datos Reales: 1,776 movimientos Supervielle | Motor de Proyecciones: Activo*
