@@ -36,3 +36,13 @@
 - Interpretacion de fechas argentinas con `dayfirst=True`.
 - Dashboard, Movimientos, Categorias, Reportes, Analytics, Insights y Auditoria refinados en Sprint 5.
 - Reglas de categorizacion ajustadas para noviembre/diciembre; solo queda 1 movimiento sin categoria aceptado manualmente.
+
+## [0.7.0] — 2026-05-18
+### Added
+- Sprint 6 cerrado con base Ago 2025 - Abr 2026.
+- Total operativo ampliado a 4.407 movimientos.
+- Documento de cierre `docs/SPRINT_6_CONSOLIDACION.md`.
+
+### Improved
+- Reglas de categorizacion SP6 para financiacion, FCI, cuotas afiliados, honorarios, juicios, extracapita, IIBB Cordoba y comisiones.
+- Ago/Sep/Oct 2025 quedan con 0 movimientos sin categoria.

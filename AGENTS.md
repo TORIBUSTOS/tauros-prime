@@ -137,7 +137,7 @@ Backend (FastAPI)
 | **010** | Motor de Proyecciones | A/B | ✅ INTEGRADO | - |
 
 **Backend Tests:** 94/94 passing ✅ | **Frontend Tests:** 223/223 passing ✅
-**Frontend Build:** OK ✅ | **Datos:** 2,948 movs / Nov 2025 - Abr 2026 ✅
+**Frontend Build:** OK ✅ | **Datos:** 4,407 movs / Ago 2025 - Abr 2026 ✅
 **Duplicados exactos:** 0 ✅ | **Sin categoría:** 1 excepción aceptada manualmente ✅
 **Categorías:** `/categorias` page ✅ (CRUD motor cascada sin tocar código)
 **Insights Engine configurable:** `config/insight_rules.json` + `insight_candidates` ✅
@@ -628,10 +628,10 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 | Prioridad | Tarea | Contexto |
 |---|---|---|
-| 1 | **SP6 Base Anual** | Consolidar Nov 2025 - Abr 2026 y cargar 3 meses + 3 meses para cerrar May 2025 - Abr 2026. |
-| 2 | **Canon TAUROS Insights** | Definir reglas reales SANARTE: KPI vs insight vs alerta vs ruido. |
-| 3 | **Bandeja de Revisión** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
-| 4 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
+| 1 | **SP7 Base Anual** | Cargar May/Jun/Jul 2025 y cerrar May 2025 - Abr 2026. |
+| 3 | **Canon TAUROS Insights** | Definir reglas reales SANARTE: KPI vs insight vs alerta vs ruido. |
+| 4 | **Bandeja de Revisión** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
+| 5 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
 
 ---
 

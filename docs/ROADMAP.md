@@ -1,10 +1,12 @@
 # Roadmap TAUROS - Mayo 2026
 
-Estado de partida: Sprint 5 cerrado, noviembre 2025 a abril 2026 cargado, 2.948 movimientos, duplicados exactos en 0 y una sola excepcion sin categoria aceptada manualmente.
+Estado de partida actualizado: Sprint 6 cerrado, agosto 2025 a abril 2026 cargado, 4.407 movimientos, duplicados exactos en 0 y una sola excepcion sin categoria aceptada manualmente.
 
-## SP6 - Consolidacion 6 Meses + Expansion a 12 Meses
+## SP6 - Consolidacion 6 Meses + Expansion a 9 Meses
 
-Objetivo: cerrar una base anual confiable antes del final de mayo.
+Objetivo: consolidar la base actual y extender el baseline hasta Ago 2025 - Abr 2026.
+
+Estado: cerrado.
 
 ### Bloque A - Base actual
 
@@ -22,7 +24,11 @@ Objetivo: cerrar una base anual confiable antes del final de mayo.
 - Resolver sin categoria.
 - Ajustar reglas nuevas.
 
-### Bloque C - Subir 3 meses finales
+## SP7 - Expansion a 12 Meses
+
+Objetivo: completar el año operativo en un sprint separado.
+
+Estado: proximo.
 
 - Cargar May/Jun/Jul 2025.
 - Verificar importacion.
@@ -30,7 +36,7 @@ Objetivo: cerrar una base anual confiable antes del final de mayo.
 - Resolver sin categoria.
 - Cerrar baseline May 2025 - Abr 2026.
 
-## SP7 - Canon TAUROS de Insights
+## SP8 - Canon TAUROS de Insights
 
 Objetivo: definir insights reales para SANARTE sobre base anual.
 
@@ -40,7 +46,7 @@ Objetivo: definir insights reales para SANARTE sobre base anual.
 - Ejecutar candidatos con `/api/insights-engine/evaluate`.
 - Validar que no se generen obviedades tipo "mayor ingreso del mes".
 
-## SP8 - Bandeja de Revision
+## SP9 - Bandeja de Revision
 
 Objetivo: incorporar flujo humano para validar candidatos.
 
@@ -49,7 +55,7 @@ Objetivo: incorporar flujo humano para validar candidatos.
 - Accion convertir candidato/movimiento en regla.
 - Trazabilidad en auditoria.
 
-## SP9 - Forecast Real
+## SP10 - Forecast Real
 
 Objetivo: mejorar proyecciones con baseline anual.
 
@@ -58,7 +64,7 @@ Objetivo: mejorar proyecciones con baseline anual.
 - Comparar forecast anterior vs nuevo.
 - Generar proyeccion Mayo/Junio/Julio.
 
-## SP10 - Cierre v1.1 Ejecutivo
+## SP11 - Cierre v1.1 Ejecutivo
 
 Objetivo: dejar TAUROS como sistema operativo financiero presentable.
 

@@ -257,4 +257,13 @@ Se completo la carga extendida Nov 2025 - Abr 2026:
 - Noviembre y diciembre quedaron sin pendientes de categorizacion.
 - Abril quedo cargado y categorizado.
 - Permanece solo la excepcion aceptada `DOCUMENTO 27963963144` en marzo 2026.
-- Proximo sprint: SP6, expansion del baseline a 12 meses con carga 3 meses + 3 meses.
+- Proximo sprint: SP6, expansion del baseline a 9 meses con Ago/Sep/Oct 2025.
+
+## Actualizacion SP6 Cerrado - 2026-05-18
+
+SP6 completo la expansion Ago 2025 - Abr 2026:
+
+- Total actual: 4.407 movimientos.
+- Ago/Sep/Oct 2025 quedaron sin pendientes de categorizacion.
+- Duplicados exactos: 0.
+- Permanece solo la excepcion aceptada `DOCUMENTO 27963963144`.

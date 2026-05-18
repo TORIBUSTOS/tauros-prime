@@ -10,11 +10,11 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 - Visualización premium (Bento Grid, Charts dinámicos).
 
 ## Estado Actual
-- **Fase**: SP5 cerrado; preparacion de SP6 para baseline anual.
+- **Fase**: SP6 cerrado; preparacion de SP7 para baseline anual.
 - **Protocolo**: TORO LAB v2 (Gates + Bloques Negros).
 - **Tracks**: Backend/API, Frontend/UX e Insights Engine configurable.
-- **Datos reales cargados**: noviembre 2025 a abril 2026.
-- **Volumen actual**: 2.948 movimientos.
+- **Datos reales cargados**: agosto 2025 a abril 2026.
+- **Volumen actual**: 4.407 movimientos.
 - **Duplicados exactos**: 0.
 - **Sin categoria**: 1 excepcion aceptada manualmente (`DOCUMENTO 27963963144`, marzo 2026).
 - **Importacion**: soporta extractos Supervielle crudos y archivos normalizados.
@@ -22,26 +22,31 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 
 ## Roadmap Inmediato
 
-### SP6 - Consolidacion 6 meses + expansion a 12 meses
+### SP6 - Consolidacion 6 meses + expansion a 9 meses
 - Validar base Nov 2025 - Abr 2026.
 - Subir 3 meses anteriores y resolver categorias.
-- Subir 3 meses restantes y cerrar baseline May 2025 - Abr 2026.
 - Documentar reglas nuevas y excepciones.
+- Estado: cerrado.
 
-### SP7 - Canon TAUROS de Insights
+### SP7 - Expansion a 12 meses
+- Subir May/Jun/Jul 2025.
+- Resolver categorias y duplicados.
+- Cerrar baseline May 2025 - Abr 2026.
+
+### SP8 - Canon TAUROS de Insights
 - Definir KPI vs insight vs alerta vs ruido.
 - Cargar entidades estructurales y reglas reales SANARTE.
 - Ejecutar candidatos sobre baseline anual.
 
-### SP8 - Bandeja de revision
+### SP9 - Bandeja de revision
 - UI para aprobar, rechazar, ignorar o convertir insights en regla.
 - Bandeja especial de movimientos sin categoria.
 
-### SP9 - Forecast real
+### SP10 - Forecast real
 - Ajustar forecast con baseline anual.
 - Separar estructural vs extraordinario.
 
-### SP10 - v1.1 ejecutivo
+### SP11 - v1.1 ejecutivo
 - Dashboard y reportes listos para presentacion operativa.
 
 ## Stakeholders
