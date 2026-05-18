@@ -18,12 +18,16 @@ import {
   AuditLog,
   AuditLogPaginatedResponse,
   RuleFromMovementCreate,
+  ManualObligation,
+  ManualObligationCreate,
+  ManualObligationUpdate,
 } from '../types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
 
 export interface GetMovementsParams {
   period?: string;
+  categoria?: string;
   page?: number;
   pageSize?: number;
   search?: string;
@@ -46,6 +50,7 @@ export const apiService = {
   getMovements: async (params: GetMovementsParams = {}): Promise<GetMovementsResponse> => {
     const url = new URL(`${API_BASE_URL}/api/movements`);
     if (params.period) url.searchParams.append('period', params.period);
+    if (params.categoria) url.searchParams.append('categoria', params.categoria);
     if (params.page) url.searchParams.append('page', params.page.toString());
     if (params.pageSize) url.searchParams.append('page_size', params.pageSize.toString());
     if (params.search) url.searchParams.append('search', params.search);
@@ -213,8 +218,10 @@ export const apiService = {
     return await response.json();
   },
 
-  getSalud: async (): Promise<HealthFlagsResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/insights/salud`);
+  getSalud: async (period?: string): Promise<HealthFlagsResponse> => {
+    const url = new URL(`${API_BASE_URL}/api/insights/salud`);
+    if (period) url.searchParams.set('period', period);
+    const response = await fetch(url.toString());
     if (!response.ok) throw new Error('Error al cargar indicadores de salud');
     return await response.json();
   },
@@ -238,13 +245,13 @@ export const apiService = {
   
   // == Obligaciones Manuales ===============================================
   
-  getObligations: async (): Promise<any[]> => {
+  getObligations: async (): Promise<ManualObligation[]> => {
     const response = await fetch(`${API_BASE_URL}/api/obligations`);
     if (!response.ok) throw new Error('Error al cargar obligaciones');
     return await response.json();
   },
 
-  createObligation: async (body: any): Promise<any> => {
+  createObligation: async (body: ManualObligationCreate): Promise<ManualObligation> => {
     const response = await fetch(`${API_BASE_URL}/api/obligations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -254,7 +261,7 @@ export const apiService = {
     return await response.json();
   },
 
-  updateObligation: async (id: number, body: any): Promise<any> => {
+  updateObligation: async (id: number, body: ManualObligationUpdate): Promise<ManualObligation> => {
     const response = await fetch(`${API_BASE_URL}/api/obligations/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

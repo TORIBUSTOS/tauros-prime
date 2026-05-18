@@ -13,6 +13,7 @@ interface MetricCardProps {
   onClick?: () => void;
   className?: string;
   valueClassName?: string;
+  valueTitle?: string;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -23,7 +24,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   accent = 'none',
   onClick,
   className = '',
-  valueClassName = ''
+  valueClassName = '',
+  valueTitle
 }) => {
   const finalValueColorClass = valueClassName || 'text-foreground';
 
@@ -34,13 +36,13 @@ const MetricCard: React.FC<MetricCardProps> = ({
       className={`metric-card h-full flex flex-col justify-center ${className}`}
       hoverable={!!onClick}
     >
-      <div className="flex flex-col h-full">
+      <div className={`flex flex-col h-full ${accent !== 'none' ? 'pl-3' : ''}`}>
         <span className="metric-label">
           {label}
         </span>
 
-        <div className="flex items-baseline gap-3">
-          <h2 className={`metric-value ${finalValueColorClass}`}>
+        <div className="flex items-start gap-3 min-w-0">
+          <h2 className={`metric-value ${finalValueColorClass}`} title={valueTitle ?? String(value)}>
             {value}
           </h2>
           {trend !== undefined && (

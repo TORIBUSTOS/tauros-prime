@@ -8,7 +8,7 @@ import { usePeriod } from '@/context/PeriodContext';
 import { useTheme } from '@/context/ThemeContext';
 import BaseCard from '@/components/shared/BaseCard';
 import LoadingImperial from '@/components/shared/LoadingImperial';
-import { Download, FileText, ChevronRight } from 'lucide-react';
+import { Download, FileText, ChevronRight, MousePointerClick } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
 export default function ReportesPage() {
@@ -54,7 +54,8 @@ export default function ReportesPage() {
       });
     });
 
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const escapeCSV = (value: string) => `"${value.replace(/"/g, '""')}"`;
+    const csvContent = [headers.map(escapeCSV).join(','), ...rows.map(r => r.map(escapeCSV).join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -90,9 +91,10 @@ export default function ReportesPage() {
           <button 
             onClick={exportCSV}
             className="text-text-prime text-[10px] font-black px-6 py-3 rounded-xl hover:bg-primary hover:text-black transition-all uppercase tracking-widest flex items-center gap-2 group"
+            title="Exporta el P&L completo del período seleccionado en CSV"
           >
             <Download size={14} className="group-hover:scale-110 transition-transform" />
-            Exportar
+            Exportar CSV P&L
           </button>
         </div>
       </div>
@@ -127,12 +129,17 @@ export default function ReportesPage() {
 
       {/* Main Table Section */}
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between px-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 px-2">
            <div className="flex items-center gap-3">
               <div className="w-1 h-4 bg-primary/50 rounded-full"></div>
               <h3 className="text-xs uppercase tracking-[0.3em] text-text-muted font-black">Estructura Jerárquica</h3>
            </div>
-          <span className="text-[10px] text-text-muted/30 font-bold uppercase tracking-widest">Interactúa con las filas para expandir</span>
+          <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2">
+            <MousePointerClick size={13} className="text-primary/70" />
+            <span className="text-[10px] text-text-muted/65 font-bold uppercase tracking-widest">
+              Abrí filas para ver categorías, subcategorías y movimientos
+            </span>
+          </div>
         </div>
 
         {error ? (

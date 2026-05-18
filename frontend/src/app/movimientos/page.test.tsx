@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import MovimientosPage from './page'
 import { apiService } from '@/services/api.service'
-import { mockMovimientos, mockMovimientos26 } from '@/test/fixtures'
+import { mockCategories, mockMovimientos, mockMovimientos26, mockMovementsPage } from '@/test/fixtures'
 
 // == Mocks de next/navigation con searchParams configurable ===================
 
@@ -20,7 +20,14 @@ vi.mock('next/navigation', () => ({
 vi.mock('@/services/api.service', () => ({
   apiService: {
     getMovements: vi.fn(),
+    getCategories: vi.fn(),
+    patchMovimientoCategoria: vi.fn(),
+    createRuleFromMovement: vi.fn(),
   },
+}))
+
+vi.mock('@/context/ToastContext', () => ({
+  useToast: () => ({ showToast: vi.fn() }),
 }))
 
 vi.mock('@/context/PeriodContext', () => ({
@@ -39,6 +46,7 @@ describe('MovimientosPage', () => {
   beforeEach(() => {
     vi.resetAllMocks()
     mockGetSearchParam.mockReturnValue(null)
+    vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
   })
 
   it('renderiza el loading fallback del Suspense "Preparando Bóveda..."', () => {
@@ -55,72 +63,79 @@ describe('MovimientosPage', () => {
   })
 
   it('renderiza las filas de movimientos después de cargar', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
     render(<MovimientosPage />)
-    expect(await screen.findByText('Sueldo Empresa ABC')).toBeInTheDocument()
-    expect(screen.getByText('Supermercado Dia')).toBeInTheDocument()
-    expect(screen.getByText('Netflix')).toBeInTheDocument()
+    expect((await screen.findAllByText('Sueldo Empresa ABC')).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Supermercado Dia').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Netflix').length).toBeGreaterThan(0)
   })
 
   it('filtra movimientos por término de búsqueda', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
     render(<MovimientosPage />)
     // Esperar a que carguen los datos
-    await screen.findByText('Sueldo Empresa ABC')
+    await screen.findAllByText('Sueldo Empresa ABC')
 
     const input = screen.getByPlaceholderText(/Buscar por descripción o categoría/i)
     await userEvent.type(input, 'Supermercado')
 
-    // Solo el movimiento del supermercado debe permanecer visible
-    expect(screen.getByText('Supermercado Dia')).toBeInTheDocument()
-    expect(screen.queryByText('Sueldo Empresa ABC')).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(apiService.getMovements).toHaveBeenLastCalledWith(
+        expect.objectContaining({ search: 'Supermercado' }),
+      )
+    })
   })
 
   it('filtra solo egresos al hacer click en "Egresos"', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
     render(<MovimientosPage />)
-    await screen.findByText('Sueldo Empresa ABC')
+    await screen.findAllByText('Sueldo Empresa ABC')
 
     await userEvent.click(screen.getByRole('button', { name: /Egresos/i }))
 
-    // Solo los egresos deben estar presentes
-    expect(screen.getByText('Supermercado Dia')).toBeInTheDocument()
-    expect(screen.getByText('Netflix')).toBeInTheDocument()
-    expect(screen.queryByText('Sueldo Empresa ABC')).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(apiService.getMovements).toHaveBeenLastCalledWith(
+        expect.objectContaining({ tipo: 'egreso' }),
+      )
+    })
   })
 
   it('muestra EmptyState cuando no hay resultados que coincidan con la búsqueda', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+    vi.mocked(apiService.getMovements)
+      .mockResolvedValueOnce(mockMovementsPage(mockMovimientos))
+      .mockResolvedValue(mockMovementsPage([]))
     render(<MovimientosPage />)
-    await screen.findByText('Sueldo Empresa ABC')
+    await screen.findAllByText('Sueldo Empresa ABC')
 
     const input = screen.getByPlaceholderText(/Buscar por descripción o categoría/i)
     await userEvent.type(input, 'ZZZ_INEXISTENTE')
 
-    expect(screen.getByText(/No se encontraron registros/i)).toBeInTheDocument()
+    expect((await screen.findAllByText(/No se encontraron registros/i)).length).toBeGreaterThan(0)
   })
 
   it('pre-llena el filtro de tipo cuando el URL param "tipo=egreso" está presente', async () => {
     mockGetSearchParam.mockImplementation((key: string) =>
       key === 'tipo' ? 'egreso' : null,
     )
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+    vi.mocked(apiService.getMovements).mockResolvedValue(
+      mockMovementsPage(mockMovimientos.filter(m => m.tipo === 'egreso')),
+    )
     render(<MovimientosPage />)
-    await screen.findByText('Supermercado Dia')
+    await screen.findAllByText('Supermercado Dia')
 
     // Con tipo=egreso, el ingreso no debería estar visible
     expect(screen.queryByText('Sueldo Empresa ABC')).not.toBeInTheDocument()
-    expect(screen.getByText('Supermercado Dia')).toBeInTheDocument()
+    expect(screen.getAllByText('Supermercado Dia').length).toBeGreaterThan(0)
   })
 
   it('muestra paginación y solo 25 registros al tener 26 movimientos', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos26)
+    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos26.slice(0, 25), 26))
     render(<MovimientosPage />)
     // Esperar a que carguen los datos
-    await screen.findByText('Movimiento 1')
+    await screen.findAllByText('Movimiento 1')
 
     // Hay 26 movimientos pero solo se muestran 25 (PAGE_SIZE = 25)
-    expect(screen.getByText('Movimiento 1')).toBeInTheDocument()
+    expect(screen.getAllByText('Movimiento 1').length).toBeGreaterThan(0)
     expect(screen.queryByText('Movimiento 26')).not.toBeInTheDocument()
 
     // El texto de paginación debe indicar el total

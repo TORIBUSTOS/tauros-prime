@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import AnalyticsPage from './page'
 import { apiService } from '@/services/api.service'
-import { mockMovimientos, mockPLReport, mockForecast } from '@/test/fixtures'
+import { mockMovimientos, mockMovementsPage, mockPLReport, mockForecast } from '@/test/fixtures'
 
 // == Mocks de servicio ========================================================
 
@@ -53,7 +53,7 @@ vi.mock('@/components/analytics/HormigaAnalysis', () => ({
 // == Helpers ==================================================================
 
 function setupSuccessfulAPIs() {
-  vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
+  vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
   vi.mocked(apiService.getReportPL).mockResolvedValue(mockPLReport)
   vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
 }
@@ -92,7 +92,7 @@ describe('AnalyticsPage', () => {
   })
 
   it('muestra "Sin datos para visualizar" cuando no hay movimientos', async () => {
-    vi.mocked(apiService.getMovements).mockResolvedValue([])
+    vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage([]))
     vi.mocked(apiService.getReportPL).mockResolvedValue(mockPLReport)
     vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
     render(<AnalyticsPage />)

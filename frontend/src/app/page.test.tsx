@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DashboardPage from './page'
 import { apiService } from '@/services/api.service'
-import { mockMovimientos, mockInsightsResponse, mockSummary, mockForecast } from '@/test/fixtures'
+import { mockCategories, mockMovimientos, mockMovementsPage, mockSummary } from '@/test/fixtures'
 
 // == Mocks de servicio ========================================================
 
@@ -12,6 +12,7 @@ vi.mock('@/services/api.service', () => ({
     getInsights: vi.fn(),
     getSummary: vi.fn(),
     getForecast: vi.fn(),
+    getCategories: vi.fn(),
     importMovements: vi.fn(),
   },
 }))
@@ -51,10 +52,6 @@ vi.mock('@/components/dashboard/TopCategorias', () => ({
   default: () => <div data-testid="top-categorias" />,
 }))
 
-vi.mock('@/components/dashboard/CortexHub', () => ({
-  default: () => <div data-testid="cortex-hub" />,
-}))
-
 vi.mock('@/components/dashboard/FileUploadZone', () => ({
   default: ({ onUpload }: { onUpload: (f: File) => void; isUploading: boolean }) => (
     <button data-testid="file-upload-zone" onClick={() => onUpload(new File([''], 'test.xlsx'))}>
@@ -66,10 +63,9 @@ vi.mock('@/components/dashboard/FileUploadZone', () => ({
 // == Helpers ==================================================================
 
 function setupSuccessfulAPIs() {
-  vi.mocked(apiService.getMovements).mockResolvedValue(mockMovimientos)
-  vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsResponse)
+  vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
   vi.mocked(apiService.getSummary).mockResolvedValue(mockSummary)
-  vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
+  vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
 }
 
 // == Tests =====================================================================
@@ -86,6 +82,7 @@ describe('DashboardPage', () => {
     vi.mocked(apiService.getInsights).mockImplementation(() => new Promise(() => {}))
     vi.mocked(apiService.getSummary).mockImplementation(() => new Promise(() => {}))
     vi.mocked(apiService.getForecast).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(apiService.getCategories).mockImplementation(() => new Promise(() => {}))
     render(<DashboardPage />)
     expect(screen.getByText('Accediendo a la Bóveda')).toBeInTheDocument()
   })
@@ -117,17 +114,17 @@ describe('DashboardPage', () => {
     expect(await screen.findByTestId('flow-chart')).toBeInTheDocument()
   })
 
-  it('renderiza el stub de CortexHub', async () => {
+  it('no renderiza CortexHub mientras CORTEX está fuera de alcance operativo', async () => {
     setupSuccessfulAPIs()
     render(<DashboardPage />)
-    expect(await screen.findByTestId('cortex-hub')).toBeInTheDocument()
+    await screen.findByRole('heading', { level: 1 })
+    expect(screen.queryByTestId('cortex-hub')).not.toBeInTheDocument()
   })
 
   it('muestra toast de error cuando getMovements falla', async () => {
     vi.mocked(apiService.getMovements).mockRejectedValue(new Error('Network error'))
-    vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsResponse)
     vi.mocked(apiService.getSummary).mockResolvedValue(mockSummary)
-    vi.mocked(apiService.getForecast).mockResolvedValue(mockForecast)
+    vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
     render(<DashboardPage />)
     await screen.findByRole('heading', { level: 1 }).catch(() => {})
     // Esperar que el toast de error sea llamado

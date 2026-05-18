@@ -7,7 +7,15 @@ import { mockInsightsResponse, mockInsightsEmpty } from '@/test/fixtures'
 vi.mock('@/services/api.service', () => ({
   apiService: {
     getInsights: vi.fn(),
+    getPatrones: vi.fn(),
+    getHormigas: vi.fn(),
+    getSalud: vi.fn(),
+    getProjections: vi.fn(),
   },
+}))
+
+vi.mock('@/components/analytics/ObligationsManager', () => ({
+  default: () => <div data-testid="obligations-manager" />,
 }))
 
 vi.mock('@/context/PeriodContext', () => ({
@@ -23,6 +31,29 @@ vi.mock('@/context/PeriodContext', () => ({
 describe('InsightsPage', () => {
   beforeEach(() => {
     vi.resetAllMocks()
+    vi.mocked(apiService.getPatrones).mockResolvedValue([])
+    vi.mocked(apiService.getHormigas).mockResolvedValue({
+      items: [],
+      total_mensual_hormiga: 0,
+      recomendacion: 'Sin gastos hormiga detectados.',
+    })
+    vi.mocked(apiService.getSalud).mockResolvedValue({
+      ahorro_tasa: 0.2,
+      variabilidad_gastos: 0.1,
+      balance_ingresos_gastos: 65000,
+      score_general: 82,
+      alertas: [],
+    })
+    vi.mocked(apiService.getProjections).mockResolvedValue({
+      mes_actual: '2025-06',
+      dia_del_mes: 15,
+      gasto_actual: 85000,
+      proyeccion_lineal: 170000,
+      pendientes_recurrentes: 0,
+      proyeccion_total: 170000,
+      confianza: 0.8,
+      patrones_pendientes: [],
+    })
   })
 
   it('renderiza LoadingImperial mientras la API no resuelve', () => {
@@ -31,22 +62,25 @@ describe('InsightsPage', () => {
     expect(screen.getByText('Sincronizando con el Motor Cognitivo...')).toBeInTheDocument()
   })
 
-  it('muestra el conteo de hallazgos después de cargar', async () => {
+  it('muestra el feed de hallazgos después de cargar', async () => {
     vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsResponse)
     render(<InsightsPage />)
-    expect(await screen.findByText(/2 hallazgos/i)).toBeInTheDocument()
+    await vi.waitFor(() => {
+      expect(apiService.getSalud).toHaveBeenCalledWith('2025-06')
+    })
+    expect(await screen.findByText(/Feed de Hallazgos/i)).toBeInTheDocument()
   })
 
-  it('muestra el tipo "Anomalía Detectada" para insights type anomaly', async () => {
+  it('muestra el tipo "Anomalía Detectada" para insights type outlier', async () => {
     vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsResponse)
     render(<InsightsPage />)
     expect(await screen.findByText('Anomalía Detectada')).toBeInTheDocument()
   })
 
-  it('muestra el tipo "Oportunidad de Ahorro" para insights type saving_opportunity', async () => {
+  it('muestra el tipo "Patrón Recurrente" para insights type pattern', async () => {
     vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsResponse)
     render(<InsightsPage />)
-    expect(await screen.findByText('Oportunidad de Ahorro')).toBeInTheDocument()
+    expect(await screen.findByText('Patrón Recurrente')).toBeInTheDocument()
   })
 
   it('muestra el porcentaje de confianza de cada insight', async () => {
@@ -68,7 +102,7 @@ describe('InsightsPage', () => {
     vi.mocked(apiService.getInsights).mockResolvedValue(mockInsightsEmpty)
     render(<InsightsPage />)
     expect(
-      await screen.findByText(/no ha detectado patrones significativos/i),
+      await screen.findByText(/no ha detectado anomalías puntuales/i),
     ).toBeInTheDocument()
   })
 })

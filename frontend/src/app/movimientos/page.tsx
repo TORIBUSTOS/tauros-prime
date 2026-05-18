@@ -11,7 +11,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import BaseCard from '@/components/shared/BaseCard';
 import {
   Search, ArrowDownLeft, ArrowUpRight, Download,
-  Database, Calendar, Settings, Brain
+  Database, Calendar, Settings, Brain, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
@@ -34,6 +34,7 @@ function MovimientosContent() {
   const [categories, setCategories] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isProcessingRule, setIsProcessingRule] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   // Sync URL params → state
   useEffect(() => {
@@ -105,9 +106,8 @@ function MovimientosContent() {
       if (window.confirm(confirmMsg)) {
         setIsProcessingRule(id);
         await apiService.createRuleFromMovement({
-          movement_id: id,
-          pattern: movement.descripcion,
-          target_categoria: newCat
+          movimiento_id: id,
+          categoria: newCat,
         });
         showToast("Aprendizaje AI completado: Nueva regla generada.", "success");
       }
@@ -155,13 +155,13 @@ function MovimientosContent() {
             <Database size={12} />
             Registros Históricos
           </div>
-          <h1 className="text-2xl font-black tracking-tighter text-text-prime uppercase italic">
+          <h1 className="text-2xl font-black tracking-tighter text-text-prime uppercase italic leading-tight">
             Bóveda de <span className="text-primary not-italic underline decoration-primary/20 underline-offset-8">Movimientos</span>
           </h1>
-          <div className="flex items-center gap-2 text-xs text-text-muted/50 font-medium">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-text-muted/50 font-medium">
             <Calendar size={14} className="text-primary/40" />
             Exploración granular de transacciones para el periodo{' '}
-            <span className="text-text-prime font-bold">{selectedPeriod}</span>.
+            <span className="text-text-prime font-bold whitespace-nowrap">{selectedPeriod}</span>.
           </div>
         </div>
 
@@ -210,8 +210,81 @@ function MovimientosContent() {
 
       {/* Table */}
       <BaseCard className="p-0 overflow-hidden border-white/5 bg-surface/20">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="md:hidden divide-y divide-white/[0.04]">
+          {paginatedMovements.length > 0 ? paginatedMovements.map(m => {
+            const isExpanded = expandedId === m.id;
+            return (
+              <div key={m.id} className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-text-muted/55">
+                      {new Date(m.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </p>
+                    <p className="mt-2 text-sm font-black text-text-prime leading-snug break-words">
+                      {m.descripcion}
+                    </p>
+                  </div>
+                  <span className={`shrink-0 text-sm font-black italic tabular-nums ${m.tipo === 'ingreso' ? 'text-success' : 'text-error'}`}>
+                    {m.tipo === 'egreso' ? '-' : '+'}
+                    {Math.abs(m.monto).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(m.id)}
+                    className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[9px] font-black uppercase tracking-wider text-primary"
+                  >
+                    {m.categoria}{m.subcategoria ? ` / ${m.subcategoria}` : ''}
+                  </button>
+                  <span className="rounded-full border border-white/5 bg-white/[0.03] px-3 py-1 text-[9px] font-black uppercase tracking-wider text-text-muted/70">
+                    AI {(m.confianza * 100).toFixed(0)}%
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isExpanded ? null : m.id)}
+                    className="ml-auto inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary/80"
+                  >
+                    {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+                    {isExpanded ? 'Ocultar' : 'Detalle'}
+                  </button>
+                </div>
+
+                {editingId === m.id && (
+                  <select
+                    className="mt-3 w-full bg-surface/80 border border-primary/40 rounded-xl px-3 py-2 text-[11px] font-bold text-text-prime outline-none"
+                    value={m.categoria}
+                    autoFocus
+                    onBlur={() => setTimeout(() => setEditingId(null), 200)}
+                    onChange={(e) => handleUpdateCategory(m.id, m, e.target.value)}
+                  >
+                    <option value={m.categoria}>{m.categoria}</option>
+                    {categories.filter(c => c !== m.categoria).map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                )}
+
+                {isExpanded && (
+                  <div className="mt-3 rounded-2xl border border-primary/10 bg-black/20 p-3">
+                    <div className="text-[9px] font-black uppercase tracking-[0.22em] text-primary mb-2">
+                      Descripción completa
+                    </div>
+                    <p className="text-xs leading-relaxed text-text-prime/90 break-words">{m.descripcion}</p>
+                  </div>
+                )}
+              </div>
+            );
+          }) : (
+            <div className="py-16">
+              <EmptyState message="No se encontraron registros en la bóveda para los criterios seleccionados." />
+            </div>
+          )}
+        </div>
+
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full min-w-[1100px] text-left border-collapse">
             <thead>
               <tr className="border-b border-white/5 bg-white/[0.02]">
                 <th className="px-8 py-6 text-[10px] font-black text-primary uppercase tracking-[0.3em]">Fecha</th>
@@ -223,8 +296,11 @@ function MovimientosContent() {
             </thead>
             <tbody className="divide-y divide-white/[0.02]">
               {paginatedMovements.length > 0
-                ? paginatedMovements.map(m => (
-                  <tr key={m.id} className="hover:bg-primary/[0.02] transition-colors group cursor-default">
+                ? paginatedMovements.map(m => {
+                  const isExpanded = expandedId === m.id;
+                  return (
+                  <React.Fragment key={m.id}>
+                  <tr className="hover:bg-primary/[0.02] transition-colors group cursor-default">
                     <td className="px-8 py-5 whitespace-nowrap">
                       <span className="text-text-muted/60 font-black text-[11px] uppercase tracking-tighter">
                         {new Date(m.fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}
@@ -235,9 +311,19 @@ function MovimientosContent() {
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110 ${m.tipo === 'ingreso' ? 'bg-success/10 text-success' : 'bg-white/5 text-text-muted/40'}`}>
                           {m.tipo === 'ingreso' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                         </div>
-                        <span className="text-text-prime text-sm font-bold truncate max-w-[300px] group-hover:text-primary transition-colors" title={m.descripcion}>
-                          {m.descripcion}
-                        </span>
+                        <div className="min-w-0 flex-1">
+                          <span className="block text-text-prime text-sm font-bold truncate max-w-[420px] group-hover:text-primary transition-colors" title={m.descripcion}>
+                            {m.descripcion}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setExpandedId(isExpanded ? null : m.id)}
+                            className="mt-1 inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary/70 hover:text-primary transition-colors"
+                          >
+                            {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+                            {isExpanded ? 'Ocultar detalle' : 'Ver detalle'}
+                          </button>
+                        </div>
                       </div>
                     </td>
                     <td className="px-8 py-5 whitespace-nowrap">
@@ -289,7 +375,23 @@ function MovimientosContent() {
                       </span>
                     </td>
                   </tr>
-                ))
+                  {isExpanded && (
+                    <tr className="bg-primary/[0.025]">
+                      <td className="px-8 py-4" />
+                      <td colSpan={4} className="px-8 py-4">
+                        <div className="rounded-2xl border border-primary/10 bg-black/20 p-4">
+                          <div className="text-[9px] font-black uppercase tracking-[0.25em] text-primary mb-2">
+                            Descripción completa
+                          </div>
+                          <p className="text-sm leading-relaxed text-text-prime/90 break-words">
+                            {m.descripcion}
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </React.Fragment>
+                )})
                 : (
                   <tr>
                     <td colSpan={5} className="py-32">

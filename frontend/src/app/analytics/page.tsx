@@ -9,7 +9,7 @@ import MetricCard from '@/components/dashboard/MetricCard';
 import BaseCard from '@/components/shared/BaseCard';
 import { apiService } from '@/services/api.service';
 import { MovimientoMapped, PLReportResponse, ForecastResponse } from '@/types/api';
-import { TrendingUp, Activity, PieChart as PieIcon, ShieldCheck, Brain, Loader2, Target, Sparkles } from 'lucide-react';
+import { Activity, PieChart as PieIcon, ShieldCheck, Brain, Target, Gauge } from 'lucide-react';
 import { usePeriod } from '@/context/PeriodContext';
 
 export default function AnalyticsPage() {
@@ -24,11 +24,11 @@ export default function AnalyticsPage() {
     setLoading(true);
     try {
       const [movData, plData, foreData] = await Promise.all([
-        apiService.getMovements(period),
+        apiService.getMovements({ period, pageSize: 100 }),
         apiService.getReportPL(period),
         apiService.getForecast(period)
       ]);
-      setMovements(movData);
+      setMovements(movData.items);
       setReportData(plData);
       setForecastData(foreData);
     } catch (err) {
@@ -106,42 +106,47 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-2 duration-1000">
+    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-2 duration-1000">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-2 border-b border-white/5">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.4em] text-primary">
             <Activity size={12} className="animate-pulse" />
             Financial Intelligence
           </div>
-          <h1 className="text-2xl font-black tracking-tighter text-prime uppercase italic">
+          <h1 className="text-2xl font-black tracking-tighter text-prime uppercase italic leading-tight">
              Inteligencia <span className="text-primary not-italic underline decoration-primary/20 underline-offset-8">Analítica</span>
           </h1>
-          <div className="flex items-center gap-2 text-xs text-muted/50 font-medium">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted/50 font-medium">
             <Target size={14} className="text-primary/40" />
-            Análisis de flujo y predicción de comportamiento para <span className="text-prime font-bold">{selectedPeriod}</span>.
+            <span>Análisis de flujo y predicción de comportamiento para</span>
+            <span className="text-prime font-bold whitespace-nowrap">{selectedPeriod}</span>.
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-md">
+        <div className="grid grid-cols-3 gap-3 bg-white/[0.02] p-3 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-md">
           <div className="text-right">
-            <p className="text-[9px] text-muted/40 font-black uppercase tracking-widest leading-none mb-1">Confianza del Modelo</p>
+            <p className="text-[9px] text-muted/40 font-black uppercase tracking-widest leading-none mb-1">Confianza</p>
             <p className="text-xs text-primary font-black flex items-center justify-end gap-2 uppercase italic tracking-tighter">
               {modelConfianza}
             </p>
           </div>
-          <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
-            <Brain className="w-5 h-5" />
+          <div className="text-right">
+            <p className="text-[9px] text-muted/40 font-black uppercase tracking-widest leading-none mb-1">Score</p>
+            <p className={`text-xs font-black uppercase italic tracking-tighter ${healthTextColor}`}>{healthScore}/100</p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center">
+            <Gauge className="w-5 h-5" />
           </div>
         </div>
       </header>
 
       {/* Analytics Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Main Chart Column */}
-        <div className="lg:col-span-2 flex flex-col gap-8">
+        <div className="lg:col-span-2 flex flex-col gap-6">
           {movements.length > 0 ? (
-            <div className="h-[320px] md:h-[450px]">
+            <div className="h-[300px] md:h-[390px]">
               <FlowChart movements={movements} period={selectedPeriod} />
             </div>
           ) : (
@@ -154,10 +159,10 @@ export default function AnalyticsPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
              <MetricCard
                 label="Burn Rate Diario"
-                value={burnRate.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                value={burnRate.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
                 subtitle="Promedio de egresos diarios"
                 accent="bronze"
              />
@@ -177,9 +182,9 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Side Column: Distribution & Analysis */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {reportData ? (
-            <div className="h-[300px] md:h-[400px]">
+            <div className="min-h-[420px]">
               <CategoryPieChart data={reportData} />
             </div>
           ) : (

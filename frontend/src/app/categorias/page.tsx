@@ -97,67 +97,75 @@ function SubcategoryDrilldown({ categoria, hasSubcats }: { categoria: string; ha
 
 function TabResumen({ categories }: { categories: CategoryStats[] }) {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const maxGasto = Math.max(...categories.map(c => c.gasto), 1);
+  const maxImpact = Math.max(...categories.map(c => Math.max(c.gasto, c.ingreso)), 1);
+  const totals = useMemo(() => {
+    const gasto = categories.reduce((sum, c) => sum + c.gasto, 0);
+    const ingreso = categories.reduce((sum, c) => sum + c.ingreso, 0);
+    const reglas = categories.reduce((sum, c) => sum + c.n_reglas, 0);
+    return { gasto, ingreso, reglas };
+  }, [categories]);
 
   const toggle = useCallback((cat: string) => {
     setExpanded(prev => prev === cat ? null : cat);
   }, []);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <CategorySummary label="Ingresos clasificados" value={fmt(totals.ingreso)} tone="success" />
+        <CategorySummary label="Gastos clasificados" value={fmt(totals.gasto)} tone="error" />
+        <CategorySummary label="Reglas activas asociadas" value={totals.reglas.toLocaleString('es-AR')} tone="primary" />
+      </div>
+
+      <div className="hidden lg:grid grid-cols-[minmax(220px,1.4fr)_minmax(180px,1fr)_120px_120px_100px] gap-4 px-5 py-2 rounded-xl bg-white/[0.02] border border-white/5">
+        {['Categoría', 'Impacto', 'Movs', 'Reglas', 'Subcats'].map(label => (
+          <span key={label} className="text-[9px] font-black uppercase tracking-[0.28em] text-primary/55">{label}</span>
+        ))}
+      </div>
+
       {categories.map(cat => (
         <div key={cat.categoria} className="rounded-xl border border-white/5 bg-surface/30 overflow-hidden">
+          {(() => {
+            const isIngreso = cat.ingreso > cat.gasto;
+            const impactValue = Math.max(cat.gasto, cat.ingreso);
+            return (
           <button
             onClick={() => toggle(cat.categoria)}
-            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors text-left"
+            className="w-full grid grid-cols-1 lg:grid-cols-[minmax(220px,1.4fr)_minmax(180px,1fr)_120px_120px_100px] gap-3 lg:gap-4 px-5 py-4 hover:bg-white/[0.02] transition-colors text-left"
           >
-            <ChevronRight size={14} className={`text-primary/70 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
-
-            {/* Nombre */}
-            <span className="flex-1 text-[12px] font-black text-text-prime uppercase tracking-tight">
-              {cat.categoria}
-            </span>
-
-            {/* Barra */}
-            <div className="hidden md:block w-32 bg-white/5 h-1.5 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full"
-                style={{ width: `${(cat.gasto / maxGasto) * 100}%` }}
-              />
+            <div className="flex items-center gap-3 min-w-0">
+              <ChevronRight size={14} className={`text-primary/70 transition-transform shrink-0 ${expanded === cat.categoria ? 'rotate-90' : ''}`} />
+              <div className="min-w-0">
+                <span className="block truncate text-[12px] font-black text-text-prime uppercase tracking-tight">
+                  {cat.categoria}
+                </span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-text-muted/45">
+                  {isIngreso ? 'Ingreso' : 'Egreso'} principal
+                </span>
+              </div>
             </div>
 
-            {/* Stats */}
-            <div className="flex items-center gap-6 shrink-0">
-              <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Movs</p>
-                <p className="text-[11px] font-black text-text-prime tabular-nums">{cat.n_movimientos}</p>
+            <div className="min-w-0">
+              <div className="flex items-center justify-between gap-3">
+                <span className={`text-[11px] font-black tabular-nums ${isIngreso ? 'text-success' : 'text-error'}`}>
+                  {fmt(impactValue)}
+                </span>
+                <span className="text-[10px] font-black text-primary/85 tabular-nums">{isIngreso ? 'IN' : `${cat.pct_gasto}%`}</span>
               </div>
-              <div className="text-right hidden sm:block">
-                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">%Movs</p>
-                <p className="text-[11px] font-black text-text-muted/90 tabular-nums">{cat.pct_movimientos}%</p>
+              <div className="mt-2 bg-white/5 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${isIngreso ? 'bg-success' : 'bg-primary'}`}
+                  style={{ width: `${(impactValue / maxImpact) * 100}%` }}
+                />
               </div>
-              <div className="text-right">
-                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Gasto</p>
-                <p className="text-[11px] font-black text-error tabular-nums">{fmt(cat.gasto)}</p>
-              </div>
-              <div className="text-right w-14">
-                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">%$</p>
-                <p className="text-[11px] font-black text-primary tabular-nums">{cat.pct_gasto}%</p>
-              </div>
-              <div className="text-right hidden md:block w-12">
-                <p className="text-[9px] text-text-muted/70 uppercase tracking-widest">Reglas</p>
-                <p className="text-[11px] font-black text-text-muted/80 tabular-nums">{cat.n_reglas}</p>
-              </div>
-              {/* Subcats badge */}
-              {cat.subcategorias.length > 0 && (
-                <div className="hidden md:flex items-center gap-1 shrink-0">
-                  <span className="text-[9px] font-black text-primary/80 bg-primary/10 border border-primary/25 px-1.5 py-0.5 rounded-full">
-                    {cat.subcategorias.length} sub
-                  </span>
-                </div>
-              )}
             </div>
+
+            <CategoryCell label="Movs" value={`${cat.n_movimientos} / ${cat.pct_movimientos}%`} />
+            <CategoryCell label="Reglas" value={cat.n_reglas.toString()} />
+            <CategoryCell label="Subcats" value={cat.subcategorias.length > 0 ? cat.subcategorias.length.toString() : '0'} />
           </button>
+            );
+          })()}
 
           {expanded === cat.categoria && (
             <SubcategoryDrilldown
@@ -167,6 +175,25 @@ function TabResumen({ categories }: { categories: CategoryStats[] }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+function CategorySummary({ label, value, tone }: { label: string; value: string; tone: 'success' | 'error' | 'primary' }) {
+  const color = tone === 'success' ? 'text-success' : tone === 'error' ? 'text-error' : 'text-primary';
+  return (
+    <div className="rounded-xl border border-white/5 bg-black/20 px-4 py-3">
+      <p className="text-[9px] font-black uppercase tracking-[0.24em] text-text-muted/50">{label}</p>
+      <p className={`mt-1 text-sm font-black tabular-nums ${color}`}>{value}</p>
+    </div>
+  );
+}
+
+function CategoryCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex lg:block items-center justify-between gap-3 rounded-lg bg-black/15 lg:bg-transparent px-3 py-2 lg:p-0">
+      <p className="lg:hidden text-[9px] text-text-muted/50 uppercase tracking-widest font-black">{label}</p>
+      <p className="text-[11px] font-black text-text-prime/85 tabular-nums">{value}</p>
     </div>
   );
 }
@@ -392,10 +419,37 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
   const catNames = useMemo(() => [...new Set(categories.map(c => c.categoria))].sort(), [categories]);
 
   useEffect(() => {
-    apiService.getMovements().then(data => {
-      setMovs(data.filter(m => m.categoria === 'Sin categorizar'));
-      setLoading(false);
-    });
+    let cancelled = false;
+
+    async function loadUncategorized() {
+      setLoading(true);
+      try {
+        const firstPage = await apiService.getMovements({
+          categoria: 'Sin categorizar',
+          page: 1,
+          pageSize: 100,
+        });
+        const allMovs = [...firstPage.items];
+
+        for (let page = 2; page <= firstPage.totalPages; page += 1) {
+          const nextPage = await apiService.getMovements({
+            categoria: 'Sin categorizar',
+            page,
+            pageSize: 100,
+          });
+          allMovs.push(...nextPage.items);
+        }
+
+        if (!cancelled) setMovs(allMovs);
+      } catch (e: any) {
+        if (!cancelled) showToast(e.message || 'Error al cargar movimientos sin categorizar', 'error');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadUncategorized();
+    return () => { cancelled = true; };
   }, []);
 
   const handleSave = async (id: number, movement: any) => {
@@ -410,9 +464,9 @@ function TabSinCategorizar({ categories }: { categories: CategoryStats[] }) {
       // Feedback Loop
       if (window.confirm(`¿Deseas crear una regla inteligente para que "${movement.descripcion}" se asocie siempre a "${a.categoria}"?`)) {
         await apiService.createRuleFromMovement({
-          movement_id: id,
-          pattern: movement.descripcion,
-          target_categoria: a.categoria
+          movimiento_id: id,
+          categoria: a.categoria,
+          subcategoria: a.subcategoria || undefined,
         });
         showToast("Aprendizaje AI completado.", "success");
       }
@@ -521,26 +575,28 @@ export default function CategoriasPage() {
       </header>
 
       {/* Tabs */}
-      <div className="flex p-1 bg-surface/40 rounded-2xl border border-white/5 w-fit">
-        {tabs.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
-              tab === t.id
-                ? 'bg-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]'
-                : 'text-text-muted/80 hover:text-text-prime hover:bg-white/5'
-            }`}
-          >
-            {t.icon}
-            {t.label}
-            {t.count !== undefined && (
-              <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${tab === t.id ? 'bg-black/20' : 'bg-white/10'}`}>
-                {t.count}
-              </span>
-            )}
-          </button>
-        ))}
+      <div className="w-full overflow-x-auto pb-1 custom-scrollbar">
+        <div className="flex p-1 bg-surface/40 rounded-2xl border border-white/5 w-max min-w-full">
+          {tabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`flex shrink-0 items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
+                tab === t.id
+                  ? 'bg-primary text-black shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)]'
+                  : 'text-text-muted/80 hover:text-text-prime hover:bg-white/5'
+              }`}
+            >
+              {t.icon}
+              {t.label}
+              {t.count !== undefined && (
+                <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${tab === t.id ? 'bg-black/20' : 'bg-white/10'}`}>
+                  {t.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}

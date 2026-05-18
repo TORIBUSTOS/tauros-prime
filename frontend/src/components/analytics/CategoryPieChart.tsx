@@ -8,7 +8,6 @@ import {
   ResponsiveContainer, 
   Tooltip, 
   Sector,
-  Legend
 } from 'recharts';
 import { PieChart as PieIcon } from 'lucide-react';
 import { PLReportResponse } from '@/types/api';
@@ -62,8 +61,6 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
     const sin = Math.sin(-RADIAN * midAngle);
-    const cos = Math.sin(-RADIAN * midAngle); // Wait, this should be cos
-    // Correcting Recharts logic used in original file (line 65 used cos, line 64 used sin)
     const cosVal = Math.cos(-RADIAN * midAngle);
     
     const sx = cx + (outerRadius + 10) * cosVal;
@@ -170,7 +167,7 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="h-[340px] w-full relative z-10">
+      <div className="min-h-[300px] w-full relative z-10">
         {!data ? (
            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-30 italic text-sm text-text-muted">
              <div className="w-8 h-8 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
@@ -182,56 +179,69 @@ const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
            </div>
         ) : (
           isMounted && (
-            <ResponsiveContainer width="100%" height="100%" minHeight={0}>
-              <PieChart>
-                <Pie
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  {...({ activeIndex, activeShape: renderActiveShape } as any)}
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={95}
-                  dataKey="value"
-                  onMouseEnter={onPieEnter}
-                  onMouseLeave={() => setActiveIndex(-1)}
-                  paddingAngle={4}
-                  stroke="rgba(0,0,0,0.2)"
-                  strokeWidth={2}
-                  className="cursor-pointer"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={CHART_COLORS[index % CHART_COLORS.length]}
-                      className="hover:opacity-80 transition-opacity"
+            <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_220px] gap-4 items-center">
+              <div className="h-[260px] min-w-0">
+                <ResponsiveContainer width="100%" height="100%" minHeight={0}>
+                  <PieChart>
+                    <Pie
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      {...({ activeIndex, activeShape: renderActiveShape } as any)}
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={58}
+                      outerRadius={82}
+                      dataKey="value"
+                      onMouseEnter={onPieEnter}
+                      onMouseLeave={() => setActiveIndex(-1)}
+                      paddingAngle={4}
+                      stroke="rgba(0,0,0,0.2)"
+                      strokeWidth={2}
+                      className="cursor-pointer"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={CHART_COLORS[index % CHART_COLORS.length]}
+                          className="hover:opacity-80 transition-opacity"
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(value) => Number(value ?? 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                      contentStyle={{
+                        background: 'rgba(0,0,0,0.9)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        borderRadius: 8,
+                        color: 'var(--text-prime)',
+                      }}
                     />
-                  ))}
-                </Pie>
-                <Legend 
-                  verticalAlign="bottom" 
-                  align="center"
-                  content={(props) => {
-                    const { payload } = props;
-                    return (
-                      <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-8">
-                        {payload?.map((entry: any, index: number) => (
-                          <div key={`item-${index}`} className="flex items-center gap-2 group/legend cursor-default">
-                            <div 
-                              className="w-2 h-2 rounded-full transition-transform group-hover/legend:scale-125" 
-                              style={{ backgroundColor: entry.color }}
-                            />
-                            <span className="text-[9px] font-bold text-text-muted/50 uppercase tracking-[0.15em] transition-colors group-hover/legend:text-text-prime">
-                              {entry.value}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-2">
+                {chartData.slice(0, 6).map((entry, index) => (
+                  <div key={entry.name} className="flex items-center gap-3 rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                    <div
+                      className="w-2 h-8 rounded-full shrink-0"
+                      style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[10px] font-black uppercase tracking-[0.08em] text-text-prime">
+                        {entry.name}
+                      </p>
+                      <p className="text-[9px] font-bold text-text-muted/55 tabular-nums">
+                        {entry.percentage.toFixed(1)}% del total
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-black text-primary tabular-nums">
+                      {entry.value.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           )
         )}
       </div>

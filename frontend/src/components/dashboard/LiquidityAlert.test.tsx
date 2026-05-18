@@ -218,10 +218,10 @@ describe('LiquidityAlert', () => {
       />
     )
 
-    const alertBlur = container.querySelector('.alert-blur')
+    const alert = container.querySelector('.liquidity-alert')
     const alertContent = container.querySelector('.alert-content')
 
-    expect(alertBlur).toBeInTheDocument()
+    expect(alert).toBeInTheDocument()
     expect(alertContent).toBeInTheDocument()
   })
 

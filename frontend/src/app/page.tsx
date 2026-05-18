@@ -6,20 +6,16 @@ import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import MetricCard from '@/components/dashboard/MetricCard';
 import TopCategorias from '@/components/dashboard/TopCategorias';
-import CortexHub from '@/components/dashboard/CortexHub';
 import FileUploadZone from '@/components/dashboard/FileUploadZone';
-import BaseCard from '@/components/shared/BaseCard';
 import FlowChart from '@/components/analytics/FlowChart';
 import { apiService } from '@/services/api.service';
-import { MovimientoMapped, InsightsResponse, ForecastResponse, CategoryStats } from '@/types/api';
+import { MovimientoMapped, CategoryStats } from '@/types/api';
 import { usePeriod } from '@/context/PeriodContext';
 import { useToast } from '@/context/ToastContext';
 
 export default function DashboardPage() {
   const [movements, setMovements] = useState<MovimientoMapped[]>([]);
-  const [insights, setInsights] = useState<InsightsResponse | null>(null);
   const [summary, setSummary] = useState<any>(null);
-  const [forecastData, setForecastData] = useState<ForecastResponse | null>(null);
   const [categories, setCategories] = useState<CategoryStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,17 +30,13 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [movData, insData, sumData, foreData, catData] = await Promise.all([
-        apiService.getMovements(period),
-        apiService.getInsights(period),
+      const [movData, sumData, catData] = await Promise.all([
+        apiService.getMovements({ period, pageSize: 100 }),
         apiService.getSummary(period),
-        apiService.getForecast(period),
         apiService.getCategories(period)
       ]);
-      setMovements(movData);
-      setInsights(insData);
+      setMovements(movData.items);
       setSummary(sumData);
-      setForecastData(foreData);
       setCategories(catData);
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
@@ -75,25 +67,13 @@ export default function DashboardPage() {
 
   const currentBalance = summary?.equity ?? 0;
   const currentNet = summary?.balance ?? 0;
-  
-  const nextMonthForecast = forecastData?.forecast?.[0];
-  const totalForecastedNet = nextMonthForecast?.forecast.reduce((acc, item) => acc + item.expected_total, 0) ?? 0;
-  
-  // El balance proyectado al cierre es: Balance Actual + (Lo que falta ocurrir del forecast)
-  // remainingNet = Forecast Total - Lo que ya ocurrió
-  const remainingNet = totalForecastedNet - currentNet;
-  const projectedBalance = currentBalance + remainingNet;
-  
-  const forecastItems = nextMonthForecast?.forecast ?? [];
-  const confidence = forecastItems.length > 0
-    ? forecastItems.reduce((s, f) => s + f.confidence, 0) / forecastItems.length
-    : 0;
-
-  const stability = projectedBalance < 0 
-    ? 'Crítica' 
-    : currentNet < 0 
-      ? 'Bajo Control' 
-      : 'Creciente';
+  const formatMoney = (value?: number) => (
+    (value ?? 0).toLocaleString('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      maximumFractionDigits: 0,
+    })
+  );
 
   if ((loading || isPeriodLoading) && !importing) {
     return (
@@ -139,39 +119,39 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content + Sidebar Layout for better UX */}
-      <div className="flex flex-col xl:flex-row gap-6 relative z-10 w-full">
-        
-        {/* Lado Izquierdo: Main Dashboard Content */}
-        <div className="flex-1 flex flex-col gap-6">
+      <div className="relative z-10 w-full">
+        <div className="flex flex-col gap-6">
           
           {/* Row 1: Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4">
+            <div className="min-w-0">
               <MetricCard 
                 label="Balance Imperial" 
-                value={currentBalance.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                value={formatMoney(currentBalance)}
                 accent="gold"
                 valueClassName={currentBalance >= 0 ? 'text-success' : 'text-error'}
+                valueTitle={formatMoney(currentBalance)}
                 subtitle="Patrimonio líquido acumulado"
               />
             </div>
-            <div className="md:col-span-1">
+            <div className="min-w-0">
               <MetricCard 
                 label="Ingresos Mensuales" 
-                value={summary?.ingresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                value={formatMoney(summary?.ingresos_total)}
                 subtitle={`Flujo de entrada ${selectedPeriod.split(' ')[0]}`}
                 valueClassName="text-success"
+                valueTitle={formatMoney(summary?.ingresos_total)}
                 onClick={() => router.push('/movimientos?tipo=ingreso')}
               />
             </div>
-            <div className="md:col-span-1">
+            <div className="min-w-0">
               <MetricCard 
                 label="Egresos Mensuales" 
-                value={summary?.egresos_total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                value={formatMoney(summary?.egresos_total)}
                 accent="bronze"
                 subtitle={`Flujo de salida ${selectedPeriod.split(' ')[0]}`}
                 valueClassName="text-error"
+                valueTitle={formatMoney(summary?.egresos_total)}
                 className="cursor-pointer"
                 onClick={() => router.push('/movimientos?tipo=egreso')}
               />
@@ -193,18 +173,6 @@ export default function DashboardPage() {
             <FileUploadZone onUpload={handleFileUpload} isUploading={importing} />
           </div>
         </div>
-
-        {/* Lado Derecho: Cortex Intelligence Hub (Sticky Sidebar) */}
-        <div className="w-full xl:w-96 shrink-0 flex flex-col h-[600px] xl:h-[calc(100vh-8rem)] xl:sticky xl:top-24">
-          <CortexHub 
-            insights={insights?.insights || []}
-            currentBalance={currentBalance}
-            projectedBalance={projectedBalance}
-            confidence={confidence}
-            stability={stability}
-          />
-        </div>
-
       </div>
     </div>
   );

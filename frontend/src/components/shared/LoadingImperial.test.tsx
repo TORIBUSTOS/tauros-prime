@@ -7,7 +7,7 @@ describe('LoadingImperial', () => {
     render(<LoadingImperial />)
 
     expect(screen.getByText('Sincronizando')).toBeInTheDocument()
-    expect(screen.getByText('Accediendo a la Bóveda Imperial...')).toBeInTheDocument()
+    expect(screen.getByText('Accediendo a la Bóveda...')).toBeInTheDocument()
   })
 
   it('should render with custom message', () => {
@@ -47,7 +47,7 @@ describe('LoadingImperial', () => {
     const { container } = render(<LoadingImperial />)
 
     const syncText = screen.getByText('Sincronizando')
-    expect(syncText).toHaveClass('text-sm', 'font-medium', 'uppercase')
+    expect(syncText).toHaveClass('text-sm', 'font-black', 'uppercase')
   })
 
   it('should display message with secondary styling', () => {

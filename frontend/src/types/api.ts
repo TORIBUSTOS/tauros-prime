@@ -3,6 +3,7 @@ export interface SummaryResponse {
   ingresos_total: number;
   egresos_total: number;
   balance: number;
+  equity: number;
   transaction_count: number;
 }
 
@@ -153,6 +154,7 @@ export interface PatronRecurrenteResponse {
   concepto: string;
   frecuencia: string;
   monto_promedio: number;
+  dia_mes: number | null;
   ultimo_movimiento: string | null;
   proxima_estimada: string | null;
   confianza: number;
@@ -165,6 +167,7 @@ export interface ProjectionsResponse {
   proyeccion_lineal: number;
   pendientes_recurrentes: number;
   proyeccion_total: number;
+  confianza: number;
   patrones_pendientes: Array<{
     concepto: string;
     monto: number;
@@ -213,4 +216,12 @@ export interface ManualObligationCreate {
   monto: number;
   fecha_limite: string;
   prioridad: number;
+}
+
+export interface ManualObligationUpdate {
+  concepto?: string;
+  monto?: number;
+  fecha_limite?: string;
+  prioridad?: number;
+  pagado?: number;
 }

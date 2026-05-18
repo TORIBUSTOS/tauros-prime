@@ -1,0 +1,59 @@
+Completar al lado de cada linea con: Categoria > Subcategoria
+Ejemplo: DIAZ GUSTAVO MARCELO => Pagos a Proveedores > Servicios Profesionales
+
+1. Acreditacion Cheque Dep.48 Hs. - Numero Cheque: 11490060 =>
+   Monto: +580849.88 | Fecha: 2026-02-02
+PAGO DE CUOTA PREPAGO (SOLO QUE PAGA CON CHEQUE ESTE AFILIADO)
+
+2. DIAZ GUSTAVO MARCELO =>
+   Monto: -450000.00 | Fecha: 2026-03-04
+   HONORARIOS
+
+3. MORELLO JOSE ALFREDO =>
+   Monto: -350000.00 | Fecha: 2026-01-26
+   HONORARIOS DR MORELLO ANESTECIA
+
+4. Gabriel Alberto Hernandez =>
+   Monto: +342938.00 | Fecha: 2026-01-30
+   PAGO DE CUOTA AFILIADO TRANSFERENCIA
+
+5. MERCADO PEDRO SEBASTIAN =>
+   Monto total: -634000.00 | Movimientos: 2 | Fechas: 2026-02-11, 2026-03-12
+   SISTEMA ERP (MERCADO SEBASTIAN ES UNO DE LOS INGENIEROS)
+
+6. PEREYRA YANINA BEATRIZ =>
+   Monto: -300000.00 | Fecha: 2025-12-31
+   HONORARIOS
+
+7. Nestor Raul Mansilla =>
+   Monto: +295115.00 | Fecha: 2026-03-16
+   PAGO DE CUOTA AFILIADO TRANSFERENCIA
+
+8. Adolfo Marcelo Villalon =>
+   Monto: +286999.00 | Fecha: 2026-01-10
+      PAGO DE CUOTA AFILIADO TRANSFERENCIA
+
+
+9. OXANDABURU PABLO FRANCISCO =>
+   Monto: -200000.00 | Fecha: 2026-01-30
+   HONORARIOS ABOGADO (ES UNO ABOGADO LABORAL DE SANARTE)
+
+10. LUIS ALFONSO LIZONDO GARC =>
+    Monto total: +176998.00 | Movimientos: 2 | Fechas: 2026-01-10, 2026-02-10
+          PAGO DE CUOTA AFILIADO TRANSFERENCIA
+
+
+11. DANIEL ROLANDO ARTEAGA =>
+    Monto total: +59194.00 | Movimientos: 2 | Fechas: 2026-01-08, 2026-03-05
+          PAGO DE CUOTA AFILIADO TRANSFERENCIA
+
+
+12. GUADALUPE ANAHI TOSIN =>
+    Monto total: +35000.00 | Movimientos: 2 | Fechas: 2026-02-13, 2026-02-20
+    ALQUILER
+
+Nota aplicada: tambien existia una transferencia recibida adicional de GUADALUPE ANAHI TOSIN por +15000.00 el 2026-02-09. Quedo incluida como Ingresos > Alquiler.
+
+13. DOCUMENTO 27963963144 / NOMBRE 27963963144 =>
+    Monto: -140000.00 | Fecha: 2026-03-19
+    DEJAR SIN CATEGORIA - origen no identificado

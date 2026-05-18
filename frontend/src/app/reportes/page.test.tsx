@@ -28,6 +28,10 @@ vi.mock('@/context/ThemeContext', () => ({
   }),
 }))
 
+vi.mock('@/context/ToastContext', () => ({
+  useToast: () => ({ showToast: vi.fn() }),
+}))
+
 // HierarchicalTable usa Recharts internamente — lo mockeamos como stub
 vi.mock('@/components/reports/HierarchicalTable', () => ({
   default: () => <div data-testid="hierarchical-table" />,

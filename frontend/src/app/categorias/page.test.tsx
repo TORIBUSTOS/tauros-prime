@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import CategoriasPage from './page'
 import { apiService } from '@/services/api.service'
-import { mockCategories, mockRules } from '@/test/fixtures'
+import { mockCategories, mockMovementsPage, mockRules } from '@/test/fixtures'
 
 // == Mocks de servicio ========================================================
 
@@ -29,7 +29,7 @@ function setupSuccessfulAPIs() {
   vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
   vi.mocked(apiService.getRules).mockResolvedValue(mockRules)
   // getMovements se llama dentro de TabSinCategorizar si se abre esa tab
-  vi.mocked(apiService.getMovements).mockResolvedValue([])
+  vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage([]))
 }
 
 // == Tests =====================================================================

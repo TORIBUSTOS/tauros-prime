@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { 
   AlertTriangle, Zap, Target, Sparkles, ShieldCheck, HeartPulse, 
@@ -42,7 +42,7 @@ export default function InsightsPage() {
           apiService.getInsights(selectedPeriod),
           apiService.getPatrones(),
           apiService.getHormigas(),
-          apiService.getSalud(),
+          apiService.getSalud(selectedPeriod),
           apiService.getProjections()
         ]);
         setInsights(insData.insights || []);
@@ -61,7 +61,7 @@ export default function InsightsPage() {
   }, [selectedPeriod]);
 
   // Contenedor para animaciones escalonadas
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -71,7 +71,7 @@ export default function InsightsPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
   };
@@ -98,6 +98,19 @@ export default function InsightsPage() {
     if (insights.length === 0) return 0;
     return insights.reduce((acc, curr) => acc + curr.confidence, 0) / insights.length;
   }, [insights]);
+
+  const hasHealthData = Boolean(salud && (
+    salud.score_general > 0 ||
+    salud.balance_ingresos_gastos !== 0 ||
+    salud.ahorro_tasa !== 0 ||
+    salud.alertas.length > 0
+  ));
+
+  const formatMoney = (value: number) => value.toLocaleString('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    maximumFractionDigits: 0,
+  });
 
   const getIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -154,7 +167,6 @@ export default function InsightsPage() {
         <motion.p variants={itemVariants} className="text-sm text-text-muted max-w-2xl leading-relaxed">
           Análisis avanzado mediante modelos estadísticos para detectar patrones, anomalías y salud financiera en el periodo {selectedPeriod}.
         </motion.p>
-      </header>
 
       {/* == SECCIÓN 1: SALUD FINANCIERA ====================================== */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -179,12 +191,14 @@ export default function InsightsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                     <div className="text-[9px] uppercase tracking-widest text-text-muted/40 mb-1 font-bold">Tasa de Ahorro</div>
-                    <div className="text-lg font-bold text-text-prime">{((salud?.ahorro_tasa || 0) * 100).toFixed(1)}%</div>
+                    <div className="text-lg font-bold text-text-prime">
+                      {hasHealthData ? `${((salud?.ahorro_tasa || 0) * 100).toFixed(1)}%` : 'Sin datos'}
+                    </div>
                   </div>
                   <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
                     <div className="text-[9px] uppercase tracking-widest text-text-muted/40 mb-1 font-bold">Balance Neto</div>
                     <div className={`text-lg font-bold ${salud?.balance_ingresos_gastos && salud.balance_ingresos_gastos >= 0 ? 'text-success' : 'text-error'}`}>
-                      {salud?.balance_ingresos_gastos?.toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                      {hasHealthData && salud ? formatMoney(salud.balance_ingresos_gastos) : 'Sin datos'}
                     </div>
                   </div>
                 </div>
@@ -231,7 +245,9 @@ export default function InsightsPage() {
             <div className="mb-6">
               <div className="text-[10px] uppercase tracking-widest text-text-muted/60 mb-1 font-black">Impacto Anual Proyectado</div>
               <div className="text-3xl font-black text-amber-500">
-                {((hormigas?.total_mensual_hormiga || 0) * 12).toLocaleString('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 })}
+                {hormigas && hormigas.total_mensual_hormiga > 0
+                  ? formatMoney(hormigas.total_mensual_hormiga * 12)
+                  : 'Sin datos'}
               </div>
               <p className="text-[10px] text-text-muted/40 mt-1 italic leading-tight">
                 {hormigas?.recomendacion || "Análisis en curso..."}
@@ -254,10 +270,9 @@ export default function InsightsPage() {
             </div>
           </div>
         </BaseCard>
-      </div>
+      </motion.div>
 
         </motion.div>
-      </motion.div>
 
       {/* == SECCIÓN 3: PATRONES RECURRENTES ================================= */}
       <motion.div variants={itemVariants} className="flex flex-col gap-4">
@@ -300,6 +315,7 @@ export default function InsightsPage() {
             </div>
           )}
         </div>
+      </motion.div>
       
       {/* == SECCIÓN 2.5: PROYECCIONES INTELIGENTES =========================== */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-4 gap-6">

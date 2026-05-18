@@ -56,13 +56,21 @@ describe('apiService', () => {
       ]
       ;(global.fetch as any).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockMovements,
+        json: async () => ({
+          items: mockMovements,
+          total: 1,
+          page: 1,
+          page_size: 25,
+          total_pages: 1,
+        }),
       })
 
       const result = await apiService.getMovements()
 
-      expect(result).toHaveLength(1)
-      expect(result[0].periodo).toBe('2025-06')
+      expect(result.items).toHaveLength(1)
+      expect(result.items[0].periodo).toBe('2025-06')
+      expect(result.total).toBe(1)
+      expect(result.totalPages).toBe(1)
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('/api/movements')
       )
@@ -84,10 +92,16 @@ describe('apiService', () => {
       ]
       ;(global.fetch as any).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockMovements,
+        json: async () => ({
+          items: mockMovements,
+          total: 1,
+          page: 1,
+          page_size: 25,
+          total_pages: 1,
+        }),
       })
 
-      await apiService.getMovements('2025-06')
+      await apiService.getMovements({ period: '2025-06' })
 
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('period=2025-06')
@@ -181,6 +195,29 @@ describe('apiService', () => {
 
       await expect(apiService.getForecast('2025-06')).rejects.toThrow(
         'Error al cargar proyecciones'
+      )
+    })
+  })
+
+  describe('getSalud', () => {
+    it('should fetch health flags for period when provided', async () => {
+      const mockHealth = {
+        ahorro_tasa: -0.12,
+        variabilidad_gastos: 0.2,
+        balance_ingresos_gastos: -1000,
+        score_general: 45,
+        alertas: ['Alerta'],
+      }
+      ;(global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockHealth,
+      })
+
+      const result = await apiService.getSalud('2026-03')
+
+      expect(result.score_general).toBe(45)
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('period=2026-03')
       )
     })
   })

@@ -75,6 +75,7 @@ function CategoryRow({ nodo, isIngreso }: { nodo: ReportNode, isIngreso: boolean
   const [isExpanded, setIsExpanded] = useState(false);
   const { isFtStyle } = useTheme();
   const router = useRouter();
+  const variation = Number(nodo.variacion ?? 0);
 
   const handleDrillDown = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -93,10 +94,10 @@ function CategoryRow({ nodo, isIngreso }: { nodo: ReportNode, isIngreso: boolean
           </div>
           <span className={`text-sm font-bold text-text-prime/90 tracking-wide ${isFtStyle ? 'font-mono' : ''}`}>{nodo.nombre}</span>
           
-          {nodo.variacion !== undefined && (
-            <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${nodo.variacion >= 0 ? 'bg-success/10 text-success' : 'bg-error/10 text-error'} ${isFtStyle ? 'font-mono' : ''}`}>
-              {nodo.variacion > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-              {Math.abs(nodo.variacion)}%
+          {variation !== 0 && (
+            <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${variation >= 0 ? 'bg-success/10 text-success' : 'bg-error/10 text-error'} ${isFtStyle ? 'font-mono' : ''}`}>
+              {variation > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+              {Math.abs(variation)}%
             </div>
           )}
         </div>

@@ -147,14 +147,14 @@ describe('InsightCard', () => {
     const { container } = renderWithTheme(<InsightCard insight={mockInsightPatron} />)
 
     const typeSpan = container.querySelector('.insight-type')
-    expect(typeSpan).toHaveClass('text-primary')
+    expect(typeSpan).toHaveClass('text-text-prime')
   })
 
   it('should display confidence value with correct class', () => {
     const { container } = renderWithTheme(<InsightCard insight={mockInsightAnomalia} />)
 
     const confidenceValue = container.querySelector('.impact-value')
-    expect(confidenceValue).toHaveClass('text-success')
+    expect(confidenceValue).toHaveClass('text-text-prime')
   })
 
   it('should have proper structure for all insight types', () => {

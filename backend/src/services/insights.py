@@ -130,25 +130,40 @@ class InsightsService:
         }
 
     @staticmethod
-    def get_financial_health_flags(db: Session) -> dict:
-        """Calcula indicadores de salud financiera con comparación histórica"""
-        today = date.today()
-        mes_actual = today.month
-        mes_prev = (today.replace(day=1) - timedelta(days=1)).month
-        
-        # Obtenemos datos de los últimos 2 meses
-        hace_dos_meses = today.replace(day=1) - timedelta(days=60)
-        movs = db.query(Movimiento).filter(Movimiento.fecha >= hace_dos_meses).all()
+    def get_financial_health_flags(db: Session, periodo: str | None = None) -> dict:
+        """Calcula indicadores de salud financiera para el período seleccionado."""
+        if periodo:
+            year_int, month_int = map(int, periodo.split("-"))
+            current_start = date(year_int, month_int, 1)
+        else:
+            latest = db.query(Movimiento.fecha).order_by(Movimiento.fecha.desc()).first()
+            if not latest:
+                return {"ahorro_tasa": 0, "variabilidad_gastos": 0, "balance_ingresos_gastos": 0, "score_general": 0, "alertas": []}
+            current_start = latest[0].replace(day=1)
+
+        if current_start.month == 12:
+            next_start = date(current_start.year + 1, 1, 1)
+        else:
+            next_start = date(current_start.year, current_start.month + 1, 1)
+
+        prev_end = current_start
+        prev_start = (current_start - timedelta(days=1)).replace(day=1)
+        movs = db.query(Movimiento).filter(
+            and_(
+                Movimiento.fecha >= prev_start,
+                Movimiento.fecha < next_start
+            )
+        ).all()
 
         if not movs:
             return {"ahorro_tasa": 0, "variabilidad_gastos": 0, "balance_ingresos_gastos": 0, "score_general": 0, "alertas": []}
 
         # Datos mes actual
-        ingresos_act = sum(m.monto for m in movs if m.monto > 0 and m.fecha.month == mes_actual)
-        gastos_act = sum(abs(m.monto) for m in movs if m.monto < 0 and m.fecha.month == mes_actual)
+        ingresos_act = sum(m.monto for m in movs if m.monto > 0 and current_start <= m.fecha < next_start)
+        gastos_act = sum(abs(m.monto) for m in movs if m.monto < 0 and current_start <= m.fecha < next_start)
         
         # Datos mes anterior
-        gastos_prev = sum(abs(m.monto) for m in movs if m.monto < 0 and m.fecha.month == mes_prev)
+        gastos_prev = sum(abs(m.monto) for m in movs if m.monto < 0 and prev_start <= m.fecha < prev_end)
 
         # 1. Tasa de ahorro
         ahorro_tasa = (ingresos_act - gastos_act) / ingresos_act if ingresos_act > 0 else 0

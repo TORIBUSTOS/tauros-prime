@@ -156,9 +156,9 @@ describe('PeriodContext', () => {
       expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
     })
 
-    // Should have empty periods and selected period
-    expect(screen.getByTestId('periods')).toHaveTextContent('')
-    expect(screen.getByTestId('selected')).toHaveTextContent('')
+    // Should fall back to recent operational periods when backend is unavailable.
+    expect(screen.getByTestId('periods')).toHaveTextContent('2026-04,2026-03,2026-02,2026-01')
+    expect(screen.getByTestId('selected')).toHaveTextContent('2026-04')
   })
 
   it('should throw error when usePeriod is used outside provider', () => {

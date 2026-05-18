@@ -26,15 +26,16 @@
 }
 
 .metric-value {
-  font-size: var(--t-metric-value-size);
+  font-size: clamp(2rem, 3.2vw, var(--t-metric-value-size));
   line-height: var(--t-metric-value-line-height);
   font-weight: var(--t-metric-value-weight);
   color: var(--t-metric-value-color);
   font-family: var(--t-metric-font);
-  letter-spacing: -0.02em;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: 0;
+  overflow: visible;
+  text-overflow: clip;
   white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .metric-label {
@@ -58,6 +59,23 @@
 .metric-change.negative { color: var(--t-metric-change-negative); }
 
 .font-currency { font-family: var(--t-metric-font); }
+
+@media (max-width: 640px) {
+  .metric-card {
+    padding: 1.25rem;
+  }
+
+  .metric-value {
+    font-size: clamp(2rem, 12vw, 2.8rem);
+    line-height: 1.05;
+  }
+
+  .metric-label {
+    display: block;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+}
 
 /* == 2. GLASS EFFECT CLASSES =============================================== */
 

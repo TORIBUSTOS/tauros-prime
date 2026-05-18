@@ -8,6 +8,12 @@ import type {
   CascadaRule,
 } from '@/types/api'
 
+interface MockMovementsPage {
+  items: MovimientoMapped[];
+  total: number;
+  totalPages: number;
+}
+
 // == Movimientos ==============================================================
 
 export const mockMovimientos: MovimientoMapped[] = [
@@ -59,6 +65,17 @@ export const mockMovimientos26: MovimientoMapped[] = Array.from({ length: 26 }, 
   periodo: '2025-06',
 }))
 
+export function mockMovementsPage(
+  items: MovimientoMapped[] = mockMovimientos,
+  total = items.length,
+): MockMovementsPage {
+  return {
+    items,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / 25)),
+  }
+}
+
 // == Summary ==================================================================
 
 export const mockSummary: SummaryResponse = {
@@ -66,6 +83,7 @@ export const mockSummary: SummaryResponse = {
   ingresos_total: 150000,
   egresos_total: 85000,
   balance: 65000,
+  equity: 65000,
   transaction_count: 35,
 }
 
@@ -75,14 +93,14 @@ export const mockInsightsResponse: InsightsResponse = {
   period: '2025-06',
   insights: [
     {
-      type: 'anomaly',
+      type: 'outlier',
       categoria: 'Entretenimiento',
       insight: 'Gasto 40% superior al promedio histórico de los últimos 3 meses.',
       confidence: 0.87,
       data: {},
     },
     {
-      type: 'saving_opportunity',
+      type: 'pattern',
       categoria: 'Suscripciones Digitales',
       insight: 'Se detectaron suscripciones duplicadas que podrían optimizarse.',
       confidence: 0.92,
