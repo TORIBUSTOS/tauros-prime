@@ -49,8 +49,8 @@ Cada candidato incluye:
 Las reglas incluidas son demostrativas y configurables:
 
 - `uncategorized_movement_review`: separa movimientos sin categoría como bandeja de revisión.
-- `income_dependency_shift`: detecta concentración de ingresos solo si cambia contra baseline o supera umbral crítico. Permite excluir entidades estructurales como OSPACA.
-- `category_variation_vs_baseline`: detecta variaciones por categoría con baseline mínimo.
+- `income_dependency_shift`: detecta concentración de ingresos solo si cambia contra baseline o supera umbral crítico. Permite entidades estructurales y fuentes excluidas desde config.
+- `category_variation_vs_baseline`: detecta variaciones por categoría/subcategoría con baseline mínimo, monto mínimo, delta absoluto mínimo y exclusiones configurables.
 - `expected_recurrent_baseline`: registra recurrencias estructurales como KPI/baseline e inicia en `ignored`.
 
 ## Cómo evitar insights obvios
@@ -117,3 +117,18 @@ Campos mínimos:
 - `suggested_action`: recomendación operativa.
 
 El motor puede incorporar nuevos `kind` más adelante, pero los umbrales y entidades no deben quedar embebidos en la lógica central.
+
+## Canon SP8
+
+SP8 deja un canon inicial en `config/insight_rules.json`:
+
+- Entidades estructurales: OSPACA, cuenta propia, cuotas afiliados, financiacion, extracapita, sueldos/nomina, AFIP, Visa, alquileres y servicios/proveedores recurrentes.
+- Fuentes excluidas para dependencia: transferencias de entrada, FCI, intereses, devoluciones, cheques rechazados y descuentos.
+- Variaciones evaluadas por `category_subcategory`, no solo por categoría amplia.
+- Ruido excluido de variaciones: transferencias, impuestos bancarios, IVA, comisiones, percepciones y descuentos.
+
+Validacion SP8 sobre mayo 2025 - abril 2026:
+
+- 160 candidatos persistidos.
+- 24 pendientes de revision humana.
+- 136 KPI/baseline ignorados automaticamente.

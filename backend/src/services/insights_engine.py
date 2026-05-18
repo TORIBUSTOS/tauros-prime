@@ -199,6 +199,7 @@ class InsightsEngineService:
         min_periods = thresholds.get("min_baseline_periods", 99)
         max_candidates = thresholds.get("max_candidates", 3)
         structural = {InsightsEngineService._normalize(v) for v in rule.get("structural_entities", [])}
+        excluded_sources = {InsightsEngineService._normalize(v) for v in rule.get("excluded_sources", [])}
 
         current_by_source = InsightsEngineService._sum_by_source(incomes, income_mode=True)
         historical = db.query(Movimiento).filter(
@@ -209,6 +210,8 @@ class InsightsEngineService:
 
         payloads = []
         for source, amount in sorted(current_by_source.items(), key=lambda item: item[1], reverse=True):
+            if InsightsEngineService._matches_configured_value(source, excluded_sources):
+                continue
             share = amount / total_income
             source_norm = InsightsEngineService._normalize(source)
             history = baseline_shares.get(source, [])
@@ -216,7 +219,7 @@ class InsightsEngineService:
                 continue
             baseline_share = sum(history) / len(history)
             change = share - baseline_share
-            is_structural = source_norm in structural
+            is_structural = InsightsEngineService._matches_configured_value(source_norm, structural)
             if is_structural and share < critical_share and abs(change) < change_threshold:
                 continue
             if share < critical_share and abs(change) < change_threshold:
@@ -261,35 +264,52 @@ class InsightsEngineService:
         change_threshold = thresholds.get("change_vs_baseline", 1.0)
         min_periods = thresholds.get("min_baseline_periods", 99)
         min_current_amount = thresholds.get("min_current_amount", float("inf"))
+        min_abs_delta = thresholds.get("min_abs_delta", 0)
         max_candidates = thresholds.get("max_candidates", 5)
+        group_by = rule.get("group_by", "category")
+        excluded_categories = {InsightsEngineService._normalize(v) for v in rule.get("excluded_categories", [])}
+        excluded_labels = {InsightsEngineService._normalize(v) for v in rule.get("excluded_labels", [])}
 
-        current_by_category = InsightsEngineService._sum_abs_by_category(
-            [m for m in movements if m.categoria != "Sin categorizar"]
+        current_by_group = InsightsEngineService._sum_abs_by_group(
+            [m for m in movements if m.categoria != "Sin categorizar"],
+            group_by=group_by,
+            excluded_categories=excluded_categories,
+            excluded_labels=excluded_labels,
         )
         historical = db.query(Movimiento).filter(
             Movimiento.fecha < current_start,
             Movimiento.categoria != "Sin categorizar",
         ).all()
-        baseline = InsightsEngineService._monthly_category_totals(historical)
+        baseline = InsightsEngineService._monthly_group_totals(
+            historical,
+            group_by=group_by,
+            excluded_categories=excluded_categories,
+            excluded_labels=excluded_labels,
+        )
 
         payloads = []
-        for category, current_total in sorted(current_by_category.items(), key=lambda item: item[1], reverse=True):
+        for label, current_total in sorted(current_by_group.items(), key=lambda item: item[1], reverse=True):
             if current_total < min_current_amount:
                 continue
-            history = baseline.get(category, [])
+            history = baseline.get(label, [])
             if len(history) < min_periods:
                 continue
             baseline_avg = sum(history) / len(history)
             if baseline_avg <= 0:
                 continue
+            abs_delta = current_total - baseline_avg
             change = (current_total - baseline_avg) / baseline_avg
             if abs(change) < change_threshold:
                 continue
+            if abs(abs_delta) < min_abs_delta:
+                continue
 
             data = {
-                "category": category,
+                "category": label.split(" > ", 1)[0],
+                "label": label,
                 "current_total_abs": round(current_total, 2),
                 "baseline_avg_abs": round(baseline_avg, 2),
+                "abs_delta": round(abs_delta, 2),
                 "change_vs_baseline": round(change, 4),
                 "change_pct": round(change * 100, 1),
                 "baseline_periods": len(history),
@@ -299,10 +319,10 @@ class InsightsEngineService:
                     rule=rule,
                     periodo=periodo,
                     severity=rule["severity"],
-                    template_data={"category": category, "change_pct": data["change_pct"]},
+                    template_data={"category": data["category"], "label": label, "change_pct": data["change_pct"]},
                     data=data,
                     explanation="Compara la categoría contra su promedio mensual histórico y exige baseline suficiente.",
-                    fingerprint=f"{category}:{current_total:.2f}:{baseline_avg:.2f}",
+                    fingerprint=f"{label}:{current_total:.2f}:{baseline_avg:.2f}",
                 )
             )
             if len(payloads) >= max_candidates:
@@ -329,7 +349,7 @@ class InsightsEngineService:
         current_counts = defaultdict(int)
         for movement in movements:
             source = InsightsEngineService._movement_source(movement)
-            if InsightsEngineService._normalize(source) in structural:
+            if InsightsEngineService._matches_configured_value(source, structural):
                 current_counts[source] += 1
 
         payloads = []
@@ -436,6 +456,12 @@ class InsightsEngineService:
         return movement.subcategoria or movement.categoria or movement.descripcion
 
     @staticmethod
+    def _movement_group_label(movement: Movimiento, group_by: str = "category") -> str:
+        if group_by == "category_subcategory" and movement.subcategoria:
+            return f"{movement.categoria} > {movement.subcategoria}"
+        return movement.categoria
+
+    @staticmethod
     def _sum_by_source(movements: list[Movimiento], income_mode: bool = False) -> dict[str, float]:
         totals = defaultdict(float)
         for movement in movements:
@@ -444,10 +470,22 @@ class InsightsEngineService:
         return dict(totals)
 
     @staticmethod
-    def _sum_abs_by_category(movements: list[Movimiento]) -> dict[str, float]:
+    def _sum_abs_by_group(
+        movements: list[Movimiento],
+        group_by: str = "category",
+        excluded_categories: set[str] | None = None,
+        excluded_labels: set[str] | None = None,
+    ) -> dict[str, float]:
+        excluded_categories = excluded_categories or set()
+        excluded_labels = excluded_labels or set()
         totals = defaultdict(float)
         for movement in movements:
-            totals[movement.categoria] += abs(movement.monto)
+            label = InsightsEngineService._movement_group_label(movement, group_by)
+            if InsightsEngineService._matches_configured_value(movement.categoria, excluded_categories):
+                continue
+            if InsightsEngineService._matches_configured_value(label, excluded_labels):
+                continue
+            totals[label] += abs(movement.monto)
         return dict(totals)
 
     @staticmethod
@@ -469,12 +507,24 @@ class InsightsEngineService:
         return dict(shares)
 
     @staticmethod
-    def _monthly_category_totals(movements: list[Movimiento]) -> dict[str, list[float]]:
+    def _monthly_group_totals(
+        movements: list[Movimiento],
+        group_by: str = "category",
+        excluded_categories: set[str] | None = None,
+        excluded_labels: set[str] | None = None,
+    ) -> dict[str, list[float]]:
+        excluded_categories = excluded_categories or set()
+        excluded_labels = excluded_labels or set()
         totals = defaultdict(lambda: defaultdict(float))
         for movement in movements:
+            label = InsightsEngineService._movement_group_label(movement, group_by)
+            if InsightsEngineService._matches_configured_value(movement.categoria, excluded_categories):
+                continue
+            if InsightsEngineService._matches_configured_value(label, excluded_labels):
+                continue
             period = movement.fecha.strftime("%Y-%m")
-            totals[movement.categoria][period] += abs(movement.monto)
-        return {category: list(period_totals.values()) for category, period_totals in totals.items()}
+            totals[label][period] += abs(movement.monto)
+        return {label: list(period_totals.values()) for label, period_totals in totals.items()}
 
     @staticmethod
     def _periods_by_source(movements: list[Movimiento]) -> dict[str, set[str]]:
@@ -487,3 +537,10 @@ class InsightsEngineService:
     @staticmethod
     def _normalize(value: str) -> str:
         return re.sub(r"[^a-z0-9 ]", "", value.lower()).strip()
+
+    @staticmethod
+    def _matches_configured_value(value: str, configured_values: set[str]) -> bool:
+        if not configured_values:
+            return False
+        normalized = InsightsEngineService._normalize(value)
+        return normalized in configured_values

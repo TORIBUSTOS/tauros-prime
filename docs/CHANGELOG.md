@@ -57,3 +57,15 @@
 - May/Jun/Jul 2025 quedan con 0 movimientos sin categoria.
 - La carga oficial de junio/julio se valido contra deduplicacion sin duplicar movimientos.
 - Reglas de categorizacion SP7 para juicios, honorarios abogado laboral, cuotas afiliados, sueldo dev SANARTE, devoluciones, IVA y comisiones de cheques.
+
+## [0.9.0] — 2026-05-18
+### Added
+- Sprint 8 cerrado con Canon TAUROS inicial de Insights.
+- Documento de cierre `docs/SPRINT_8_CANON_INSIGHTS.md`.
+- Configuracion de entidades estructurales, fuentes excluidas y variaciones por categoría/subcategoría en `config/insight_rules.json`.
+
+### Improved
+- `income_dependency` permite excluir fuentes no operativas desde configuracion.
+- `category_variation` soporta agrupacion `category_subcategory`, `excluded_labels` y `min_abs_delta`.
+- Matching de entidades configuradas exacto tras normalizacion para evitar falsos positivos.
+- Baseline anual evaluado: 160 candidatos persistidos, 24 pendientes humanos y 136 KPI/baseline ignorados.

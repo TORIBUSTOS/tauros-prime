@@ -268,6 +268,16 @@ Total: 6.172 movimientos. Duplicados exactos: 0.
 
 La unica excepcion sin categoria aceptada es `DOCUMENTO 27963963144` en marzo 2026.
 
+## Current Insights Baseline
+
+Estado SP8 al 2026-05-18:
+
+- Canon inicial en `config/insight_rules.json`.
+- 160 candidatos persistidos sobre mayo 2025 - abril 2026.
+- 24 candidatos `pending` para revision humana.
+- 136 candidatos `ignored` como KPI/baseline esperado.
+- Variaciones evaluadas por `category_subcategory` para evitar insights demasiado amplios.
+
 ## API-First Design
 
 TORO_Prime sigue un **API-first** approach:
@@ -350,4 +360,4 @@ Frontend:
 ---
 
 *Arquitectura Actualizada: 2026-05-18*
-*Status: SP7 cerrado; baseline anual listo para SP8 Canon TAUROS*
+*Status: SP8 cerrado; Canon TAUROS listo para SP9 Bandeja de Revision*

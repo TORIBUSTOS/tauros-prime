@@ -10,7 +10,7 @@ TAUROS transforma extractos bancarios de SANARTE/TORO en una base financiera cat
 - **Duplicados exactos**: 0.
 - **Sin categoria**: 1 movimiento aceptado manualmente (`DOCUMENTO 27963963144`, marzo 2026).
 - **Importacion Supervielle**: soporta formato normalizado (`fecha`, `descripcion`, `monto`) y extracto crudo (`Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`).
-- **Insights Engine**: base configurable creada en `config/insight_rules.json`.
+- **Insights Engine**: Canon inicial SP8 creado en `config/insight_rules.json` con 24 candidatos pendientes y 136 KPI/baseline ignorados.
 
 ## Modulos Core
 
@@ -77,16 +77,16 @@ npm run build
 - Sprint 5: [docs/SPRINT_5_CONSOLIDACION.md](docs/SPRINT_5_CONSOLIDACION.md)
 - Sprint 6: [docs/SPRINT_6_CONSOLIDACION.md](docs/SPRINT_6_CONSOLIDACION.md)
 - Sprint 7: [docs/SPRINT_7_CONSOLIDACION.md](docs/SPRINT_7_CONSOLIDACION.md)
+- Sprint 8: [docs/SPRINT_8_CANON_INSIGHTS.md](docs/SPRINT_8_CANON_INSIGHTS.md)
 - Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 - Auditoria visual Sprint 5: [docs/ui-audit/taurus-sprint-5/INDEX.md](docs/ui-audit/taurus-sprint-5/INDEX.md)
 - Referencia tecnica: [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md)
 
 ## Roadmap Inmediato
 
-1. **SP8**: Canon TAUROS de Insights sobre baseline anual.
-2. **SP9**: UI de revision/aprobacion de candidatos de insights.
-3. **SP10**: forecast anualizado y proyecciones reales.
-4. **SP11**: cierre v1.1 ejecutivo.
+1. **SP9**: UI de revision/aprobacion de candidatos de insights.
+2. **SP10**: forecast anualizado y proyecciones reales.
+3. **SP11**: cierre v1.1 ejecutivo.
 
 ---
 

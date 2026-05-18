@@ -140,7 +140,7 @@ Backend (FastAPI)
 **Frontend Build:** OK ✅ | **Datos:** 6,172 movs / May 2025 - Abr 2026 ✅
 **Duplicados exactos:** 0 ✅ | **Sin categoría:** 1 excepción aceptada manualmente ✅
 **Categorías:** `/categorias` page ✅ (CRUD motor cascada sin tocar código)
-**Insights Engine configurable:** `config/insight_rules.json` + `insight_candidates` ✅
+**Insights Engine configurable:** Canon SP8 en `config/insight_rules.json`, 24 pendientes + 136 baseline ignorados ✅
 
 **Dependencias**:
 ```
@@ -628,14 +628,13 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 | Prioridad | Tarea | Contexto |
 |---|---|---|
-| 1 | **SP8 Canon TAUROS Insights** | Definir reglas reales SANARTE: KPI vs insight vs alerta vs ruido. |
-| 2 | **Bandeja de Revision** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
-| 3 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
+| 1 | **SP9 Bandeja de Revision** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
+| 2 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
 
 ---
 
 *Versión: 3.4*
 *Última actualización: 2026-05-18*
 *Responsables: Codex (Backend) + Antigravity (Frontend)*
-*Status: BN-001-010 ✅ COMPLETO | SP7 baseline anual cerrado*
+*Status: BN-001-010 ✅ COMPLETO | SP8 Canon Insights cerrado*
 *Datos Reales: 6,172 movimientos Supervielle | Motor de Proyecciones: Activo*

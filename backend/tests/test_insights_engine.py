@@ -88,6 +88,40 @@ def test_income_dependency_skips_stable_structural_income(db: Session, tmp_path)
     assert candidates == []
 
 
+def test_income_dependency_can_exclude_non_operational_sources(db: Session, tmp_path):
+    rules_path = _write_rules(tmp_path, [
+        {
+            "id": "dependency_test",
+            "enabled": True,
+            "kind": "income_dependency",
+            "tipo": "dependencia",
+            "classification": "insight",
+            "severity": "high",
+            "thresholds": {
+                "critical_share": 0.5,
+                "change_vs_baseline": 0.1,
+                "min_baseline_periods": 2,
+                "max_candidates": 3,
+            },
+            "excluded_sources": ["Entrada"],
+            "structural_entities": [],
+            "title_template": "Dependencia {source}",
+            "description_template": "{source} {share_pct}%",
+            "suggested_action": "Revisar concentración.",
+        }
+    ])
+    for month in [1, 2]:
+        _add_movement(db, date(2026, month, 5), "Transferencia entrada", 1000, "Transferencias", "Entrada")
+        _add_movement(db, date(2026, month, 6), "Cuota afiliado", 100, "Ingresos", "Cuotas Afiliados")
+    _add_movement(db, date(2026, 3, 5), "Transferencia entrada", 5000, "Transferencias", "Entrada")
+    _add_movement(db, date(2026, 3, 6), "Cuota afiliado", 100, "Ingresos", "Cuotas Afiliados")
+    db.commit()
+
+    candidates = InsightsEngineService.evaluate_period("2026-03", db, rules_path)
+
+    assert candidates == []
+
+
 def test_category_variation_requires_baseline_and_persists_trace(db: Session, tmp_path):
     rules_path = _write_rules(tmp_path, [
         {
@@ -120,6 +154,44 @@ def test_category_variation_requires_baseline_and_persists_trace(db: Session, tm
     assert data["category"] == "Farmacias"
     assert data["baseline_periods"] == 2
     assert db.query(InsightCandidate).count() == 1
+
+
+def test_category_variation_can_group_by_subcategory_and_ignore_noise(db: Session, tmp_path):
+    rules_path = _write_rules(tmp_path, [
+        {
+            "id": "variation_test",
+            "enabled": True,
+            "kind": "category_variation",
+            "tipo": "anomalia",
+            "classification": "anomalia",
+            "severity": "medium",
+            "group_by": "category_subcategory",
+            "thresholds": {
+                "change_vs_baseline": 0.5,
+                "min_baseline_periods": 2,
+                "min_current_amount": 1000,
+                "min_abs_delta": 500,
+                "max_candidates": 5,
+            },
+            "excluded_labels": ["Impuestos > Bancarios"],
+            "title_template": "Variación {label}",
+            "description_template": "{label} {change_pct}%",
+            "suggested_action": "Revisar detalle.",
+        }
+    ])
+    for month in [1, 2]:
+        _add_movement(db, date(2026, month, 10), "Banco", -1000, "Impuestos", "Bancarios")
+        _add_movement(db, date(2026, month, 11), "Farmacia", -1000, "Prestadores", "Farmacias")
+    _add_movement(db, date(2026, 3, 10), "Banco", -4000, "Impuestos", "Bancarios")
+    _add_movement(db, date(2026, 3, 11), "Farmacia", -2500, "Prestadores", "Farmacias")
+    db.commit()
+
+    candidates = InsightsEngineService.evaluate_period("2026-03", db, rules_path)
+
+    assert len(candidates) == 1
+    data = json.loads(candidates[0].datos_utilizados)
+    assert data["label"] == "Prestadores > Farmacias"
+    assert "Bancarios" not in candidates[0].titulo
 
 
 def test_expected_recurrent_is_stored_as_ignored_kpi_not_pending_insight(db: Session, tmp_path):

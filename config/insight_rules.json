@@ -27,15 +27,27 @@
       "title_template": "Concentración de ingresos en {source}",
       "description_template": "{source} concentra {share_pct}% de los ingresos del período.",
       "thresholds": {
-        "critical_share": 0.75,
-        "change_vs_baseline": 0.2,
-        "min_baseline_periods": 2,
+        "critical_share": 0.7,
+        "change_vs_baseline": 0.25,
+        "min_baseline_periods": 4,
         "max_candidates": 3
       },
       "exclude_structural_entities": true,
+      "excluded_sources": [
+        "Entrada",
+        "FCI",
+        "Intereses",
+        "Devoluciones",
+        "Cheques Rechazados",
+        "Descuentos"
+      ],
       "structural_entities": [
         "OSPACA",
-        "Obra social"
+        "Obra social",
+        "Cuenta Propia",
+        "Cuotas Afiliados",
+        "Financiacion",
+        "Extracapita"
       ],
       "suggested_action": "Validar si la concentración responde a un cambio real, timing de cobro o dependencia operativa."
     },
@@ -46,14 +58,28 @@
       "tipo": "anomalia",
       "classification": "anomalia",
       "severity": "medium",
-      "title_template": "Variación relevante en {category}",
-      "description_template": "{category} varió {change_pct}% contra su promedio histórico.",
+      "group_by": "category_subcategory",
+      "title_template": "Variación relevante en {label}",
+      "description_template": "{label} varió {change_pct}% contra su promedio histórico.",
       "thresholds": {
-        "change_vs_baseline": 0.35,
-        "min_baseline_periods": 2,
-        "min_current_amount": 10000,
-        "max_candidates": 5
+        "change_vs_baseline": 0.45,
+        "min_baseline_periods": 4,
+        "min_current_amount": 500000,
+        "min_abs_delta": 300000,
+        "max_candidates": 6
       },
+      "excluded_labels": [
+        "Transferencias > Entrada",
+        "Transferencias > Salida",
+        "Impuestos > Bancarios",
+        "Impuestos y Comisiones > IVA",
+        "Impuestos y Comisiones > Comisiones Bancarias",
+        "Impuestos y Comisiones > Comisiones Cheques",
+        "Impuestos y Comisiones > Percepciones",
+        "Impuestos y Comisiones > Percepciones IVA",
+        "Impuestos y Comisiones > Devolución Impuesto al Cheque",
+        "Beneficios > Descuentos"
+      ],
       "suggested_action": "Abrir la categoría y revisar si el desvío corresponde a una operación esperada o a un evento extraordinario."
     },
     {
@@ -72,9 +98,24 @@
       },
       "structural_entities": [
         "OSPACA",
+        "Cuenta Propia",
+        "Cuotas Afiliados",
+        "Financiacion",
+        "Extracapita",
         "Sueldos",
+        "Nómina",
         "AFIP",
-        "Visa"
+        "Visa",
+        "Alquiler",
+        "Cheques",
+        "Farmacias",
+        "Sancor",
+        "Agua",
+        "Gas",
+        "Internet/TV",
+        "Nube",
+        "Sistema ERP",
+        "Telefonía"
       ],
       "suggested_action": "Mantener como baseline/KPI. No elevar como insight destacado salvo que cambie contra su patrón histórico."
     }

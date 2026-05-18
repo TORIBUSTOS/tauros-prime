@@ -42,7 +42,7 @@ Resultado: baseline anual cerrado con 6.172 movimientos, 0 duplicados exactos y 
 
 Objetivo: definir insights reales para SANARTE sobre base anual.
 
-Estado: proximo.
+Estado: cerrado.
 
 - Separar KPI, alerta, insight, anomalia, ruido y revision manual.
 - Definir entidades estructurales: OSPACA, SANARTE, sueldos, AFIP, Visa, alquileres y proveedores recurrentes.
@@ -50,9 +50,13 @@ Estado: proximo.
 - Ejecutar candidatos con `/api/insights-engine/evaluate`.
 - Validar que no se generen obviedades tipo "mayor ingreso del mes".
 
+Resultado: Canon inicial cargado, 160 candidatos persistidos, 24 pendientes humanos y 136 KPI/baseline ignorados automaticamente.
+
 ## SP9 - Bandeja de Revision
 
 Objetivo: incorporar flujo humano para validar candidatos.
+
+Estado: proximo.
 
 - UI para `pending`, `approved`, `rejected`, `ignored`, `converted_to_rule`.
 - Bandeja de movimientos sin categoria.
