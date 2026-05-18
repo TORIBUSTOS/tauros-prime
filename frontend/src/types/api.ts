@@ -49,6 +49,18 @@ export interface ForecastItem {
   expected_total: number;
   expected_avg: number;
   confidence: number;
+  std_dev?: number;
+  metadata?: {
+    forecast_class?: 'structural' | 'seasonal' | 'manual' | 'extraordinary';
+    active_months?: number;
+    baseline_months?: number;
+    baseline_avg?: number;
+    coefficient_variation?: number;
+    method?: string;
+    suggested_day?: number | null;
+    is_periodic?: boolean;
+    details?: string[];
+  };
 }
 
 export interface ForecastMonth {
@@ -60,6 +72,7 @@ export interface ForecastResponse {
   period: string;
   forecast: ForecastMonth[];
   scenarios: Record<string, any>;
+  metadata?: Record<string, any>;
 }
 
 export interface PLReportResponse {

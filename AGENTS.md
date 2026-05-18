@@ -142,6 +142,7 @@ Backend (FastAPI)
 **Categorías:** `/categorias` page ✅ (CRUD motor cascada sin tocar código)
 **Insights Engine configurable:** Canon SP8 en `config/insight_rules.json`, 24 pendientes + 136 baseline ignorados ✅
 **Bandeja de revision:** SP9 en `/auditoria`, con auditoria de cambios de estado ✅
+**Forecast Real:** SP10 usa baseline anual previo y separa estructural/extraordinario ✅
 
 **Dependencias**:
 ```
@@ -629,12 +630,12 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 | Prioridad | Tarea | Contexto |
 |---|---|---|
-| 1 | **SP10 Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
+| 1 | **SP11 Cierre v1.1 Ejecutivo** | Dashboard, reportes, insights revisables y forecast listos para presentacion. |
 
 ---
 
 *Versión: 3.4*
 *Última actualización: 2026-05-18*
 *Responsables: Codex (Backend) + Antigravity (Frontend)*
-*Status: BN-001-010 ✅ COMPLETO | SP9 Bandeja de Revision cerrada*
+*Status: BN-001-010 ✅ COMPLETO | SP10 Forecast Real cerrado*
 *Datos Reales: 6,172 movimientos Supervielle | Motor de Proyecciones: Activo*

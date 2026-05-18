@@ -12,6 +12,7 @@ TAUROS transforma extractos bancarios de SANARTE/TORO en una base financiera cat
 - **Importacion Supervielle**: soporta formato normalizado (`fecha`, `descripcion`, `monto`) y extracto crudo (`Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`).
 - **Insights Engine**: Canon inicial SP8 creado en `config/insight_rules.json` con 24 candidatos pendientes y 136 KPI/baseline ignorados.
 - **Bandeja de revision**: SP9 integrada en `/auditoria` con trazabilidad de decisiones.
+- **Forecast Real**: SP10 usa baseline anual previo y separa flujo estructural vs extraordinario.
 
 ## Modulos Core
 
@@ -80,14 +81,14 @@ npm run build
 - Sprint 7: [docs/SPRINT_7_CONSOLIDACION.md](docs/SPRINT_7_CONSOLIDACION.md)
 - Sprint 8: [docs/SPRINT_8_CANON_INSIGHTS.md](docs/SPRINT_8_CANON_INSIGHTS.md)
 - Sprint 9: [docs/SPRINT_9_BANDEJA_REVISION.md](docs/SPRINT_9_BANDEJA_REVISION.md)
+- Sprint 10: [docs/SPRINT_10_FORECAST_REAL.md](docs/SPRINT_10_FORECAST_REAL.md)
 - Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 - Auditoria visual Sprint 5: [docs/ui-audit/taurus-sprint-5/INDEX.md](docs/ui-audit/taurus-sprint-5/INDEX.md)
 - Referencia tecnica: [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md)
 
 ## Roadmap Inmediato
 
-1. **SP10**: forecast anualizado y proyecciones reales.
-2. **SP11**: cierre v1.1 ejecutivo.
+1. **SP11**: cierre v1.1 ejecutivo.
 
 ---
 

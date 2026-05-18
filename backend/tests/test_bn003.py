@@ -83,7 +83,7 @@ def test_forecast_item_includes_required_fields(db: Session, historical_movement
     """Test that each forecast item has required fields."""
     result = ForecastService.forecast_3months("2026-04", db)
 
-    required_fields = {'categoria', 'expected_count', 'expected_total', 'expected_avg', 'confidence'}
+    required_fields = {'categoria', 'expected_count', 'expected_total', 'expected_avg', 'confidence', 'metadata'}
     for month_forecast in result['forecast']:
         for item in month_forecast['forecast']:
             assert all(field in item for field in required_fields)
@@ -119,6 +119,8 @@ def test_forecast_scenarios_calculation(db: Session, historical_movements):
     assert abs(optimistic - (realistic * 1.15)) < 0.01
     # Pessimistic should be 15% lower than realistic
     assert abs(pessimistic - (realistic * 0.85)) < 0.01
+    assert 'structural_3m' in result['scenarios']['realistic']
+    assert 'extraordinary_3m' in result['scenarios']['realistic']
 
 
 def test_forecast_insufficient_data_handling(db: Session):
@@ -146,6 +148,7 @@ def test_forecast_month_calculations_for_same_month_pattern(db: Session, histori
 
     # April 2025 had OSPACA occurrences, so count should be > 0
     assert ospaca['expected_count'] > 0
+    assert ospaca['metadata']['forecast_class'] in {'seasonal', 'structural'}
 
 
 def test_forecast_non_recurring_month_fallback(db: Session):
@@ -191,3 +194,46 @@ def test_forecast_std_dev_included(db: Session, historical_movements):
         for item in month_forecast['forecast']:
             assert 'std_dev' in item
             assert item['std_dev'] >= 0
+
+
+def test_forecast_uses_only_history_before_projected_period(db: Session):
+    db.add(Movimiento(
+        fecha=datetime(2026, 4, 10).date(),
+        descripcion="Ingreso actual no debe filtrarse",
+        monto=999999.0,
+        categoria="Ingresos",
+        confianza=1.0,
+    ))
+    for month in [1, 2, 3]:
+        db.add(Movimiento(
+            fecha=datetime(2026, month, 10).date(),
+            descripcion="Ingreso baseline",
+            monto=1000.0,
+            categoria="Ingresos",
+            confianza=1.0,
+        ))
+    db.commit()
+
+    result = ForecastService.forecast_3months("2026-04", db)
+    april_items = result['forecast'][0]['forecast']
+    ingresos = next(item for item in april_items if item['categoria'] == "Ingresos")
+
+    assert ingresos['expected_total'] < 999999.0
+    assert ingresos['metadata']['baseline_months'] == 3
+
+
+def test_forecast_marks_irregular_items_as_extraordinary(db: Session):
+    for month, amount in [(1, -1000), (2, -9000), (3, -500)]:
+        db.add(Movimiento(
+            fecha=datetime(2026, month, 15).date(),
+            descripcion="Gasto irregular",
+            monto=amount,
+            categoria="Juicios",
+            confianza=1.0,
+        ))
+    db.commit()
+
+    result = ForecastService.forecast_3months("2026-04", db)
+    item = next(item for item in result['forecast'][0]['forecast'] if item['categoria'] == "Juicios")
+
+    assert item['metadata']['forecast_class'] == "extraordinary"

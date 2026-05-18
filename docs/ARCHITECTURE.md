@@ -90,8 +90,9 @@ User uploads Excel/CSV
         │
         └─ On /forecast call:
            ├─ ForecastService.forecast_3months()
-           ├─ Aggregate by categoria
-           ├─ Calculate monthly average
+           ├─ Use previous annual baseline
+           ├─ Aggregate by categoria/subcategoria
+           ├─ Classify structural/seasonal/manual/extraordinary
            └─ Generate 3 scenarios
 ```
 
@@ -279,6 +280,16 @@ Estado SP8 al 2026-05-18:
 - Variaciones evaluadas por `category_subcategory` para evitar insights demasiado amplios.
 - SP9 incorpora bandeja de revision en `/auditoria` y registra cambios de estado en `audit_logs`.
 
+## Current Forecast Baseline
+
+Estado SP10 al 2026-05-18:
+
+- El forecast usa solo movimientos anteriores al periodo proyectado.
+- Horizonte de 3 meses.
+- Baseline maximo de 12 meses.
+- Cada item expone `metadata.forecast_class`: `structural`, `seasonal`, `manual` o `extraordinary`.
+- `scenarios.realistic` incluye `structural_3m` y `extraordinary_3m`.
+
 ## API-First Design
 
 TORO_Prime sigue un **API-first** approach:
@@ -361,4 +372,4 @@ Frontend:
 ---
 
 *Arquitectura Actualizada: 2026-05-18*
-*Status: SP9 cerrado; bandeja humana lista para SP10 Forecast Real*
+*Status: SP10 cerrado; forecast real listo para SP11 Ejecutivo*

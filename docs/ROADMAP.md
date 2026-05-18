@@ -69,16 +69,20 @@ Resultado: bandeja integrada en `/auditoria`, 24 pendientes visibles, 1 movimien
 
 Objetivo: mejorar proyecciones con baseline anual.
 
-Estado: proximo.
+Estado: cerrado.
 
 - Separar gastos estructurales y extraordinarios.
 - Detectar pendientes recurrentes.
 - Comparar forecast anterior vs nuevo.
 - Generar proyeccion Mayo/Junio/Julio.
 
+Resultado: forecast usa baseline anual previo, separa structural/seasonal/manual/extraordinary y expone desglose estructural vs extraordinario en Analytics.
+
 ## SP11 - Cierre v1.1 Ejecutivo
 
 Objetivo: dejar TAUROS como sistema operativo financiero presentable.
+
+Estado: proximo.
 
 - Dashboard ejecutivo con baseline anual.
 - Reporte mensual comparativo.

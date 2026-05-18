@@ -80,3 +80,15 @@
 ### Improved
 - Cambios de estado de candidatos ahora generan `audit_logs` con accion `revision_insight`.
 - `/auditoria` concentra revision humana de insights y el historial cronologico del motor.
+
+## [0.11.0] — 2026-05-18
+### Added
+- Sprint 10 cerrado con Forecast Real sobre baseline anual.
+- Documento de cierre `docs/SPRINT_10_FORECAST_REAL.md`.
+- Metadata de forecast por item: clase, meses activos, baseline, variabilidad, metodo y dia sugerido.
+
+### Improved
+- `ForecastService` usa solo historico anterior al periodo proyectado.
+- Proyecciones por categoria/subcategoria.
+- Escenario realista separa `structural_3m` y `extraordinary_3m`.
+- `ForecastChart` muestra resumen 3M realista, estructural y extraordinario.

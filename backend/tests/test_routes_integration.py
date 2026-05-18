@@ -340,7 +340,7 @@ class TestForecastEndpoint:
         """Verifica que forecast retorna 3 meses"""
         # Arrange
         mov = Movimiento(
-            fecha=date(2025, 6, 1),
+            fecha=date(2025, 5, 1),
             descripcion="TEST",
             monto=1000.0,
             categoria="Test",

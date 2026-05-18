@@ -97,6 +97,8 @@ class ForecastItemResponse(BaseModel):
     expected_total: float
     expected_avg: float
     confidence: float
+    std_dev: float | None = None
+    metadata: Dict[str, Any] = {}
 
 class ForecastMonthResponse(BaseModel):
     period: str
@@ -106,6 +108,7 @@ class ForecastResponse(BaseModel):
     period: str
     forecast: List[ForecastMonthResponse]
     scenarios: Dict[str, Any]
+    metadata: Dict[str, Any] = {}
 
 class ReportNode(BaseModel):
     nombre: str

@@ -230,12 +230,25 @@ class ForecastService:
 ```
 
 **Algorithm**:
-1. Suma movimientos por categoría + mes
-2. Calcula promedio histórico
-3. Genera 3 escenarios:
-   - Optimistic: +20%
+1. Usa solo movimientos anteriores al periodo proyectado.
+2. Toma hasta 12 meses de baseline anual.
+3. Agrupa por categoria/subcategoria.
+4. Calcula promedio mensual ponderado y estacionalidad por mismo mes.
+5. Clasifica cada item como `structural`, `seasonal`, `manual` o `extraordinary`.
+6. Genera 3 escenarios:
+   - Optimistic: +15%
    - Realistic: promedio
-   - Pessimistic: -30%
+   - Pessimistic: -15%
+
+SP10 mantiene compatibilidad de contrato y agrega metadata:
+
+- `std_dev`
+- `metadata.forecast_class`
+- `metadata.active_months`
+- `metadata.baseline_months`
+- `metadata.coefficient_variation`
+- `scenarios.realistic.structural_3m`
+- `scenarios.realistic.extraordinary_3m`
 
 ---
 

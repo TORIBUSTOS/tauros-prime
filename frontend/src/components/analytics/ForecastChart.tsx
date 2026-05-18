@@ -32,6 +32,8 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
     return data.forecast.map(month => {
       let total_esperado = 0;
       let total_max = 0;
+      let structural = 0;
+      let extraordinary = 0;
       
       month.forecast.forEach(item => {
         // expected_total can be negative for expenses
@@ -46,15 +48,34 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
         } else {
           total_max += item.expected_total * (1 - uncertainty);
         }
+        const forecastClass = item.metadata?.forecast_class;
+        if (forecastClass === 'structural' || forecastClass === 'seasonal' || forecastClass === 'manual') {
+          structural += item.expected_total;
+        } else {
+          extraordinary += item.expected_total;
+        }
       });
 
       return {
         month: month.period,
         monto_proyectado: total_esperado,
         monto_max: total_max,
+        structural,
+        extraordinary,
         name: new Date(month.period + '-01').toLocaleDateString('es-AR', { month: 'short', year: '2-digit' }).toUpperCase()
       };
     });
+  }, [data]);
+
+  const forecastSummary = useMemo(() => {
+    const realistic = data.scenarios?.realistic || {};
+    return {
+      total: realistic.total_3m ?? 0,
+      structural: realistic.structural_3m ?? 0,
+      extraordinary: realistic.extraordinary_3m ?? 0,
+      baseline: data.metadata?.baseline_months,
+      method: data.metadata?.method,
+    };
   }, [data]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -76,6 +97,18 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
               <span className="text-[9px] font-bold text-primary/60 uppercase tracking-widest">Escenario Optimista</span>
               <span className={`text-[11px] font-black tabular-nums ${item.monto_max >= 0 ? 'text-success/70' : 'text-error/70'}`}>
                 ${item.monto_max.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest">Estructural</span>
+              <span className={`text-[11px] font-black tabular-nums ${item.structural >= 0 ? 'text-success/70' : 'text-error/70'}`}>
+                ${item.structural.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest">Extraordinario</span>
+              <span className={`text-[11px] font-black tabular-nums ${item.extraordinary >= 0 ? 'text-success/70' : 'text-error/70'}`}>
+                ${item.extraordinary.toLocaleString()}
               </span>
             </div>
           </div>
@@ -108,6 +141,31 @@ const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
         <div className="px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
            <span className="text-[8px] font-black text-primary uppercase tracking-widest">IA Powered</span>
         </div>
+      </div>
+
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+        <div className="rounded-xl border border-white/5 bg-white/[0.03] p-3">
+          <div className="text-[8px] font-black text-text-muted/40 uppercase tracking-widest">3M realista</div>
+          <div className={`text-sm font-black mt-1 ${forecastSummary.total >= 0 ? 'text-success' : 'text-error'}`}>
+            ${forecastSummary.total.toLocaleString('es-AR', { maximumFractionDigits: 0 })}
+          </div>
+        </div>
+        <div className="rounded-xl border border-primary/10 bg-primary/[0.04] p-3">
+          <div className="text-[8px] font-black text-primary/70 uppercase tracking-widest">Estructural</div>
+          <div className={`text-sm font-black mt-1 ${forecastSummary.structural >= 0 ? 'text-success' : 'text-error'}`}>
+            ${forecastSummary.structural.toLocaleString('es-AR', { maximumFractionDigits: 0 })}
+          </div>
+        </div>
+        <div className="rounded-xl border border-amber-400/10 bg-amber-400/[0.04] p-3">
+          <div className="text-[8px] font-black text-amber-300/70 uppercase tracking-widest">Extraordinario</div>
+          <div className={`text-sm font-black mt-1 ${forecastSummary.extraordinary >= 0 ? 'text-success' : 'text-error'}`}>
+            ${forecastSummary.extraordinary.toLocaleString('es-AR', { maximumFractionDigits: 0 })}
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 mb-4 text-[9px] font-bold uppercase tracking-widest text-text-muted/35">
+        Baseline: {forecastSummary.baseline || '-'} meses · {forecastSummary.method || 'annual_baseline'}
       </div>
 
       <div className="h-[300px] w-full relative z-10 -ml-4">
