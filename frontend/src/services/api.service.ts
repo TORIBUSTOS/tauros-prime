@@ -24,6 +24,7 @@ import {
   InsightCandidate,
   InsightEvaluationResponse,
   InsightReviewStatus,
+  ExecutiveSummaryResponse,
 } from '../types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
@@ -268,6 +269,18 @@ export const apiService = {
     const response = await fetch(url.toString());
     if (!response.ok) throw new Error('Error al cargar bandeja sin categoría');
     return await response.json();
+  },
+
+  getExecutiveSummary: async (): Promise<ExecutiveSummaryResponse> => {
+    const response = await fetch(`${API_BASE_URL}/api/executive/summary`);
+    if (!response.ok) throw new Error('Error al cargar resumen ejecutivo');
+    return await response.json();
+  },
+
+  exportInsightCandidates: (estado_revision: InsightReviewStatus = 'approved'): string => {
+    const url = new URL(`${API_BASE_URL}/api/insights-engine/export`);
+    url.searchParams.append('estado_revision', estado_revision);
+    return url.toString();
   },
 
   // == Auditoría ============================================================

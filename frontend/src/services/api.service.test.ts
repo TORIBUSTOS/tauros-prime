@@ -213,6 +213,48 @@ describe('apiService', () => {
     })
   })
 
+  describe('executive summary', () => {
+    it('should fetch executive summary', async () => {
+      const mockSummary = {
+        status: 'v1.1-ready',
+        baseline: {
+          start_period: '2025-05',
+          end_period: '2026-04',
+          months: 12,
+          movement_count: 6172,
+          uncategorized_count: 1,
+          duplicate_groups: 0,
+        },
+        financials: {
+          income_total: 100,
+          expenses_total: 80,
+          net_total: 20,
+          monthly: [],
+        },
+        insights: {
+          review: { pending: 24 },
+          approved_export_url: '/api/insights-engine/export?estado_revision=approved',
+        },
+        forecast: null,
+      }
+      ;(global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockSummary,
+      })
+
+      const result = await apiService.getExecutiveSummary()
+
+      expect(result.status).toBe('v1.1-ready')
+      expect(global.fetch).toHaveBeenCalledWith(`${API_URL}/api/executive/summary`)
+    })
+
+    it('should build approved insights export URL', () => {
+      const result = apiService.exportInsightCandidates('approved')
+
+      expect(result).toBe(`${API_URL}/api/insights-engine/export?estado_revision=approved`)
+    })
+  })
+
   describe('getForecast', () => {
     it('should fetch forecast for desde period', async () => {
       const mockForecast = {

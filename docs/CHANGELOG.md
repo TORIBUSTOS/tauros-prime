@@ -92,3 +92,16 @@
 - Proyecciones por categoria/subcategoria.
 - Escenario realista separa `structural_3m` y `extraordinary_3m`.
 - `ForecastChart` muestra resumen 3M realista, estructural y extraordinario.
+
+## [1.1.0] — 2026-05-18
+### Added
+- Sprint 11 cerrado como version v1.1 ejecutiva.
+- Snapshot Ejecutivo en Dashboard.
+- Endpoint `/api/executive/summary`.
+- Export CSV de candidatos de insights por estado.
+- Guia operativa mensual `docs/GUIA_CARGA_MENSUAL.md`.
+- Documento de cierre `docs/SPRINT_11_CIERRE_V1_1.md`.
+
+### Improved
+- Dashboard muestra baseline anual, calidad de base, estado de insights y forecast ejecutivo.
+- Se deja SP12 sugerido para conversion guiada de insights a reglas.

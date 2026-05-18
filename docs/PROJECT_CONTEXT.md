@@ -10,7 +10,7 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 - Visualización premium (Bento Grid, Charts dinámicos).
 
 ## Estado Actual
-- **Fase**: SP10 cerrado; preparacion de SP11 para cierre v1.1 ejecutivo.
+- **Fase**: SP11 cerrado; TAUROS v1.1 ejecutivo listo.
 - **Protocolo**: TORO LAB v2 (Gates + Bloques Negros).
 - **Tracks**: Backend/API, Frontend/UX e Insights Engine configurable.
 - **Datos reales cargados**: mayo 2025 a abril 2026.
@@ -21,6 +21,7 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 - **Insights**: Canon inicial SP8 cargado, con 160 candidatos persistidos, 24 pendientes y 136 KPI/baseline ignorados automaticamente.
 - **Revision humana**: SP9 integra bandeja en `/auditoria` con acciones de estado y trazabilidad.
 - **Forecast**: SP10 proyecta con baseline anual previo y separa estructural/estacional/manual/extraordinario.
+- **v1.1 Ejecutivo**: SP11 integra Snapshot Ejecutivo, export CSV de insights aprobados y guia de carga mensual.
 
 ## Roadmap Inmediato
 
@@ -54,6 +55,11 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 
 ### SP11 - v1.1 ejecutivo
 - Dashboard y reportes listos para presentacion operativa.
+- Estado: cerrado.
+
+### SP12 - Conversion guiada de insights a reglas
+- Convertir candidatos en reglas trazables.
+- Estado: sugerido.
 
 ## Stakeholders
 - **Director / CFO**: Tori (Responsable de UI/UX y Decisiones de Negocio).

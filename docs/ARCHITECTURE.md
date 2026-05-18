@@ -25,6 +25,7 @@
 │ • GET    /summary       → Aggregation Query                 │
 │ • GET    /reports/pl    → ReportService                     │
 │ • GET    /reports/periods → Period Discovery                │
+│ • GET    /executive/summary → Executive Snapshot             │
 └──────────────────────┬──────────────────────────────────────┘
                        │
         ┌──────────────┼──────────────┐
@@ -290,6 +291,15 @@ Estado SP10 al 2026-05-18:
 - Cada item expone `metadata.forecast_class`: `structural`, `seasonal`, `manual` o `extraordinary`.
 - `scenarios.realistic` incluye `structural_3m` y `extraordinary_3m`.
 
+## Current Executive Layer
+
+Estado SP11 al 2026-05-18:
+
+- Dashboard principal consume `/api/executive/summary`.
+- Snapshot Ejecutivo muestra baseline anual, resultado anual, forecast 3M, calidad de base e insights.
+- Export CSV de insights por estado con `/api/insights-engine/export`.
+- Guia mensual en `docs/GUIA_CARGA_MENSUAL.md`.
+
 ## API-First Design
 
 TORO_Prime sigue un **API-first** approach:
@@ -372,4 +382,4 @@ Frontend:
 ---
 
 *Arquitectura Actualizada: 2026-05-18*
-*Status: SP10 cerrado; forecast real listo para SP11 Ejecutivo*
+*Status: SP11 cerrado; TAUROS v1.1 ejecutivo listo*

@@ -7,15 +7,17 @@ import { Loader2 } from 'lucide-react';
 import MetricCard from '@/components/dashboard/MetricCard';
 import TopCategorias from '@/components/dashboard/TopCategorias';
 import FileUploadZone from '@/components/dashboard/FileUploadZone';
+import ExecutiveSnapshot from '@/components/dashboard/ExecutiveSnapshot';
 import FlowChart from '@/components/analytics/FlowChart';
 import { apiService } from '@/services/api.service';
-import { MovimientoMapped, CategoryStats } from '@/types/api';
+import { MovimientoMapped, CategoryStats, ExecutiveSummaryResponse } from '@/types/api';
 import { usePeriod } from '@/context/PeriodContext';
 import { useToast } from '@/context/ToastContext';
 
 export default function DashboardPage() {
   const [movements, setMovements] = useState<MovimientoMapped[]>([]);
   const [summary, setSummary] = useState<any>(null);
+  const [executiveSummary, setExecutiveSummary] = useState<ExecutiveSummaryResponse | null>(null);
   const [categories, setCategories] = useState<CategoryStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,14 +32,16 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const [movData, sumData, catData] = await Promise.all([
+      const [movData, sumData, catData, execData] = await Promise.all([
         apiService.getMovements({ period, pageSize: 100 }),
         apiService.getSummary(period),
-        apiService.getCategories(period)
+        apiService.getCategories(period),
+        apiService.getExecutiveSummary()
       ]);
       setMovements(movData.items);
       setSummary(sumData);
       setCategories(catData);
+      setExecutiveSummary(execData);
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
       showToast("Error de conexión con la Bóveda Digital", "error");
@@ -121,6 +125,7 @@ export default function DashboardPage() {
 
       <div className="relative z-10 w-full">
         <div className="flex flex-col gap-6">
+          <ExecutiveSnapshot summary={executiveSummary} />
           
           {/* Row 1: Key Metrics */}
           <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4">

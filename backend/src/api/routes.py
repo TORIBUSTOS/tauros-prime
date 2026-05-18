@@ -1,4 +1,7 @@
-from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Query
+import csv
+import io
+
+from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente, AuditLog, ManualObligation, InsightCandidate
@@ -224,6 +227,128 @@ def get_uncategorized_review_queue(
     db: Session = Depends(get_db)
 ):
     return InsightsEngineService.get_uncategorized_review_queue(db, period)
+
+@router.get("/insights-engine/export")
+def export_insight_candidates(
+    estado_revision: str = Query("approved", pattern=r"^(pending|approved|rejected|ignored|converted_to_rule)$"),
+    db: Session = Depends(get_db)
+):
+    candidates = InsightsEngineService.list_candidates(db, estado_revision=estado_revision)
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "id",
+        "periodo",
+        "estado",
+        "tipo",
+        "severidad",
+        "regla",
+        "titulo",
+        "descripcion",
+        "explicacion",
+        "accion_sugerida",
+    ])
+    for candidate in candidates:
+        writer.writerow([
+            candidate.id,
+            candidate.periodo_analizado,
+            candidate.estado_revision,
+            candidate.tipo,
+            candidate.severidad,
+            candidate.regla_disparadora,
+            candidate.titulo,
+            candidate.descripcion,
+            candidate.explicacion,
+            candidate.accion_sugerida,
+        ])
+    filename = f"tauros_insights_{estado_revision}.csv"
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+@router.get("/executive/summary")
+def get_executive_summary(db: Session = Depends(get_db)):
+    periods = sorted([
+        row[0]
+        for row in db.query(func.strftime('%Y-%m', Movimiento.fecha)).distinct().all()
+        if row[0]
+    ])
+    total_movements = db.query(func.count(Movimiento.id)).scalar() or 0
+    uncategorized = db.query(func.count(Movimiento.id)).filter(Movimiento.categoria == "Sin categorizar").scalar() or 0
+    duplicate_groups = db.query(
+        Movimiento.fecha,
+        Movimiento.descripcion,
+        Movimiento.monto,
+        func.count(Movimiento.id).label("count"),
+    ).group_by(
+        Movimiento.fecha,
+        Movimiento.descripcion,
+        Movimiento.monto,
+    ).having(func.count(Movimiento.id) > 1).count()
+
+    monthly = []
+    for period in periods:
+        income = db.query(func.sum(Movimiento.monto)).filter(
+            Movimiento.fecha.like(f"{period}%"),
+            Movimiento.monto > 0,
+        ).scalar() or 0.0
+        expenses = db.query(func.sum(func.abs(Movimiento.monto))).filter(
+            Movimiento.fecha.like(f"{period}%"),
+            Movimiento.monto < 0,
+        ).scalar() or 0.0
+        count = db.query(func.count(Movimiento.id)).filter(Movimiento.fecha.like(f"{period}%")).scalar() or 0
+        monthly.append({
+            "period": period,
+            "income": round(income, 2),
+            "expenses": round(expenses, 2),
+            "net": round(income - expenses, 2),
+            "movement_count": count,
+        })
+
+    insight_review = {
+        row[0]: row[1]
+        for row in db.query(InsightCandidate.estado_revision, func.count(InsightCandidate.id)).group_by(
+            InsightCandidate.estado_revision
+        ).all()
+    }
+
+    latest_period = periods[-1] if periods else None
+    forecast = None
+    if latest_period:
+        year, month = map(int, latest_period.split("-"))
+        month += 1
+        if month > 12:
+            year += 1
+            month = 1
+        forecast_period = f"{year}-{month:02d}"
+        forecast = ForecastService.forecast_3months(forecast_period, db)
+
+    total_income = sum(item["income"] for item in monthly)
+    total_expenses = sum(item["expenses"] for item in monthly)
+    return {
+        "status": "v1.1-ready",
+        "baseline": {
+            "start_period": periods[0] if periods else None,
+            "end_period": periods[-1] if periods else None,
+            "months": len(periods),
+            "movement_count": total_movements,
+            "uncategorized_count": uncategorized,
+            "duplicate_groups": duplicate_groups,
+        },
+        "financials": {
+            "income_total": round(total_income, 2),
+            "expenses_total": round(total_expenses, 2),
+            "net_total": round(total_income - total_expenses, 2),
+            "monthly": monthly,
+        },
+        "insights": {
+            "review": insight_review,
+            "approved_export_url": "/api/insights-engine/export?estado_revision=approved",
+        },
+        "forecast": forecast,
+    }
 
 @router.get("/reports/pl", response_model=PLReportResponse)
 def get_pl_report(period: str = Query(..., pattern=r"^\d{4}-\d{2}$"), db: Session = Depends(get_db)):

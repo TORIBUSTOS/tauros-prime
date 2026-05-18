@@ -139,6 +139,49 @@ Proyecciones de 3 meses con escenarios.
 }
 ```
 
+## 🧾 GET `/executive/summary`
+
+Resumen ejecutivo v1.1 para el Dashboard.
+
+Incluye:
+- baseline cargado;
+- movimientos, duplicados y sin categoria;
+- resultado anual;
+- estados de revision de insights;
+- forecast 3M siguiente al ultimo periodo.
+
+```json
+{
+  "status": "v1.1-ready",
+  "baseline": {
+    "start_period": "2025-05",
+    "end_period": "2026-04",
+    "months": 12,
+    "movement_count": 6172,
+    "uncategorized_count": 1,
+    "duplicate_groups": 0
+  },
+  "insights": {
+    "review": { "pending": 24, "ignored": 136 },
+    "approved_export_url": "/api/insights-engine/export?estado_revision=approved"
+  }
+}
+```
+
+## 📤 GET `/insights-engine/export`
+
+Exporta candidatos de insights en CSV.
+
+Query params:
+- `estado_revision`: `pending | approved | rejected | ignored | converted_to_rule`.
+- Default: `approved`.
+
+Ejemplo:
+
+```bash
+curl "http://localhost:9000/api/insights-engine/export?estado_revision=approved"
+```
+
 ---
 
 ## 💰 GET `/summary`

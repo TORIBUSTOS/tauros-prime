@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from src.main import app
-from src.models.movement import Base, Movimiento, get_db
+from src.models.movement import Base, InsightCandidate, Movimiento, get_db
 
 
 # Setup test database
@@ -357,6 +357,58 @@ class TestForecastEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert len(data["forecast"]) == 3
+
+
+class TestExecutiveEndpoint:
+    def test_get_executive_summary_returns_baseline(self, db):
+        db.add(Movimiento(
+            fecha=date(2026, 1, 10),
+            descripcion="Ingreso",
+            monto=1000.0,
+            categoria="Ingresos",
+            tipo="ingreso",
+            confianza=1.0,
+        ))
+        db.add(Movimiento(
+            fecha=date(2026, 1, 11),
+            descripcion="Gasto",
+            monto=-300.0,
+            categoria="Gastos",
+            tipo="egreso",
+            confianza=1.0,
+        ))
+        db.commit()
+
+        response = client.get("/api/executive/summary")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "v1.1-ready"
+        assert data["baseline"]["movement_count"] == 2
+        assert data["financials"]["net_total"] == 700.0
+        assert data["insights"]["approved_export_url"]
+
+    def test_export_approved_insights_csv(self, db):
+        db.add(InsightCandidate(
+            candidate_uid="test-candidate",
+            tipo="insight",
+            titulo="Insight aprobado",
+            descripcion="Descripcion",
+            severidad="medium",
+            periodo_analizado="2026-01",
+            regla_disparadora="test_rule",
+            datos_utilizados="{}",
+            explicacion="Explicacion",
+            accion_sugerida="Accion",
+            estado_revision="approved",
+        ))
+        db.commit()
+
+        response = client.get("/api/insights-engine/export?estado_revision=approved")
+
+        assert response.status_code == 200
+        assert "text/csv" in response.headers["content-type"]
+        assert "Insight aprobado" in response.text
 
 
 class TestPLReportEndpoint:

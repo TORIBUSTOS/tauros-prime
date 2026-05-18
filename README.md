@@ -13,6 +13,7 @@ TAUROS transforma extractos bancarios de SANARTE/TORO en una base financiera cat
 - **Insights Engine**: Canon inicial SP8 creado en `config/insight_rules.json` con 24 candidatos pendientes y 136 KPI/baseline ignorados.
 - **Bandeja de revision**: SP9 integrada en `/auditoria` con trazabilidad de decisiones.
 - **Forecast Real**: SP10 usa baseline anual previo y separa flujo estructural vs extraordinario.
+- **v1.1 Ejecutivo**: SP11 integra Snapshot Ejecutivo, export CSV de insights aprobados y guia mensual.
 
 ## Modulos Core
 
@@ -82,13 +83,15 @@ npm run build
 - Sprint 8: [docs/SPRINT_8_CANON_INSIGHTS.md](docs/SPRINT_8_CANON_INSIGHTS.md)
 - Sprint 9: [docs/SPRINT_9_BANDEJA_REVISION.md](docs/SPRINT_9_BANDEJA_REVISION.md)
 - Sprint 10: [docs/SPRINT_10_FORECAST_REAL.md](docs/SPRINT_10_FORECAST_REAL.md)
+- Sprint 11: [docs/SPRINT_11_CIERRE_V1_1.md](docs/SPRINT_11_CIERRE_V1_1.md)
+- Guia mensual: [docs/GUIA_CARGA_MENSUAL.md](docs/GUIA_CARGA_MENSUAL.md)
 - Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 - Auditoria visual Sprint 5: [docs/ui-audit/taurus-sprint-5/INDEX.md](docs/ui-audit/taurus-sprint-5/INDEX.md)
 - Referencia tecnica: [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md)
 
 ## Roadmap Inmediato
 
-1. **SP11**: cierre v1.1 ejecutivo.
+1. **SP12 sugerido**: conversion guiada de insights a reglas.
 
 ---
 

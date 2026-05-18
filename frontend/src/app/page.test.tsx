@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DashboardPage from './page'
 import { apiService } from '@/services/api.service'
-import { mockCategories, mockMovimientos, mockMovementsPage, mockSummary } from '@/test/fixtures'
+import { mockCategories, mockExecutiveSummary, mockMovimientos, mockMovementsPage, mockSummary } from '@/test/fixtures'
 
 // == Mocks de servicio ========================================================
 
@@ -13,7 +13,9 @@ vi.mock('@/services/api.service', () => ({
     getSummary: vi.fn(),
     getForecast: vi.fn(),
     getCategories: vi.fn(),
+    getExecutiveSummary: vi.fn(),
     importMovements: vi.fn(),
+    exportInsightCandidates: vi.fn(() => 'http://localhost:9000/api/insights-engine/export?estado_revision=approved'),
   },
 }))
 
@@ -66,6 +68,7 @@ function setupSuccessfulAPIs() {
   vi.mocked(apiService.getMovements).mockResolvedValue(mockMovementsPage(mockMovimientos))
   vi.mocked(apiService.getSummary).mockResolvedValue(mockSummary)
   vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
+  vi.mocked(apiService.getExecutiveSummary).mockResolvedValue(mockExecutiveSummary)
 }
 
 // == Tests =====================================================================
@@ -83,6 +86,7 @@ describe('DashboardPage', () => {
     vi.mocked(apiService.getSummary).mockImplementation(() => new Promise(() => {}))
     vi.mocked(apiService.getForecast).mockImplementation(() => new Promise(() => {}))
     vi.mocked(apiService.getCategories).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(apiService.getExecutiveSummary).mockImplementation(() => new Promise(() => {}))
     render(<DashboardPage />)
     expect(screen.getByText('Accediendo a la Bóveda')).toBeInTheDocument()
   })
@@ -125,6 +129,7 @@ describe('DashboardPage', () => {
     vi.mocked(apiService.getMovements).mockRejectedValue(new Error('Network error'))
     vi.mocked(apiService.getSummary).mockResolvedValue(mockSummary)
     vi.mocked(apiService.getCategories).mockResolvedValue(mockCategories)
+    vi.mocked(apiService.getExecutiveSummary).mockResolvedValue(mockExecutiveSummary)
     render(<DashboardPage />)
     await screen.findByRole('heading', { level: 1 }).catch(() => {})
     // Esperar que el toast de error sea llamado

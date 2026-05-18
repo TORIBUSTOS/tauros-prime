@@ -2,6 +2,7 @@ import type {
   MovimientoMapped,
   InsightsResponse,
   ForecastResponse,
+  ExecutiveSummaryResponse,
   SummaryResponse,
   PLReportResponse,
   CategoryStats,
@@ -191,6 +192,29 @@ export const mockForecast: ForecastResponse = {
     optimistic: { total_3m: 480000 },
     pessimistic: { total_3m: 390000 },
   },
+}
+
+export const mockExecutiveSummary: ExecutiveSummaryResponse = {
+  status: 'v1.1-ready',
+  baseline: {
+    start_period: '2025-05',
+    end_period: '2026-04',
+    months: 12,
+    movement_count: 6172,
+    uncategorized_count: 1,
+    duplicate_groups: 0,
+  },
+  financials: {
+    income_total: 305772025.1,
+    expenses_total: 313556166.13,
+    net_total: -7784141.03,
+    monthly: [],
+  },
+  insights: {
+    review: { pending: 24, approved: 0, ignored: 136 },
+    approved_export_url: '/api/insights-engine/export?estado_revision=approved',
+  },
+  forecast: mockForecast,
 }
 
 // == Categorías ===============================================================

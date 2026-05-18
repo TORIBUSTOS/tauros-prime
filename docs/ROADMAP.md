@@ -82,9 +82,22 @@ Resultado: forecast usa baseline anual previo, separa structural/seasonal/manual
 
 Objetivo: dejar TAUROS como sistema operativo financiero presentable.
 
-Estado: proximo.
+Estado: cerrado.
 
 - Dashboard ejecutivo con baseline anual.
 - Reporte mensual comparativo.
 - Export de insights aprobados.
 - Guia operativa de carga mensual.
+
+Resultado: Snapshot Ejecutivo en Dashboard, `/api/executive/summary`, export CSV de insights aprobados y guia mensual documentada.
+
+## SP12 - Conversion Guiada de Insights a Reglas
+
+Objetivo: cerrar el loop de aprendizaje humano.
+
+Estado: sugerido.
+
+- Convertir candidatos `converted_to_rule` en reglas guiadas.
+- Vincular candidato, movimiento y regla creada.
+- Mostrar historial por candidato.
+- Separar conversion a regla cascada vs regla de insights.

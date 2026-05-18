@@ -212,6 +212,37 @@ export interface InsightEvaluationResponse {
   candidates: InsightCandidate[];
 }
 
+export interface ExecutiveSummaryMonthly {
+  period: string;
+  income: number;
+  expenses: number;
+  net: number;
+  movement_count: number;
+}
+
+export interface ExecutiveSummaryResponse {
+  status: string;
+  baseline: {
+    start_period: string | null;
+    end_period: string | null;
+    months: number;
+    movement_count: number;
+    uncategorized_count: number;
+    duplicate_groups: number;
+  };
+  financials: {
+    income_total: number;
+    expenses_total: number;
+    net_total: number;
+    monthly: ExecutiveSummaryMonthly[];
+  };
+  insights: {
+    review: Record<string, number>;
+    approved_export_url: string;
+  };
+  forecast: ForecastResponse | { error: string } | null;
+}
+
 export interface AuditLog {
   id: number;
   entity_type: string;
