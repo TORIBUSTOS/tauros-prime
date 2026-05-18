@@ -4,9 +4,9 @@ TAUROS transforma extractos bancarios de SANARTE/TORO en una base financiera cat
 
 ## Estado Actual
 
-- **Sprint 6**: cerrado y validado.
-- **Datos cargados**: agosto 2025 a abril 2026.
-- **Base actual**: 4.407 movimientos.
+- **Sprint 7**: cerrado y validado.
+- **Datos cargados**: mayo 2025 a abril 2026.
+- **Base actual**: 6.172 movimientos.
 - **Duplicados exactos**: 0.
 - **Sin categoria**: 1 movimiento aceptado manualmente (`DOCUMENTO 27963963144`, marzo 2026).
 - **Importacion Supervielle**: soporta formato normalizado (`fecha`, `descripcion`, `monto`) y extracto crudo (`Fecha`, `Concepto`, `Detalle`, `Debito`, `Credito`, `Saldo`).
@@ -76,17 +76,17 @@ npm run build
 - Insights Engine: [docs/INSIGHTS_ENGINE.md](docs/INSIGHTS_ENGINE.md)
 - Sprint 5: [docs/SPRINT_5_CONSOLIDACION.md](docs/SPRINT_5_CONSOLIDACION.md)
 - Sprint 6: [docs/SPRINT_6_CONSOLIDACION.md](docs/SPRINT_6_CONSOLIDACION.md)
+- Sprint 7: [docs/SPRINT_7_CONSOLIDACION.md](docs/SPRINT_7_CONSOLIDACION.md)
 - Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
 - Auditoria visual Sprint 5: [docs/ui-audit/taurus-sprint-5/INDEX.md](docs/ui-audit/taurus-sprint-5/INDEX.md)
 - Referencia tecnica: [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md)
 
 ## Roadmap Inmediato
 
-1. **SP7**: cargar May/Jun/Jul 2025 y cerrar baseline anual.
-2. **SP8**: Canon TAUROS de Insights sobre baseline anual.
-3. **SP9**: UI de revision/aprobacion de candidatos de insights.
-4. **SP10**: forecast anualizado y proyecciones reales.
-5. **SP11**: cierre v1.1 ejecutivo.
+1. **SP8**: Canon TAUROS de Insights sobre baseline anual.
+2. **SP9**: UI de revision/aprobacion de candidatos de insights.
+3. **SP10**: forecast anualizado y proyecciones reales.
+4. **SP11**: cierre v1.1 ejecutivo.
 
 ---
 

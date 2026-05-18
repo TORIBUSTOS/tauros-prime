@@ -251,6 +251,9 @@ Estado operativo al 2026-05-18:
 
 | Periodo | Movimientos | Sin categoria |
 |---|---:|---:|
+| 2025-05 | 608 | 0 |
+| 2025-06 | 630 | 0 |
+| 2025-07 | 527 | 0 |
 | 2025-08 | 586 | 0 |
 | 2025-09 | 412 | 0 |
 | 2025-10 | 461 | 0 |
@@ -261,7 +264,7 @@ Estado operativo al 2026-05-18:
 | 2026-03 | 505 | 1 |
 | 2026-04 | 493 | 0 |
 
-Total: 4.407 movimientos. Duplicados exactos: 0.
+Total: 6.172 movimientos. Duplicados exactos: 0.
 
 La unica excepcion sin categoria aceptada es `DOCUMENTO 27963963144` en marzo 2026.
 
@@ -347,4 +350,4 @@ Frontend:
 ---
 
 *Arquitectura Actualizada: 2026-05-18*
-*Status: SP6 cerrado; SP7 baseline anual en preparacion*
+*Status: SP7 cerrado; baseline anual listo para SP8 Canon TAUROS*

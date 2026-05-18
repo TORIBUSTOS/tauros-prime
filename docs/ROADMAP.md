@@ -1,6 +1,6 @@
 # Roadmap TAUROS - Mayo 2026
 
-Estado de partida actualizado: Sprint 6 cerrado, agosto 2025 a abril 2026 cargado, 4.407 movimientos, duplicados exactos en 0 y una sola excepcion sin categoria aceptada manualmente.
+Estado de partida actualizado: Sprint 7 cerrado, mayo 2025 a abril 2026 cargado, 6.172 movimientos, duplicados exactos en 0 y una sola excepcion sin categoria aceptada manualmente.
 
 ## SP6 - Consolidacion 6 Meses + Expansion a 9 Meses
 
@@ -28,7 +28,7 @@ Estado: cerrado.
 
 Objetivo: completar el año operativo en un sprint separado.
 
-Estado: proximo.
+Estado: cerrado.
 
 - Cargar May/Jun/Jul 2025.
 - Verificar importacion.
@@ -36,9 +36,13 @@ Estado: proximo.
 - Resolver sin categoria.
 - Cerrar baseline May 2025 - Abr 2026.
 
+Resultado: baseline anual cerrado con 6.172 movimientos, 0 duplicados exactos y May/Jun/Jul 2025 sin pendientes de categoria.
+
 ## SP8 - Canon TAUROS de Insights
 
 Objetivo: definir insights reales para SANARTE sobre base anual.
+
+Estado: proximo.
 
 - Separar KPI, alerta, insight, anomalia, ruido y revision manual.
 - Definir entidades estructurales: OSPACA, SANARTE, sueldos, AFIP, Visa, alquileres y proveedores recurrentes.

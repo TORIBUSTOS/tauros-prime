@@ -10,11 +10,11 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 - Visualización premium (Bento Grid, Charts dinámicos).
 
 ## Estado Actual
-- **Fase**: SP6 cerrado; preparacion de SP7 para baseline anual.
+- **Fase**: SP7 cerrado; preparacion de SP8 para Canon TAUROS de Insights.
 - **Protocolo**: TORO LAB v2 (Gates + Bloques Negros).
 - **Tracks**: Backend/API, Frontend/UX e Insights Engine configurable.
-- **Datos reales cargados**: agosto 2025 a abril 2026.
-- **Volumen actual**: 4.407 movimientos.
+- **Datos reales cargados**: mayo 2025 a abril 2026.
+- **Volumen actual**: 6.172 movimientos.
 - **Duplicados exactos**: 0.
 - **Sin categoria**: 1 excepcion aceptada manualmente (`DOCUMENTO 27963963144`, marzo 2026).
 - **Importacion**: soporta extractos Supervielle crudos y archivos normalizados.
@@ -32,6 +32,7 @@ TORO_Prime es la evolución de TAUROS. Su misión es transformar la data bancari
 - Subir May/Jun/Jul 2025.
 - Resolver categorias y duplicados.
 - Cerrar baseline May 2025 - Abr 2026.
+- Estado: cerrado.
 
 ### SP8 - Canon TAUROS de Insights
 - Definir KPI vs insight vs alerta vs ruido.

@@ -46,3 +46,14 @@
 ### Improved
 - Reglas de categorizacion SP6 para financiacion, FCI, cuotas afiliados, honorarios, juicios, extracapita, IIBB Cordoba y comisiones.
 - Ago/Sep/Oct 2025 quedan con 0 movimientos sin categoria.
+
+## [0.8.0] — 2026-05-18
+### Added
+- Sprint 7 cerrado con baseline anual May 2025 - Abr 2026.
+- Total operativo ampliado a 6.172 movimientos.
+- Documento de cierre `docs/SPRINT_7_CONSOLIDACION.md`.
+
+### Improved
+- May/Jun/Jul 2025 quedan con 0 movimientos sin categoria.
+- La carga oficial de junio/julio se valido contra deduplicacion sin duplicar movimientos.
+- Reglas de categorizacion SP7 para juicios, honorarios abogado laboral, cuotas afiliados, sueldo dev SANARTE, devoluciones, IVA y comisiones de cheques.

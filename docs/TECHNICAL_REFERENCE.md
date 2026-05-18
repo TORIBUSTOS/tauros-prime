@@ -6,6 +6,8 @@ Para developers y architects.
 
 ## Database Schema
 
+Estado de datos al cierre de SP7: 6.172 movimientos, periodo mayo 2025 - abril 2026, duplicados exactos en 0 y una unica excepcion sin categoria aceptada manualmente (`DOCUMENTO 27963963144`).
+
 ### movimientos
 ```sql
 CREATE TABLE movimientos (
@@ -516,5 +518,5 @@ CREATE INDEX idx_movimientos_periodo ON movimientos(strftime('%Y-%m', fecha));
 
 ---
 
-*Reference Actualizada: 2026-04-09*  
+*Reference Actualizada: 2026-05-18*
 *Para contribuidores y futuros desarrolladores*
