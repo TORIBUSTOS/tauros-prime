@@ -21,6 +21,9 @@ import {
   ManualObligation,
   ManualObligationCreate,
   ManualObligationUpdate,
+  InsightCandidate,
+  InsightEvaluationResponse,
+  InsightReviewStatus,
 } from '../types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
@@ -229,6 +232,41 @@ export const apiService = {
   getProjections: async (): Promise<ProjectionsResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/insights/projections`);
     if (!response.ok) throw new Error('Error al cargar proyecciones de gasto');
+    return await response.json();
+  },
+
+  evaluateInsightsEngine: async (period: string): Promise<InsightEvaluationResponse> => {
+    const url = new URL(`${API_BASE_URL}/api/insights-engine/evaluate`);
+    url.searchParams.append('period', period);
+    const response = await fetch(url.toString(), { method: 'POST' });
+    if (!response.ok) throw new Error('Error al evaluar insights canónicos');
+    return await response.json();
+  },
+
+  getInsightCandidates: async (params: { period?: string; estado_revision?: InsightReviewStatus } = {}): Promise<InsightCandidate[]> => {
+    const url = new URL(`${API_BASE_URL}/api/insights-engine/candidates`);
+    if (params.period) url.searchParams.append('period', params.period);
+    if (params.estado_revision) url.searchParams.append('estado_revision', params.estado_revision);
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error('Error al cargar candidatos de insights');
+    return await response.json();
+  },
+
+  updateInsightCandidateReview: async (id: number, estado_revision: InsightReviewStatus): Promise<InsightCandidate> => {
+    const response = await fetch(`${API_BASE_URL}/api/insights-engine/candidates/${id}/review`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado_revision }),
+    });
+    if (!response.ok) throw new Error('Error al actualizar revisión del insight');
+    return await response.json();
+  },
+
+  getUncategorizedReviewQueue: async (period?: string): Promise<MovimientoResponse[]> => {
+    const url = new URL(`${API_BASE_URL}/api/insights-engine/review/uncategorized`);
+    if (period) url.searchParams.append('period', period);
+    const response = await fetch(url.toString());
+    if (!response.ok) throw new Error('Error al cargar bandeja sin categoría');
     return await response.json();
   },
 

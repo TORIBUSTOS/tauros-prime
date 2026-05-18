@@ -6,6 +6,7 @@ import { AuditLog } from '@/types/api';
 import { Pagination } from '@/components/ui/Pagination';
 import LoadingImperial from '@/components/ui/LoadingImperial';
 import BaseCard from '@/components/shared/BaseCard';
+import InsightReviewQueue from '@/components/insights/InsightReviewQueue';
 import {
   History, RefreshCw, Settings, User, Brain, AlertCircle, Database
 } from 'lucide-react';
@@ -89,6 +90,8 @@ function AuditoriaContent() {
           Actualizar Logs
         </button>
       </header>
+
+      <InsightReviewQueue />
 
       <BaseCard className="p-0 overflow-hidden border-white/5 bg-surface/20">
         {logs.length > 0 ? (

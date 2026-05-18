@@ -157,6 +157,62 @@ describe('apiService', () => {
     })
   })
 
+  describe('insights engine review', () => {
+    it('should fetch pending insight candidates', async () => {
+      const mockCandidates = [
+        {
+          id: 1,
+          candidate_uid: 'abc',
+          tipo: 'anomalia',
+          titulo: 'Variación',
+          descripcion: 'Detalle',
+          severidad: 'medium',
+          periodo_analizado: '2026-03',
+          regla_disparadora: 'category_variation_vs_baseline',
+          datos_utilizados: {},
+          explicacion: 'Explicación',
+          accion_sugerida: 'Revisar',
+          estado_revision: 'pending',
+          created_at: '2026-05-18T00:00:00',
+          updated_at: null,
+        },
+      ]
+      ;(global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCandidates,
+      })
+
+      const result = await apiService.getInsightCandidates({ estado_revision: 'pending' })
+
+      expect(result).toHaveLength(1)
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('estado_revision=pending')
+      )
+    })
+
+    it('should update insight candidate review status', async () => {
+      const mockCandidate = {
+        id: 1,
+        estado_revision: 'approved',
+      }
+      ;(global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockCandidate,
+      })
+
+      const result = await apiService.updateInsightCandidateReview(1, 'approved')
+
+      expect(result.estado_revision).toBe('approved')
+      expect(global.fetch).toHaveBeenCalledWith(
+        `${API_URL}/api/insights-engine/candidates/1/review`,
+        expect.objectContaining({
+          method: 'PATCH',
+          body: JSON.stringify({ estado_revision: 'approved' }),
+        })
+      )
+    })
+  })
+
   describe('getForecast', () => {
     it('should fetch forecast for desde period', async () => {
       const mockForecast = {

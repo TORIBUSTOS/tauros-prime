@@ -69,3 +69,14 @@
 - `category_variation` soporta agrupacion `category_subcategory`, `excluded_labels` y `min_abs_delta`.
 - Matching de entidades configuradas exacto tras normalizacion para evitar falsos positivos.
 - Baseline anual evaluado: 160 candidatos persistidos, 24 pendientes humanos y 136 KPI/baseline ignorados.
+
+## [0.10.0] — 2026-05-18
+### Added
+- Sprint 9 cerrado con bandeja de revision de insights en `/auditoria`.
+- Componente `InsightReviewQueue` para revisar candidatos `pending`, `approved`, `rejected`, `ignored` y `converted_to_rule`.
+- Clientes frontend para candidatos de insights, cambios de estado y bandeja de movimientos sin categoria.
+- Documento de cierre `docs/SPRINT_9_BANDEJA_REVISION.md`.
+
+### Improved
+- Cambios de estado de candidatos ahora generan `audit_logs` con accion `revision_insight`.
+- `/auditoria` concentra revision humana de insights y el historial cronologico del motor.

@@ -277,6 +277,7 @@ Estado SP8 al 2026-05-18:
 - 24 candidatos `pending` para revision humana.
 - 136 candidatos `ignored` como KPI/baseline esperado.
 - Variaciones evaluadas por `category_subcategory` para evitar insights demasiado amplios.
+- SP9 incorpora bandeja de revision en `/auditoria` y registra cambios de estado en `audit_logs`.
 
 ## API-First Design
 
@@ -360,4 +361,4 @@ Frontend:
 ---
 
 *Arquitectura Actualizada: 2026-05-18*
-*Status: SP8 cerrado; Canon TAUROS listo para SP9 Bandeja de Revision*
+*Status: SP9 cerrado; bandeja humana lista para SP10 Forecast Real*

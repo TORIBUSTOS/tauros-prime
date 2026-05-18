@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente, AuditLog, ManualObligation
+from src.models.movement import get_db, Movimiento, CascadaRule, PatronRecurrente, AuditLog, ManualObligation, InsightCandidate
 from src.services.parser import ParserService
 from src.services.categorizer import CategorizerService
 from src.services.insights import InsightsService
@@ -197,7 +197,21 @@ def update_insight_review(
     db: Session = Depends(get_db)
 ):
     try:
+        current = db.query(InsightCandidate).filter(InsightCandidate.id == candidate_id).first()
+        old_status = current.estado_revision if current else None
         candidate = InsightsEngineService.update_review_status(db, candidate_id, body.estado_revision)
+        if old_status != body.estado_revision:
+            audit = AuditLog(
+                entity_type="insight_candidate",
+                entity_id=candidate.id,
+                action="revision_insight",
+                old_value=old_status,
+                new_value=body.estado_revision,
+                details=f"{candidate.periodo_analizado} | {candidate.regla_disparadora} | {candidate.titulo}",
+            )
+            db.add(audit)
+            db.commit()
+            db.refresh(candidate)
         return InsightsEngineService.serialize_candidate(candidate)
     except LookupError:
         raise HTTPException(status_code=404, detail="Insight candidate no encontrado")

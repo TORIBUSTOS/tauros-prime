@@ -141,6 +141,7 @@ Backend (FastAPI)
 **Duplicados exactos:** 0 ✅ | **Sin categoría:** 1 excepción aceptada manualmente ✅
 **Categorías:** `/categorias` page ✅ (CRUD motor cascada sin tocar código)
 **Insights Engine configurable:** Canon SP8 en `config/insight_rules.json`, 24 pendientes + 136 baseline ignorados ✅
+**Bandeja de revision:** SP9 en `/auditoria`, con auditoria de cambios de estado ✅
 
 **Dependencias**:
 ```
@@ -628,13 +629,12 @@ cd C:\Users\mauri\OneDrive\... && npm run dev
 
 | Prioridad | Tarea | Contexto |
 |---|---|---|
-| 1 | **SP9 Bandeja de Revision** | UI para aprobar/rechazar/ignorar/convertir candidatos de insights. |
-| 2 | **Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
+| 1 | **SP10 Forecast Anualizado** | Ajustar proyección con baseline anual y separar estructural vs extraordinario. |
 
 ---
 
 *Versión: 3.4*
 *Última actualización: 2026-05-18*
 *Responsables: Codex (Backend) + Antigravity (Frontend)*
-*Status: BN-001-010 ✅ COMPLETO | SP8 Canon Insights cerrado*
+*Status: BN-001-010 ✅ COMPLETO | SP9 Bandeja de Revision cerrada*
 *Datos Reales: 6,172 movimientos Supervielle | Motor de Proyecciones: Activo*

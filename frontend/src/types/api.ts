@@ -175,6 +175,30 @@ export interface ProjectionsResponse {
   }>;
 }
 
+export type InsightReviewStatus = 'pending' | 'approved' | 'rejected' | 'ignored' | 'converted_to_rule';
+
+export interface InsightCandidate {
+  id: number;
+  candidate_uid: string;
+  tipo: string;
+  titulo: string;
+  descripcion: string;
+  severidad: string;
+  periodo_analizado: string;
+  regla_disparadora: string;
+  datos_utilizados: Record<string, any>;
+  explicacion: string;
+  accion_sugerida: string;
+  estado_revision: InsightReviewStatus;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface InsightEvaluationResponse {
+  period: string;
+  candidates: InsightCandidate[];
+}
+
 export interface AuditLog {
   id: number;
   entity_type: string;

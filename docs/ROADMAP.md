@@ -56,16 +56,20 @@ Resultado: Canon inicial cargado, 160 candidatos persistidos, 24 pendientes huma
 
 Objetivo: incorporar flujo humano para validar candidatos.
 
-Estado: proximo.
+Estado: cerrado.
 
 - UI para `pending`, `approved`, `rejected`, `ignored`, `converted_to_rule`.
 - Bandeja de movimientos sin categoria.
 - Accion convertir candidato/movimiento en regla.
 - Trazabilidad en auditoria.
 
+Resultado: bandeja integrada en `/auditoria`, 24 pendientes visibles, 1 movimiento sin categoria y auditoria de cambios de estado.
+
 ## SP10 - Forecast Real
 
 Objetivo: mejorar proyecciones con baseline anual.
+
+Estado: proximo.
 
 - Separar gastos estructurales y extraordinarios.
 - Detectar pendientes recurrentes.
